@@ -1,5 +1,8 @@
+"use client";
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import apiService from "@/apiService/apiService";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -21,7 +24,16 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+
 const Signup = () => {
+    const submitSignup = async () => {
+    const response = await apiService.postWithoutToken(
+      "/accounts/register/",
+      "test"
+    );
+    console.log(response);
+    
+}
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <motion.div
@@ -37,7 +49,11 @@ const Signup = () => {
           Create your account
         </motion.h1>
 
-        <motion.form variants={containerVariants} className="space-y-4">
+        <motion.form
+          onSubmit={(e) => e.preventDefault()}
+          variants={containerVariants}
+          className="space-y-4"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <motion.div variants={itemVariants}>
               <label
@@ -101,6 +117,7 @@ const Signup = () => {
           </motion.div>
 
           <motion.button
+            onClick={submitSignup}
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg w-full transition duration-300 ease-in-out"
             variants={itemVariants}
