@@ -9,6 +9,8 @@ import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Profile from "./pages/Profile";
 import Friends from "./pages/Friends";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +19,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           <Navbar />
@@ -24,6 +27,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/friends" element={<Friends />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
