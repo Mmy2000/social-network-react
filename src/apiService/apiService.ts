@@ -1,3 +1,4 @@
+const API_HOST = import.meta.env.VITE_API_HOST as string;
 
 
 const apiService = {
@@ -15,9 +16,11 @@ const apiService = {
     },
     postWithoutToken: async function(url: string, data: any): Promise<any> {
         console.log('post', url, data);
+        console.log('API_HOST', API_HOST);
+        
 
         return new Promise((resolve, reject) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+            fetch(`${API_HOST}${url}`, {
                 method: 'POST',
                 body: data,
                 headers: {
@@ -25,18 +28,16 @@ const apiService = {
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => response.json())
-                .then((json) => {
-                    console.log('Response:', json);
-
-                    resolve(json);
-                })
-                .catch((error => {
-                    reject(error);
-                }))
-        })
+            .then(response => response.json())
+            .then((json) => {
+                console.log('Response:', json);
+                resolve(json);
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        });
     }
-
 }
 
 export default apiService;
