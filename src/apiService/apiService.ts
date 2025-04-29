@@ -1,9 +1,54 @@
+import { useUser } from "@/context/UserContext";
 const API_HOST = import.meta.env.VITE_API_HOST as string;
 
-
 const apiService = {
-    get: async function(url: string, data?: any): Promise<any> {
-        console.log('get', url, data);
+    get: async function (url: string): Promise<any> {
+        console.log('get', url);
+        const { user,setUser } = useUser();
+
+        const token = user?.access || localStorage.getItem('access') || '';
+        console.log("Access Token:", token);
+
+        return new Promise((resolve, reject) => {
+            fetch(`${API_HOST}${url}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then((json) => {
+                    console.log('Response:', json);
+
+                    resolve(json);
+                })
+                .catch((error => {
+                    reject(error);
+                }))
+        })
+    },
+    getWithoutToken: async function (url: string): Promise<any> {
+        console.log('getWithoutToken', url);
+        return new Promise((resolve, reject) => {
+            fetch(`${API_HOST}${url}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then((json) => {
+                    console.log('Response:', json);
+
+                    resolve(json);
+                })
+                .catch((error => {
+                    reject(error);
+                }))
+        })
     },
     post: async function(url: string, data?: any): Promise<any> {
         console.log('post', url, data);

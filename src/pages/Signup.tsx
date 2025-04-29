@@ -134,6 +134,8 @@ const Signup = () => {
         toast({
           title: "Account Created",
           description: "You have successfully signed up.",
+          variant: "default",
+          
         });
         resetForm();
         // Redirect to the profile page or any other page

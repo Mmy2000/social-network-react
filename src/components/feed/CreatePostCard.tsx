@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Image, Video, Smile } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from '@/context/UserContext';
+
 
 interface CreatePostCardProps {
   onPostCreated?: () => void;
@@ -16,6 +18,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useUser(); // Accessing user context
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +51,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
         <CardContent className="p-4">
           <div className="flex">
             <Avatar className="h-10 w-10 mr-3">
-              <img src="https://source.unsplash.com/photo-1649972904349-6e44c42644a7" alt="Your profile" />
+              <img src={user?.profile_pic} alt={user?.first_name} />
             </Avatar>
             <div className="flex-1">
               <Textarea 

@@ -34,6 +34,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     if (storedUser) {
       try {
         setUserState(JSON.parse(storedUser));
+        console.log("User loaded from localStorage:", JSON.parse(storedUser));
+        
       } catch (e) {
         console.error("Error parsing stored user:", e);
         localStorage.removeItem("user");

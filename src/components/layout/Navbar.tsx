@@ -4,14 +4,21 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
+  AlertTriangle,
   Bell, 
   Home, 
   MessageCircle, 
-  Search, 
   User, 
   Users
 } from 'lucide-react';
 import { useUser } from "@/context/UserContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import SearchInput from '../search/SearchInput';
 
 
 const Navbar = () => {
@@ -50,16 +57,7 @@ const Navbar = () => {
               SocialBook
             </Link>
             <div className="hidden md:block max-w-md w-full">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-gray-400" />
-                </div>
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="pl-10 bg-gray-100 border-gray-200 focus:bg-white"
-                />
-              </div>
+              <SearchInput />
             </div>
           </div>
 
@@ -80,31 +78,25 @@ const Navbar = () => {
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
             </Button>
-            {/* <Link to="/profile/1">
-              <Avatar>
-                <img
-                  src={user?.profile_pic || "https://via.placeholder.com/150"}
-                  alt="User"
-                />
-              </Avatar>
-            </Link>
-            <Button variant="ghost" className="ml-4">
-              <Link to="/" className="text-facebook">
-                Logout
-              </Link>
-            </Button>
-            <Button variant="default" className="ml-4">
-              <Link to="/signup" className="text-facebook-light">
-                Sign Up
-              </Link>
-            </Button>
-            <Button variant="ghost" className="ml-4">
-              <Link to="/login" className="text-facebook">
-                Login
-              </Link>
-            </Button> */}
             {user ? (
               <>
+                {!user.isActive && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="mr-4 text-yellow-600 cursor-pointer">
+                          <AlertTriangle className="w-5 h-5" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        <p>
+                          Your account is not active. Please check your email to
+                          activate it.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 <Link to={`/profile/${user.id}`}>
                   <Avatar>
                     <img
