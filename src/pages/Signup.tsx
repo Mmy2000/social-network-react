@@ -1,12 +1,12 @@
 "use client";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import apiService from "@/apiService/apiService";
 import { useState } from "react";
-import { Toast, ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/context/UserContext";
+import { Spinner } from "@/components/ui/Spinner";
 
 
 const containerVariants = {
@@ -30,142 +30,140 @@ const itemVariants = {
 };
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password1: "",
+    password2: "",
+  });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const { toast } = useToast();
-  const { setUser } = useUser(); // Accessing the user context
+  const { setUser } = useUser();
+  const navigate = useNavigate();
 
+  const validateField = (field: string, value: string) => {
+    let error = "";
 
-  const resetForm = () => {
-    setEmail("");
-    setPassword1("");
-    setPassword2("");
-    setFirstName("");
-    setLastName("");
-    setErrors({});
-    setLoading(false);
-  }
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!firstName.trim()) {
-      newErrors.firstName = "First name is required.";
+    switch (field) {
+      case "firstName":
+        if (!value.trim()) error = "First name is required.";
+        break;
+      case "lastName":
+        if (!value.trim()) error = "Last name is required.";
+        break;
+      case "email":
+        if (!value.trim()) error = "Email is required.";
+        else if (!/\S+@\S+\.\S+/.test(value)) error = "Invalid email address.";
+        break;
+      case "password1":
+        if (!value) error = "Password is required.";
+        else if (value.length < 6)
+          error = "Password must be at least 6 characters.";
+        break;
+      case "password2":
+        if (!value) error = "Please confirm your password.";
+        else if (value !== form.password1) error = "Passwords do not match.";
+        break;
     }
 
-    if (!lastName.trim()) {
-      newErrors.lastName = "Last name is required.";
-    }
-
-    if (!email.trim()) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Invalid email address.";
-    }
-
-    if (!password1) {
-      newErrors.password1 = "Password is required.";
-    } else if (password1.length < 6) {
-      newErrors.password1 = "Password must be at least 6 characters.";
-    }
-
-    if (!password2) {
-      newErrors.password2 = "Please confirm your password.";
-    } else if (password1 !== password2) {
-      newErrors.password2 = "Passwords do not match.";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
+    setErrors((prev) => ({ ...prev, [field]: error }));
+    return error === "";
   };
 
   const handleChange = (field: string, value: string) => {
-    switch (field) {
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "lastName":
-        setLastName(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "password1":
-        setPassword1(value);
-        break;
-      case "password2":
-        setPassword2(value);
-        break;
-    }
-    validateForm();
+    setForm((prev) => ({ ...prev, [field]: value }));
+    validateField(field, value);
+  };
+
+  const validateForm = () => {
+    const fields = Object.keys(form);
+    let valid = true;
+    fields.forEach((field) => {
+      if (!validateField(field, form[field as keyof typeof form])) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
+  const resetForm = () => {
+    setForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password1: "",
+      password2: "",
+    });
+    setErrors({});
+    setLoading(false);
   };
 
   const submitSignup = async () => {
-    if (!validateForm()) {
-      return;
-    }
+    if (loading) return;
+    if (!validateForm()) return;
 
     setLoading(true);
 
-    const formData = {
-      email: email,
-      password: password1,
-      password2: password2,
-      first_name: firstName,
-      last_name: lastName,
-    };
+    try {
+      const response = await apiService.postWithoutToken(
+        "/accounts/register/",
+        JSON.stringify({
+          email: form.email,
+          password: form.password1,
+          password2: form.password2,
+          first_name: form.firstName,
+          last_name: form.lastName,
+        })
+      );
 
-    const response = await apiService.postWithoutToken(
-      "/accounts/register/",
-      JSON.stringify(formData)
-    );
-    console.log(response);
-    if (response.data.access) {
-      // Handle successful signup (e.g., redirect to login page or show success message)
-      console.log("Signup successful:", response);
-      setUser({
-        id: response.data.user_data.id,
-        first_name: response.data.user_data.first_name,
-        last_name: response.data.user_data.last_name,
-        email: response.data.user_data.email,
-        username: response.data.user_data.username,
-        profile_pic: response.data.user_data.profile.profile_picture,
-        isActive: response.data.user_data.is_active,
-        access: response.data.access,
-        refresh: response.data.refresh,
-      });
+      if (response?.data?.access) {
+        setUser({
+          id: response.data.user_data.id,
+          first_name: response.data.user_data.first_name,
+          last_name: response.data.user_data.last_name,
+          email: response.data.user_data.email,
+          username: response.data.user_data.username,
+          profile_pic: response.data.user_data.profile.profile_picture,
+          isActive: response.data.user_data.is_active,
+          access: response.data.access,
+          refresh: response.data.refresh,
+        });
+
+        toast({
+          title: "Account Created",
+          description: "You have successfully signed up.",
+        });
         resetForm();
-      toast({
-        title: "Success",
-        description: response.message,
-        variant: "default",
+        // Redirect to the profile page or any other page
+        navigate(`/profile/${response.data.user_data.id}`);
+      } else {
+        toast({
+          title: "Signup Failed",
+          description: response?.message || "Unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
 
-      });
-        
-      const tmpErrors: { [key: string]: string } = {};
-      Object.entries(response).forEach(([key, value]) => {
-        tmpErrors[key] = value[0];
-      });
-      setErrors(tmpErrors);
-      
-    }
-    else {
-      // Handle unexpected response
-      console.log("Unexpected response:", response.message);
+      // Handle field errors if available
+      if (response && typeof response === "object" && !response.data?.access) {
+        const tmpErrors: { [key: string]: string } = {};
+        Object.entries(response).forEach(([key, value]) => {
+          if (Array.isArray(value)) tmpErrors[key] = value[0];
+        });
+        setErrors(tmpErrors);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
       toast({
-        title: "Error",
-        description: response.message,
+        title: "Network Error",
+        description: "Please try again later.",
         variant: "destructive",
-
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -190,108 +188,98 @@ const Signup = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <motion.div variants={itemVariants}>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="firstName"
-              >
+              <label className="block text-sm font-bold text-gray-700 mb-1">
                 First Name
               </label>
               <input
-                onChange={(e) => handleChange("firstName", e.target.value)}
                 type="text"
-                id="firstName"
+                value={form.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
+                className="input"
                 placeholder="First Name"
-                autoFocus
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               />
               {errors.firstName && (
-                <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>
               )}
             </motion.div>
+
             <motion.div variants={itemVariants}>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="lastName"
-              >
+              <label className="block text-sm font-bold text-gray-700 mb-1">
                 Last Name
               </label>
               <input
-                onChange={(e) => handleChange("lastName", e.target.value)}
                 type="text"
-                id="lastName"
+                value={form.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
+                className="input"
                 placeholder="Last Name"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               />
               {errors.lastName && (
-                <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>
               )}
             </motion.div>
           </div>
 
           <motion.div variants={itemVariants}>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
-            >
+            <label className="block text-sm font-bold text-gray-700 mb-1">
               Email
             </label>
             <input
-              onChange={(e) => handleChange("email", e.target.value)}
               type="email"
-              id="email"
+              value={form.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              className="input"
               placeholder="Email"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
             )}
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <motion.div variants={itemVariants}>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password"
-              >
+              <label className="block text-sm font-bold text-gray-700 mb-1">
                 Password
               </label>
               <input
-                onChange={(e) => handleChange("password1", e.target.value)}
                 type="password"
-                id="password"
+                value={form.password1}
+                onChange={(e) => handleChange("password1", e.target.value)}
+                className="input"
                 placeholder="Password"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               />
               {errors.password1 && (
-                <p className="text-red-500 text-xs mt-1">{errors.password1}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.password1}</p>
               )}
             </motion.div>
+
             <motion.div variants={itemVariants}>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password2"
-              >
+              <label className="block text-sm font-bold text-gray-700 mb-1">
                 Repeat Password
               </label>
               <input
-                onChange={(e) => handleChange("password2", e.target.value)}
                 type="password"
-                id="password2"
+                value={form.password2}
+                onChange={(e) => handleChange("password2", e.target.value)}
+                className="input"
                 placeholder="Repeat Password"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               />
               {errors.password2 && (
-                <p className="text-red-500 text-xs mt-1">{errors.password2}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.password2}</p>
               )}
             </motion.div>
           </div>
 
           <motion.button
-            onClick={submitSignup}
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg w-full transition duration-300 ease-in-out"
+            onClick={submitSignup}
+            className={`flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg w-full transition duration-300 ease-in-out ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             variants={itemVariants}
+            disabled={loading}
           >
+            {loading && <Spinner  />}
             {loading ? "Creating..." : "Create Account"}
           </motion.button>
         </motion.form>
