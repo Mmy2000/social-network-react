@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import apiService from "@/apiService/apiService";
 import { useState } from "react";
+import { Toast, ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/context/UserContext";
+
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -33,6 +37,9 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const { toast } = useToast();
+  const { setUser } = useUser(); // Accessing the user context
+
 
   const resetForm = () => {
     setEmail("");
@@ -122,13 +129,41 @@ const Signup = () => {
     if (response.data.access) {
       // Handle successful signup (e.g., redirect to login page or show success message)
       console.log("Signup successful:", response);
+      setUser({
+        id: response.data.user_data.id,
+        first_name: response.data.user_data.first_name,
+        last_name: response.data.user_data.last_name,
+        email: response.data.user_data.email,
+        username: response.data.user_data.username,
+        profile_pic: response.data.user_data.profile.profile_picture,
+        isActive: response.data.user_data.is_active,
+        access: response.data.access,
+        refresh: response.data.refresh,
+      });
         resetForm();
-    } else {
+      toast({
+        title: "Success",
+        description: response.message,
+        variant: "default",
+
+      });
+        
       const tmpErrors: { [key: string]: string } = {};
       Object.entries(response).forEach(([key, value]) => {
         tmpErrors[key] = value[0];
       });
       setErrors(tmpErrors);
+      
+    }
+    else {
+      // Handle unexpected response
+      console.log("Unexpected response:", response.message);
+      toast({
+        title: "Error",
+        description: response.message,
+        variant: "destructive",
+
+      });
     }
     setLoading(false);
   };

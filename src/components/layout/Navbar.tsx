@@ -11,10 +11,12 @@ import {
   User, 
   Users
 } from 'lucide-react';
+import { useUser } from "@/context/UserContext";
 
 
 const Navbar = () => {
   const location = useLocation();
+  const { user,setUser } = useUser(); // Accessing user context
   
   const isActive = (path: string) => {
     if (path === '/') {
@@ -78,11 +80,10 @@ const Navbar = () => {
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
             </Button>
-
-            <Link to="/profile/1">
+            {/* <Link to="/profile/1">
               <Avatar>
                 <img
-                  src="https://source.unsplash.com/photo-1649972904349-6e44c42644a7"
+                  src={user?.profile_pic || "https://via.placeholder.com/150"}
                   alt="User"
                 />
               </Avatar>
@@ -101,7 +102,43 @@ const Navbar = () => {
               <Link to="/login" className="text-facebook">
                 Login
               </Link>
-            </Button>
+            </Button> */}
+            {user ? (
+              <>
+                <Link to={`/profile/${user.id}`}>
+                  <Avatar>
+                    <img
+                      src={
+                        user.profile_pic || "https://via.placeholder.com/150"
+                      }
+                      alt="User"
+                    />
+                  </Avatar>
+                </Link>
+                <Button
+                  variant="ghost"
+                  className="ml-4"
+                  onClick={() => setUser(null)} // clear user on logout
+                >
+                  <Link to="/" className="text-facebook">
+                    Logout
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="default" className="ml-4">
+                  <Link to="/signup" className="text-facebook-light">
+                    Sign Up
+                  </Link>
+                </Button>
+                <Button variant="ghost" className="ml-4">
+                  <Link to="/login" className="text-facebook">
+                    Login
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

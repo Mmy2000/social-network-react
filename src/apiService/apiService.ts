@@ -15,10 +15,7 @@ const apiService = {
         console.log('delete', url, data);
     },
     postWithoutToken: async function(url: string, data: any): Promise<any> {
-        console.log('post', url, data);
-        console.log('API_HOST', API_HOST);
-        
-
+        console.log('postWithoutToken', url, data);
         return new Promise((resolve, reject) => {
             fetch(`${API_HOST}${url}`, {
                 method: 'POST',

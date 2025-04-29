@@ -11,10 +11,13 @@ import Profile from "./pages/Profile";
 import Friends from "./pages/Friends";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import { UserProvider } from "./context/UserContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
+  <UserProvider>
+    {/* Wrapping the entire app with UserProvider to provide user context */}
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -38,6 +41,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </UserProvider>
 );
 
 export default App;
