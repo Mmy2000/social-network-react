@@ -11,7 +11,6 @@ const Feed: React.FC = () => {
       try {
         const response = await apiService.getWithoutToken("/posts/");
         if (response.status_code === 200) {
-          
           setPosts(response?.data);
         }
       } catch (error) {
@@ -30,13 +29,18 @@ const Feed: React.FC = () => {
     });
   };
 
+  const updatePostById = (postId, updatedData) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => (p.id === postId ? { ...p, ...updatedData } : p))
+    );
+  };
+
   return (
     <div className="max-w-xl mx-auto py-4">
       <CreatePostCard onPostCreated={handleNewPost} />
-
       <div className="space-y-4">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} updatePost={updatePostById} />
         ))}
       </div>
     </div>

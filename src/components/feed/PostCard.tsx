@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -10,34 +10,61 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MessageCircle, Share, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, Share, MoreHorizontal, AlertTriangle } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import CommentItem from "./CommentItem";
 import apiService from "@/apiService/apiService";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-
-const PostCard = ({ post }) => {
-  const [liked, setLiked] = useState(post.liked);
-  const [likeCount, setLikeCount] = useState(post.likes);
+const PostCard = ({ post, updatePost }) => {
+  const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (user && Array.isArray(post.likes)) {
+      setLiked(post.likes.some((likedUser) => likedUser.id === user.id));
+    } else {
+      setLiked(false);
+    }
+  }, [user, post.likes]);
+  
+
   const handleLike = async () => {
     try {
       const token = user?.access || localStorage.getItem("access") || "";
-      const response = await apiService.post(`/posts/${post.id}/like/`, null, token); // pass token explicitly
-      setLiked((prev) => !prev);
-      setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+      const response = await apiService.post(
+        `/posts/${post.id}/like/`,
+        null,
+        token
+      );
+
+      const updatedLikeCount = liked
+        ? post.like_count - 1
+        : post.like_count + 1;
+
+      updatePost(post.id, {
+        like_count: updatedLikeCount,
+        likes: liked
+          ? post.likes.filter((u) => u.id !== user.id)
+          : [...post.likes, user],
+      });
+
+      setLiked(!liked);
+
       toast({
         title: liked ? "Unliked" : "Liked",
         description: `You have ${liked ? "unliked" : "liked"} this post.`,
         duration: 2000,
       });
-      console.log("liked post", response);
-      
     } catch (error) {
       console.error("Failed to like/unlike the post", error);
       toast({
@@ -48,14 +75,36 @@ const PostCard = ({ post }) => {
     }
   };
 
-
-  const handleComment = (e) => {
+  const handleComment = async (e) => {
     e.preventDefault();
-    if (commentText.trim()) {
-      console.log("New comment:", commentText); // TODO: connect to API
-      setCommentText("");
+    const token = user?.access || localStorage.getItem("access") || "";
+    try {
+      if (commentText.trim()) {
+        const res = await apiService.post(
+          `/posts/${post.id}/comment/`,
+          { content: commentText },
+          token
+        );
+        setCommentText("");
+        updatePost(post.id, {
+          comments: [...post.comments, res.data],
+          comments_count: post.comments_count + 1,
+        });
+        toast({
+          title: "Comment posted",
+          description: "Your comment has been posted successfully.",
+          duration: 2000,
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to post comment",
+        variant: "destructive",
+      });
     }
   };
+  
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
@@ -96,7 +145,38 @@ const PostCard = ({ post }) => {
                 <Heart className="h-3 w-3 text-white fill-white" />
               </div>
             )}
-            <span>{likeCount > 0 ? `${likeCount} likes` : "0 likes"}</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="mr-4 text-yellow-600 cursor-pointer">
+                    <span>
+                      {post?.like_count > 0
+                        ? `${post?.like_count} likes`
+                        : "0 likes"}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <div className="flex flex-col">
+                    {Array.isArray(post?.likes) &&
+                      post.likes.map((like) => (
+                        <Link
+                          key={like?.id}
+                          to={`/profile/${like?.id}`}
+                          className="flex items-center space-x-2 mb-1 hover:underline"
+                        >
+                          <Avatar className="h-6 w-6">
+                            <img src={like.image} alt={like.username} />
+                          </Avatar>
+                          <span className="text-sm text-gray-700">
+                            {like.username}
+                          </span>
+                        </Link>
+                      ))}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div>
             {post?.comments_count > 0 ? (
@@ -172,10 +252,10 @@ const PostCard = ({ post }) => {
             </div>
           </form>
 
-          {/* Render top-level comments */}
+          {/* Render comments */}
           <div className="space-y-3">
-            {post.comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} level={0} />
+            {post?.comments.map((comment) => (
+              <CommentItem key={comment?.id} comment={comment} level={0} />
             ))}
           </div>
         </div>

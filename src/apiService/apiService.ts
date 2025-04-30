@@ -60,7 +60,7 @@ const apiService = {
         return new Promise((resolve, reject) => {
             fetch(`${API_HOST}${url}`, {
             method: 'POST',
-            body: data,
+            body: data ? JSON.stringify(data) : null,
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

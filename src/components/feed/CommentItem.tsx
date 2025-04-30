@@ -26,8 +26,8 @@ const CommentItem = ({ comment, level = 0 }) => {
         <div className="w-8 h-8 shrink-0">
           <Avatar className="h-8 w-8">
             <img
-              src={comment.created_by.profile.profile_picture}
-              alt={comment.created_by.profile.full_name}
+              src={comment?.created_by?.profile?.profile_picture}
+              alt={comment?.created_by?.profile?.full_name}
             />
           </Avatar>
         </div>
@@ -38,18 +38,18 @@ const CommentItem = ({ comment, level = 0 }) => {
           )}
         >
           <Link
-            to={`/profile/${comment.created_by.id}`}
+            to={`/profile/${comment?.created_by.id}`}
             className="text-sm font-semibold hover:underline"
           >
-            {comment.created_by.profile.full_name}
+            {comment?.created_by?.profile?.full_name}
           </Link>
-          <p className="text-sm">{comment.content}</p>
+          <p className="text-sm">{comment?.content}</p>
 
           {/* Like, Reply, Time */}
           <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
             <button className="hover:underline">Like</button>
             <span>
-              {comment.like_count} {comment.like_count === 1 ? "like" : "likes"}
+              {comment?.like_count} {comment?.like_count === 1 ? "like" : "likes"}
             </span>
             <button
               onClick={() => setShowReplyBox(!showReplyBox)}
@@ -57,7 +57,7 @@ const CommentItem = ({ comment, level = 0 }) => {
             >
               Reply
             </button>
-            <span>{comment.time_since_created}</span>
+            <span>{comment?.time_since_created}</span>
           </div>
 
           {/* Reply input box */}
@@ -88,10 +88,10 @@ const CommentItem = ({ comment, level = 0 }) => {
       </div>
 
       {/* Recursive replies */}
-      {comment.replies?.length > 0 && (
+      {comment?.replies?.length > 0 && (
         <div className="pl-6 mt-2 space-y-2">
-          {comment.replies.map((reply) => (
-            <CommentItem key={reply.id} comment={reply} level={level + 1} />
+          {comment?.replies.map((reply) => (
+            <CommentItem key={reply?.id} comment={reply} level={level + 1} />
           ))}
         </div>
       )}
