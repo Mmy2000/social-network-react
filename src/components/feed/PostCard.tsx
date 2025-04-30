@@ -1,41 +1,59 @@
-
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
-import { useUser } from '@/context/UserContext';
+import { Heart, MessageCircle, Share, MoreHorizontal } from "lucide-react";
+import { useUser } from "@/context/UserContext";
+import CommentItem from "./CommentItem";
+import apiService from "@/apiService/apiService";
+import { useToast } from "@/hooks/use-toast";
 
 
-const PostCard= ({ post }) => {
+const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(post.liked);
   const [likeCount, setLikeCount] = useState(post.likes);
   const [showComments, setShowComments] = useState(false);
-  const [commentText, setCommentText] = useState('');
-  const {user} = useUser()
-  console.log("PostCard props:", post);
-  console.log("user id", post?.created_by?.id);
-  
+  const [commentText, setCommentText] = useState("");
+  const { user } = useUser();
+  const { toast } = useToast();
 
-  const handleLike = () => {
-    if (liked) {
-      setLikeCount(prev => prev - 1);
-    } else {
-      setLikeCount(prev => prev + 1);
+  const handleLike = async () => {
+    try {
+      const token = user?.access || localStorage.getItem("access") || "";
+      const response = await apiService.post(`/posts/${post.id}/like/`, null, token); // pass token explicitly
+      setLiked((prev) => !prev);
+      setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+      toast({
+        title: liked ? "Unliked" : "Liked",
+        description: `You have ${liked ? "unliked" : "liked"} this post.`,
+        duration: 2000,
+      });
+      console.log("liked post", response);
+      
+    } catch (error) {
+      console.error("Failed to like/unlike the post", error);
+      toast({
+        title: "Error",
+        description: "Failed to like/unlike the post.",
+        variant: "destructive",
+      });
     }
-    setLiked(!liked);
   };
 
-  const handleComment = (e: React.FormEvent) => {
+
+  const handleComment = (e) => {
     e.preventDefault();
     if (commentText.trim()) {
-      // In a real app, this would submit the comment to an API
-      setCommentText('');
-      // Increase comment count for visual feedback
-      post.comments += 1;
+      console.log("New comment:", commentText); // TODO: connect to API
+      setCommentText("");
     }
   };
 
@@ -70,18 +88,7 @@ const PostCard= ({ post }) => {
 
       <CardContent className="p-4 pt-2">
         <p className="text-sm mb-3">{post?.content}</p>
-        {post?.image && (
-          <div className="rounded-md overflow-hidden bg-gray-100">
-            <img
-              src={post?.image}
-              alt="Post content"
-              className="w-full object-cover"
-              style={{ maxHeight: "500px" }}
-            />
-          </div>
-        )}
 
-        {/* Like count and comments */}
         <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
           <div className="flex items-center">
             {liked && (
@@ -89,9 +96,7 @@ const PostCard= ({ post }) => {
                 <Heart className="h-3 w-3 text-white fill-white" />
               </div>
             )}
-            <span>
-              {post?.like_count > 0 ? `${post?.like_count} likes` : "0 likes"}
-            </span>
+            <span>{likeCount > 0 ? `${likeCount} likes` : "0 likes"}</span>
           </div>
           <div>
             {post?.comments_count > 0 ? (
@@ -144,13 +149,10 @@ const PostCard= ({ post }) => {
 
       {showComments && (
         <div className="px-4 py-3 bg-gray-50">
-          {/* Comment form */}
+          {/* Comment Form */}
           <form onSubmit={handleComment} className="flex mb-3">
             <Avatar className="h-8 w-8 mr-2">
-              <img
-                src={user?.profile_pic}
-                alt="Current user"
-              />
+              <img src={user?.profile_pic} alt="Current user" />
             </Avatar>
             <div className="flex-1 relative">
               <Textarea
@@ -162,7 +164,7 @@ const PostCard= ({ post }) => {
               <Button
                 type="submit"
                 size="sm"
-                className="absolute right-2 bottom-1 bg-transparent hover:bg-transparent text-facebook h-8 p-0"
+                className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent"
                 disabled={!commentText.trim()}
               >
                 Post
@@ -170,35 +172,10 @@ const PostCard= ({ post }) => {
             </div>
           </form>
 
-          {/* Comment examples (static) */}
+          {/* Render top-level comments */}
           <div className="space-y-3">
             {post.comments.map((comment) => (
-              <div key={comment?.id} className="flex">
-                <Avatar className="h-8 w-8 mr-2">
-                  <img
-                    src={comment?.created_by?.profile?.profile_picture}
-                    alt={comment?.created_by?.profile?.full_name}
-                  />
-                </Avatar>
-                <div className="bg-white rounded-lg px-3 py-2 max-w-[90%]">
-                  <Link
-                    to={`/profile/${comment?.created_by?.id}`}
-                    className="font-medium text-sm hover:underline"
-                  >
-                    {comment?.created_by?.profile.full_name}
-                  </Link>
-                  <p className="text-sm">{comment.content}</p>
-                  <div className="flex gap-3 mt-1 text-xs text-gray-500">
-                    <button className="font-medium hover:underline">
-                      Like
-                    </button>
-                    <button className="font-medium hover:underline">
-                      Reply
-                    </button>
-                    <span>{comment.time_since_created}</span>
-                  </div>
-                </div>
-              </div>
+              <CommentItem key={comment.id} comment={comment} level={0} />
             ))}
           </div>
         </div>
