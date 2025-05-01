@@ -1,19 +1,28 @@
 
 import React from 'react';
 import CreatePostCard from '../feed/CreatePostCard';
-import PostCard, { PostType } from '../feed/PostCard';
+import PostCard from '../feed/PostCard';
+import { useQueryClient } from '@tanstack/react-query';
 
-interface ProfilePostsProps {
-  posts: PostType[];
-  isCurrentUser: boolean;
-}
+// Mock implementation of updatePostById function
+const updatePostById = (postId, updatedData) => {
 
-const ProfilePosts = ({ posts, isCurrentUser }: ProfilePostsProps) => {
+  const queryClient = useQueryClient();
+
+  queryClient.setQueryData(["posts"], (oldPosts: Array<{ id: string }> = []) =>
+    oldPosts.map((post) =>
+      post.id === postId ? { ...post, ...updatedData } : post
+    )
+  );
+};
+
+
+const ProfilePosts = ({ posts, isCurrentUser }) => {
   return (
     <div className="space-y-4">
       {isCurrentUser && <CreatePostCard />}
-      {posts.map(post => (
-        <PostCard key={post.id} post={post} />
+      {posts?.map(post => (
+        <PostCard updatePost={updatePostById} key={post.id} post={post} />
       ))}
     </div>
   );

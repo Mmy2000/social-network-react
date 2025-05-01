@@ -2,41 +2,38 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 
-interface ProfileInfo {
-  work: string;
-  education: string;
-  location: string;
-  joinedDate: string;
-}
 
-interface ProfileAboutProps {
-  info: ProfileInfo;
-}
 
-const ProfileAbout = ({ info }: ProfileAboutProps) => {
+const ProfileAbout = ({ info }) => {
+  console.log(info, "info");
+  
   return (
     <Card>
       <CardContent className="p-4">
         <div className="space-y-4">
           <div>
             <h3 className="font-medium text-gray-500 mb-1">Work</h3>
-            <p>{info.work}</p>
+            <p>{info?.profile?.work}</p>
           </div>
-          
+
           <div>
             <h3 className="font-medium text-gray-500 mb-1">Education</h3>
-            <p>{info.education}</p>
+            <p>{info?.profile?.education}</p>
           </div>
-          
+
           <div>
             <h3 className="font-medium text-gray-500 mb-1">Location</h3>
-            <p>{info.location}</p>
+            <p>{info?.profile?.full_address}</p>
           </div>
-          
-          <div>
-            <h3 className="font-medium text-gray-500 mb-1">Joined</h3>
-            <p>{info.joinedDate}</p>
-          </div>
+
+          <p>
+            {info?.date_joined &&
+              new Date(info.date_joined).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+          </p>
         </div>
       </CardContent>
     </Card>
