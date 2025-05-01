@@ -1,3 +1,4 @@
+// CommentItem.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
@@ -5,18 +6,66 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/context/UserContext";
 import clsx from "clsx";
+import apiService from "@/apiService/apiService";
+import { Heart } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-const CommentItem = ({ comment, level = 0 }) => {
+const CommentItem = ({
+  comment,
+  level = 0,
+  post,
+  updatePost,
+  onUpdateComment,
+}) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const [likeCount, setLikeCount] = useState(comment?.like_count || 0);
+  const [isLiked, setIsLiked] = useState(comment?.is_liked_by_user || false);
   const { user } = useUser();
+  const { toast } = useToast();
 
-  const handleReplySubmit = (e) => {
+  const handleReplySubmit = async (e) => {
     e.preventDefault();
     if (replyText.trim()) {
-      console.log(`Reply to comment ID ${comment.id}:`, replyText);
+      try {
+        const token = user?.access || localStorage.getItem("access") || "";
+        const res = await apiService.post(
+          `/posts/${post.id}/comment/`,
+          { content: replyText, parent: comment.id },
+          token
+        );
+
+        const updatedComment = {
+          ...comment,
+          replies: [...(comment.replies || []), res.data],
+        };
+        onUpdateComment(updatedComment); // Trigger UI update in PostCard
+
+        toast({
+          title: "Reply submitted",
+          description: "Your reply has been submitted successfully.",
+        });
+      } catch (error) {
+        console.error("Error submitting reply:", error);
+      }
       setReplyText("");
       setShowReplyBox(false);
+    }
+  };
+
+
+  const handleLikeToggle = async () => {
+    const token = user?.access || localStorage.getItem("access") || "";
+    try {
+      await apiService.post(`/posts/comment/${comment.id}/like/`, null, token);
+      toast({
+        title: isLiked ? "Unliked" : "Liked",
+        description: `You have ${isLiked ? "unliked" : "liked"} this comment.`,
+      });
+      setIsLiked(!isLiked);
+      setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    } catch (error) {
+      console.error("Error liking comment:", error);
     }
   };
 
@@ -45,11 +94,24 @@ const CommentItem = ({ comment, level = 0 }) => {
           </Link>
           <p className="text-sm">{comment?.content}</p>
 
-          {/* Like, Reply, Time */}
           <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-            <button className="hover:underline">Like</button>
+            <button
+              onClick={handleLikeToggle}
+              className={`flex items-center px-2 py-1 rounded-full text-sm font-medium transition ${
+                isLiked ? " text-facebook" : " text-gray-700"
+              }`}
+            >
+              {isLiked ? (
+                <>
+                  <Heart className="h-4 w-4 mr-1 fill-facebook text-facebook" />{" "}
+                  Liked
+                </>
+              ) : (
+                "Like"
+              )}
+            </button>
             <span>
-              {comment?.like_count} {comment?.like_count === 1 ? "like" : "likes"}
+              {likeCount} {likeCount === 1 ? "like" : "likes"}
             </span>
             <button
               onClick={() => setShowReplyBox(!showReplyBox)}
@@ -60,7 +122,6 @@ const CommentItem = ({ comment, level = 0 }) => {
             <span>{comment?.time_since_created}</span>
           </div>
 
-          {/* Reply input box */}
           {showReplyBox && (
             <form onSubmit={handleReplySubmit} className="flex mt-2 space-x-2">
               <Avatar className="h-6 w-6 mt-1">
@@ -87,11 +148,17 @@ const CommentItem = ({ comment, level = 0 }) => {
         </div>
       </div>
 
-      {/* Recursive replies */}
       {comment?.replies?.length > 0 && (
         <div className="pl-6 mt-2 space-y-2">
           {comment?.replies.map((reply) => (
-            <CommentItem key={reply?.id} comment={reply} level={level + 1} />
+            <CommentItem
+              key={reply?.id}
+              comment={reply}
+              post={post}
+              updatePost={updatePost}
+              onUpdateComment={onUpdateComment}
+              level={level + 1}
+            />
           ))}
         </div>
       )}

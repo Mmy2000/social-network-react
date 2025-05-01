@@ -104,6 +104,33 @@ const PostCard = ({ post, updatePost }) => {
       });
     }
   };
+
+  const updateComments = (comments, updatedComment) => {
+    console.log("comments",comments);
+    console.log("updatedComment",updatedComment);
+    
+    return comments.map((comment) => {
+      if (comment.id === updatedComment.id) {
+        return updatedComment;
+      }
+      if (comment.replies && comment.replies.length > 0) {
+        return {
+          ...comment,
+          replies: updateComments(comment.replies, updatedComment),
+        };
+      }
+      return comment;
+    });
+  };
+
+
+  const handleUpdateComment = (updatedComment) => {
+    const newComments = updateComments(post.comments, updatedComment);
+    updatePost(post.id, {
+      ...post,
+      comments: newComments,
+    });
+  };
   
 
   return (
@@ -148,7 +175,11 @@ const PostCard = ({ post, updatePost }) => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="mr-4 text-yellow-600 cursor-pointer">
+                  <div
+                    className={`mr-4 ${
+                      liked ? "text-facebook" : "text-gray-700"
+                    }  cursor-pointer`}
+                  >
                     <span>
                       {post?.like_count > 0
                         ? `${post?.like_count} likes`
@@ -156,7 +187,7 @@ const PostCard = ({ post, updatePost }) => {
                     </span>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">
+                <TooltipContent side="top">
                   <div className="flex flex-col">
                     {Array.isArray(post?.likes) &&
                       post.likes.map((like) => (
@@ -255,7 +286,14 @@ const PostCard = ({ post, updatePost }) => {
           {/* Render comments */}
           <div className="space-y-3">
             {post?.comments.map((comment) => (
-              <CommentItem key={comment?.id} comment={comment} level={0} />
+              <CommentItem
+                key={comment?.id}
+                comment={comment}
+                post={post}
+                updatePost={updatePost}
+                onUpdateComment={handleUpdateComment}
+                level={0}
+              />
             ))}
           </div>
         </div>

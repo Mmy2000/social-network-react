@@ -1,39 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CreatePostCard from "./CreatePostCard";
 import PostCard from "./PostCard";
 import apiService from "@/apiService/apiService";
+import { Loader2 } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const fetchPosts = async () => {
+  const response = await apiService.getWithoutToken("/posts/");
+  if (response.status_code !== 200) {
+    throw new Error("Failed to fetch posts");
+  }
+  return response.data;
+};
 
 const Feed: React.FC = () => {
-  const [posts, setPosts] = useState([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await apiService.getWithoutToken("/posts/");
-        if (response.status_code === 200) {
-          setPosts(response?.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch posts:", error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  const handleNewPost = () => {
-    apiService.get("/posts/").then((response) => {
-      if (response.status_code === 200) {
-        setPosts(response?.data);
-      }
-    });
-  };
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    refetchInterval: 10000,
+  });
 
   const updatePostById = (postId, updatedData) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((p) => (p.id === postId ? { ...p, ...updatedData } : p))
+    queryClient.setQueryData(["posts"], (oldPosts: Array<{ id: string }> = []) =>
+      oldPosts.map((post) =>
+        post.id === postId ? { ...post, ...updatedData } : post
+      )
     );
   };
+
+  const handleNewPost = () => {
+    refetch(); // Re-fetch posts after new post is created
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center mt-5">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center mt-5 text-red-500">Failed to load posts.</div>
+    );
+  }
 
   return (
     <div className="max-w-xl mx-auto py-4">

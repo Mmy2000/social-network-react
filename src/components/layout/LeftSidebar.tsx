@@ -12,6 +12,8 @@ import {
   Image, 
   Heart
 } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+
 
 const menuItems = [
   { icon: Users, label: 'Friends', path: '/friends' },
@@ -30,14 +32,15 @@ const groupItems = [
 ];
 
 const LeftSidebar = () => {
+  const { user } = useUser();
   return (
     <aside className="hidden md:block w-[280px] p-4 space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 64px)' }}>
       {/* User Profile Link */}
-      <Link to="/profile/1" className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover">
+      <Link to={`/profile/${user?.id}`} className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover">
         <Avatar className="h-9 w-9 mr-3">
-          <img src="https://source.unsplash.com/photo-1649972904349-6e44c42644a7" alt="User" />
+          <img src={user?.profile_pic} alt={user?.first_name} />
         </Avatar>
-        <span className="font-medium">Sarah Johnson</span>
+        <span className="font-medium">{user?.first_name}{" "}{user?.last_name}</span>
       </Link>
       
       {/* Main Menu Items */}
