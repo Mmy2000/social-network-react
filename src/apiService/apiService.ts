@@ -6,16 +6,20 @@ const API_HOST = import.meta.env.VITE_API_HOST as string;
 const apiService = {
     get: async function (url: string, token?: string): Promise<any> {
         console.log('get', url);
+        console.log('Access Token:', token);
 
-        console.log("Access Token:", token);
+        const headers: Record<string, string> = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
 
         return fetch(`${API_HOST}${url}`, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers,
         })
         .then(response => response.json())
         .then(json => {
@@ -26,6 +30,7 @@ const apiService = {
             throw error;
         });
     },
+
     getWithoutToken: async function (url: string): Promise<any> {
         console.log('getWithoutToken', url);
 

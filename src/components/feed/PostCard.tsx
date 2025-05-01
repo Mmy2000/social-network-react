@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { usePost } from "@/context/PostContext";
 
 const PostCard = ({ post, updatePost }) => {
   const [liked, setLiked] = useState(false);
@@ -39,6 +40,14 @@ const PostCard = ({ post, updatePost }) => {
   
 
   const handleLike = async () => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "You need to be logged in to like a post.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const token = user?.access || localStorage.getItem("access") || "";
       const response = await apiService.post(
@@ -76,6 +85,14 @@ const PostCard = ({ post, updatePost }) => {
   };
 
   const handleComment = async (e) => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "You need to be logged in to like a post.",
+        variant: "destructive",
+      });
+      return;
+    }
     e.preventDefault();
     const token = user?.access || localStorage.getItem("access") || "";
     try {

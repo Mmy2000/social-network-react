@@ -41,8 +41,13 @@ const Profile = () => {
   const fetchProfileData = async (profileId: string) => {
     setLoading(true);
     try {
-      const res = await apiService.get(`/accounts/profile/${profileId}/`,user?.access);
-      console.log('Profile data:', res);
+      const token = user?.access || null;
+      const res = await apiService.get(
+        `/accounts/profile/${profileId}/`,
+        token
+      );
+      console.log("Profile data:", res);
+
       if (res) {
         setFriends(res?.data?.friends);
         setFollwers(res?.data?.followers);
@@ -50,18 +55,20 @@ const Profile = () => {
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
       }
-      setLoading(false);
-      
     } catch (error) {
-      console.error('Error fetching profile data:', error);
+      console.error("Error fetching profile data:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
 
-  }
 
   useEffect(() => {
-    if (!user?.access && !localStorage.getItem("access")) return;
-    fetchProfileData(profileId);
+    if (!user?.access && !localStorage.getItem("access")) {
+          fetchProfileData(profileId);
+    }else {
+      fetchProfileData(profileId);
+    }
   }, [profileId, user]);
 
   console.log("friends", friends);
@@ -81,12 +88,12 @@ const Profile = () => {
         <div className="container px-4 mx-auto max-w-screen-xl py-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             {/* Fixed User Data Card */}
-            <div className="hidden md:block md:col-span-3">
+            <div className="hidden md:block md:col-span-4">
               <UserDataCard profile={userData} />
             </div>
 
             {/* Tabs Content */}
-            <div className="md:col-span-9">
+            <div className="md:col-span-8">
               <TabsContent value="posts" className="mt-0 space-y-6">
                 <ProfilePosts posts={posts} isCurrentUser={isOwner} />
               </TabsContent>

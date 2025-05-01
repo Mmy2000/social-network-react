@@ -5,6 +5,7 @@ import apiService from "@/apiService/apiService";
 import { Loader2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
+
 const fetchPosts = async () => {
   const response = await apiService.getWithoutToken("/posts/");
   if (response.status_code !== 200) {
@@ -34,6 +35,7 @@ const Feed: React.FC = () => {
       )
     );
   };
+  
 
   const handleNewPost = () => {
     refetch(); // Re-fetch posts after new post is created
@@ -57,7 +59,7 @@ const Feed: React.FC = () => {
     <div className="max-w-xl mx-auto py-4">
       <CreatePostCard onPostCreated={handleNewPost} />
       <div className="space-y-4">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <PostCard key={post.id} post={post} updatePost={updatePostById} />
         ))}
       </div>

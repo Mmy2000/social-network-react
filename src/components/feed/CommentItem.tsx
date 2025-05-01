@@ -17,14 +17,28 @@ const CommentItem = ({
   updatePost,
   onUpdateComment,
 }) => {
+
+  const { user } = useUser();
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [likeCount, setLikeCount] = useState(comment?.like_count || 0);
-  const [isLiked, setIsLiked] = useState(comment?.is_liked_by_user || false);
-  const { user } = useUser();
+  const [isLiked, setIsLiked] = useState(() => {
+    if (!user) return false;
+    return comment?.likes?.some((u) => u.id === user.id) || false;
+  });
+
   const { toast } = useToast();
 
   const handleReplySubmit = async (e) => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "You need to be logged in to like a post.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     e.preventDefault();
     if (replyText.trim()) {
       try {
@@ -52,22 +66,47 @@ const CommentItem = ({
       setShowReplyBox(false);
     }
   };
-
-
+  
   const handleLikeToggle = async () => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "You need to be logged in to like a post.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const token = user?.access || localStorage.getItem("access") || "";
     try {
       await apiService.post(`/posts/comment/${comment.id}/like/`, null, token);
+
+      const updatedLikedBy = isLiked
+        ? comment?.likes?.filter((u) => u.id !== user.id)
+        : [...(comment?.likes || []), user];
+
+      const updatedComment = {
+        ...comment,
+        liked_by: updatedLikedBy,
+        like_count: isLiked ? likeCount - 1 : likeCount + 1,
+      };
+
+      onUpdateComment(updatedComment);
+      console.log("isLiked", isLiked);
+      
       toast({
         title: isLiked ? "Unliked" : "Liked",
         description: `You have ${isLiked ? "unliked" : "liked"} this comment.`,
       });
+
       setIsLiked(!isLiked);
       setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
     } catch (error) {
       console.error("Error liking comment:", error);
     }
   };
+
+  
 
   return (
     <div className="relative pl-4 border-l border-gray-300 ml-3">
@@ -87,7 +126,7 @@ const CommentItem = ({
           )}
         >
           <Link
-            to={`/profile/${comment?.created_by.id}`}
+            to={`/profile/${comment?.created_by?.id}`}
             className="text-sm font-semibold hover:underline"
           >
             {comment?.created_by?.profile?.full_name}

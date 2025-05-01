@@ -26,14 +26,17 @@ const ProfileAbout = ({ info }) => {
             <p>{info?.profile?.full_address}</p>
           </div>
 
-          <p>
-            {info?.date_joined &&
-              new Date(info.date_joined).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-          </p>
+          <div>
+            <h3 className="font-medium text-gray-500 mb-1">Joined Date</h3>
+            <p>
+              {info?.date_joined &&
+                new Date(info.date_joined).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
