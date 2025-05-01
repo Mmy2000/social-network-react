@@ -8,23 +8,12 @@ import { useQueryClient } from '@tanstack/react-query';
 
 
 
-const ProfilePosts = ({ posts, isCurrentUser }) => {
-
-  const queryClient = useQueryClient();
-  const updatePostById = (postId, updatedData) => {
-    queryClient.setQueryData(
-      ["posts"],
-      (oldPosts: Array<{ id: string }> = []) =>
-        oldPosts.map((post) =>
-          post.id === postId ? { ...post, ...updatedData } : post
-        )
-    );
-  };
+const ProfilePosts = ({ posts, isCurrentUser, updatePost }) => {
   return (
     <div className="space-y-4">
       {isCurrentUser && <CreatePostCard />}
-      {posts?.map(post => (
-        <PostCard updatePost={updatePostById} key={post.id} post={post} />
+      {posts?.map((post) => (
+        <PostCard updatePost={updatePost} key={post.id} post={post} />
       ))}
     </div>
   );

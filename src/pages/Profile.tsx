@@ -71,6 +71,15 @@ const Profile = () => {
     }
   }, [profileId, user]);
 
+  const handleUpdatePost = (postId, updatedData) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId ? { ...post, ...updatedData } : post
+      )
+    );
+  };
+
+
   console.log("friends", friends);
   console.log("follwers", follwers);
   console.log("posts", posts);
@@ -95,7 +104,11 @@ const Profile = () => {
             {/* Tabs Content */}
             <div className="md:col-span-8">
               <TabsContent value="posts" className="mt-0 space-y-6">
-                <ProfilePosts posts={posts} isCurrentUser={isOwner} />
+                <ProfilePosts
+                  posts={posts}
+                  isCurrentUser={isOwner}
+                  updatePost={handleUpdatePost}
+                />
               </TabsContent>
 
               <TabsContent value="about" className="mt-0">

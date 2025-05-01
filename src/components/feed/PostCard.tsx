@@ -123,8 +123,6 @@ const PostCard = ({ post, updatePost }) => {
   };
 
   const updateComments = (comments, updatedComment) => {
-    console.log("comments",comments);
-    console.log("updatedComment",updatedComment);
     
     return comments.map((comment) => {
       if (comment.id === updatedComment.id) {
@@ -141,13 +139,17 @@ const PostCard = ({ post, updatePost }) => {
   };
 
 
-  const handleUpdateComment = (updatedComment) => {
+  const handleUpdateComment = (updatedComment, incrementCount = false) => {
     const newComments = updateComments(post.comments, updatedComment);
     updatePost(post.id, {
       ...post,
       comments: newComments,
+      comments_count: incrementCount
+        ? post.comments_count + 1
+        : post.comments_count,
     });
   };
+
   
 
   return (
@@ -301,7 +303,7 @@ const PostCard = ({ post, updatePost }) => {
           </form>
 
           {/* Render comments */}
-          <div className="space-y-3">
+          <div className="space-y-3 ">
             {post?.comments.map((comment) => (
               <CommentItem
                 key={comment?.id}

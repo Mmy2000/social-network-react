@@ -25,7 +25,7 @@ const Feed: React.FC = () => {
   } = useQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
-    refetchInterval: 10000,
+    refetchInterval: 60000,
   });
 
   const updatePostById = (postId, updatedData) => {
@@ -54,6 +54,7 @@ const Feed: React.FC = () => {
       <div className="text-center mt-5 text-red-500">Failed to load posts.</div>
     );
   }
+  
 
   return (
     <div className="max-w-xl mx-auto py-4">
