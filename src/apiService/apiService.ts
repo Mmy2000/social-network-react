@@ -76,6 +76,30 @@ const apiService = {
             });
         });
     },
+    postNewPost: async function (url: string, data?: any, token?: string): Promise<any> {
+        const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+
+        return new Promise((resolve, reject) => {
+            fetch(`${API_HOST}${url}`, {
+            method: "POST",
+            body: data ? data : null, // ✅ pass FormData directly
+            headers: {
+                Accept: "application/json",
+                ...(token && { Authorization: `Bearer ${token}` }),
+                ...(data && !isFormData && { "Content-Type": "application/json" }), // ✅ Only set for JSON
+            },
+            })
+            .then(async (response) => {
+                const json = await response.json();
+                if (!response.ok) throw json;
+                resolve(json);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+        });
+        },
+
     put: async function(url: string, data?: any): Promise<any> {
         console.log('put', url, data);
     },

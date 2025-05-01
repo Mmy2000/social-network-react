@@ -1,48 +1,81 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from "react";
+import axios from "axios";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Image, Video, Smile } from 'lucide-react';
+import { Image, Video, Smile } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from '@/context/UserContext';
-
+import { useUser } from "@/context/UserContext";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import apiService from "@/apiService/apiService";
 
 interface CreatePostCardProps {
   onPostCreated?: () => void;
 }
 
 const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
+  const [role, setRole] = useState("public");
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { user } = useUser(); // Accessing user context
+  const { user } = useUser();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setAttachments([...attachments, ...Array.from(e.target.files)]);
+    }
+  };
+
+  const handleFileButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!content.trim()) return;
-    
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // In a real app, this would send data to your API
-      setContent('');
-      setIsSubmitting(false);
-      
-      // Notify the parent component about the new post
-      if (onPostCreated) {
-        onPostCreated();
-      }
-      
+
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("role", role);
+    attachments.forEach((file) => {
+      formData.append("attachments", file);
+    });
+
+    try {
+      await apiService.postNewPost("/posts/create/", formData, user?.access);
+
+      setContent("");
+      setRole("public");
+      setAttachments([]);
+
       toast({
         title: "Post created!",
-        description: "Your post has been published successfully."
+        description: "Your post has been published successfully.",
       });
-    }, 1000);
+
+      if (onPostCreated) onPostCreated();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Something went wrong.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -54,39 +87,70 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
               <img src={user?.profile_pic} alt={user?.first_name} />
             </Avatar>
             <div className="flex-1">
-              <Textarea 
-                placeholder="What's on your mind, Sarah?"
+              <Textarea
+                placeholder="What's on your mind?"
                 className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-0"
                 value={content}
-                onChange={e => setContent(e.target.value)}
+                onChange={(e) => setContent(e.target.value)}
               />
             </div>
           </div>
+
+          {/* Role selector */}
+          <div className="mt-4">
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Post visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="public">Public</SelectItem>
+                <SelectItem value="only_me">Only Me</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Preview selected files */}
+          {attachments.length > 0 && (
+            <div className="mt-3 space-y-2 text-sm text-gray-600">
+              {attachments.map((file, index) => (
+                <div key={index}>{file.name}</div>
+              ))}
+            </div>
+          )}
         </CardContent>
-        
+
         <Separator />
-        
+
         <CardFooter className="p-4 flex justify-between">
           <div className="flex space-x-2">
-            <Button type="button" variant="ghost" className="flex items-center">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center"
+              onClick={handleFileButtonClick}
+            >
               <Image className="h-5 w-5 mr-2 text-green-500" />
-              <span className="hidden sm:inline">Photo</span>
+              <span className="hidden sm:inline">Photo/Video</span>
             </Button>
-            <Button type="button" variant="ghost" className="flex items-center">
-              <Video className="h-5 w-5 mr-2 text-red-500" />
-              <span className="hidden sm:inline">Video</span>
-            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              className="hidden"
+              onChange={handleFileChange}
+            />
             <Button type="button" variant="ghost" className="flex items-center">
               <Smile className="h-5 w-5 mr-2 text-yellow-500" />
               <span className="hidden sm:inline">Feeling</span>
             </Button>
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={!content.trim() || isSubmitting}
             className="bg-facebook hover:bg-facebook-dark"
           >
-            {isSubmitting ? 'Posting...' : 'Post'}
+            {isSubmitting ? "Posting..." : "Post"}
           </Button>
         </CardFooter>
       </form>
