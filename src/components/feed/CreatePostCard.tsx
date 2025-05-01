@@ -16,6 +16,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import apiService from "@/apiService/apiService";
+import { Spinner } from "../ui/Spinner";
 
 interface CreatePostCardProps {
   onPostCreated?: () => void;
@@ -148,8 +149,14 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
           <Button
             type="submit"
             disabled={!content.trim() || isSubmitting}
-            className="bg-facebook hover:bg-facebook-dark"
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium transition-colors duration-200 ${
+              isSubmitting || !content.trim()
+                ? "bg-facebook/60 cursor-not-allowed"
+                : "bg-facebook hover:bg-facebook-dark"
+            }`}
+            aria-busy={isSubmitting}
           >
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Posting..." : "Post"}
           </Button>
         </CardFooter>

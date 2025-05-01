@@ -34,6 +34,7 @@ const Profile = () => {
   const [posts, setPosts] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
+  const [images, setImages] = useState(null);
   const profileId = id || '';
   const {user} = useUser()
   console.log("id", id);
@@ -54,6 +55,7 @@ const Profile = () => {
         setPosts(res?.data?.posts);
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
+        setImages(res?.data?.photos);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
@@ -85,6 +87,7 @@ const Profile = () => {
   console.log("posts", posts);
   console.log("isOwner", isOwner);
   console.log("userData", userData);
+  
   
 
   
@@ -120,7 +123,7 @@ const Profile = () => {
               </TabsContent>
 
               <TabsContent value="photos" className="mt-0">
-                <ProfilePhotos photos={mockPhotos} />
+                <ProfilePhotos images={images} />
               </TabsContent>
             </div>
           </div>

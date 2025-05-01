@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { usePost } from "@/context/PostContext";
+import PostAttachmentsGrid from "./PostAttachmentsGrid ";
 
 const PostCard = ({ post, updatePost }) => {
   const [liked, setLiked] = useState(false);
@@ -37,6 +38,9 @@ const PostCard = ({ post, updatePost }) => {
       setLiked(false);
     }
   }, [user, post.likes]);
+
+  console.log("PostCard post", post);
+  
   
 
   const handleLike = async () => {
@@ -148,9 +152,7 @@ const PostCard = ({ post, updatePost }) => {
         ? post.comments_count + 1
         : post.comments_count,
     });
-  };
-
-  
+  }; 
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
@@ -183,6 +185,7 @@ const PostCard = ({ post, updatePost }) => {
 
       <CardContent className="p-4 pt-2">
         <p className="text-sm mb-3">{post?.content}</p>
+        <PostAttachmentsGrid attachments={post?.attachments} />
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
           <div className="flex items-center">
