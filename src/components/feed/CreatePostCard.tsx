@@ -65,6 +65,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
       toast({
         title: "Post created!",
         description: "Your post has been published successfully.",
+        variant: "success",
       });
 
       if (onPostCreated) onPostCreated();
@@ -72,7 +73,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
       toast({
         title: "Error",
         description: error.response?.data?.detail || "Something went wrong.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsSubmitting(false);

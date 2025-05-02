@@ -9,6 +9,7 @@ import ProfilePhotos from '../components/profile/ProfilePhotos';
 import UserDataCard from '../components/profile/UserDataCard';
 import apiService from '@/apiService/apiService';
 import { useUser } from '@/context/UserContext';
+import { Loader2 } from 'lucide-react';
 
 
 // Mock data for photos
@@ -81,16 +82,13 @@ const Profile = () => {
     );
   };
 
-
-  console.log("friends", friends);
-  console.log("follwers", follwers);
-  console.log("posts", posts);
-  console.log("isOwner", isOwner);
-  console.log("userData", userData);
-  
-  
-
-  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center mt-10">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

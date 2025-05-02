@@ -21,8 +21,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { usePost } from "@/context/PostContext";
 import PostAttachmentsGrid from "./PostAttachmentsGrid ";
+import PostOptionsDropdown from "../ui/PostOptionsDropdown";
 
 const PostCard = ({ post, updatePost }) => {
   const [liked, setLiked] = useState(false);
@@ -39,16 +39,12 @@ const PostCard = ({ post, updatePost }) => {
     }
   }, [user, post.likes]);
 
-  console.log("PostCard post", post);
-  
-  
-
   const handleLike = async () => {
     if (!user) {
       toast({
         title: "Login required",
         description: "You need to be logged in to like a post.",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -77,13 +73,14 @@ const PostCard = ({ post, updatePost }) => {
         title: liked ? "Unliked" : "Liked",
         description: `You have ${liked ? "unliked" : "liked"} this post.`,
         duration: 2000,
+        variant: liked ? "default" : "success",
       });
     } catch (error) {
       console.error("Failed to like/unlike the post", error);
       toast({
         title: "Error",
         description: "Failed to like/unlike the post.",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -93,7 +90,7 @@ const PostCard = ({ post, updatePost }) => {
       toast({
         title: "Login required",
         description: "You need to be logged in to like a post.",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -115,19 +112,20 @@ const PostCard = ({ post, updatePost }) => {
           title: "Comment posted",
           description: "Your comment has been posted successfully.",
           duration: 2000,
+          variant: "success",
         });
       }
     } catch (err) {
       toast({
         title: "Error",
         description: "Failed to post comment",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
 
   const updateComments = (comments, updatedComment) => {
-    
+
     return comments.map((comment) => {
       if (comment.id === updatedComment.id) {
         return updatedComment;
@@ -152,7 +150,7 @@ const PostCard = ({ post, updatePost }) => {
         ? post.comments_count + 1
         : post.comments_count,
     });
-  }; 
+  };
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
@@ -177,10 +175,13 @@ const PostCard = ({ post, updatePost }) => {
               <p className="text-xs text-gray-500">{post.time_since_created}</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-5 w-5" />
-          </Button>
-        </div>
+          <div className="relative">
+            {user?.id === post?.created_by?.id && (
+              <PostOptionsDropdown post={post} updatePost={updatePost} />
+            )}
+
+          </div>
+          </div>
       </CardHeader>
 
       <CardContent className="p-4 pt-2">
@@ -198,9 +199,8 @@ const PostCard = ({ post, updatePost }) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div
-                    className={`mr-4 ${
-                      liked ? "text-facebook" : "text-gray-700"
-                    }  cursor-pointer`}
+                    className={`mr-4 ${liked ? "text-facebook" : "text-gray-700"
+                      }  cursor-pointer`}
                   >
                     <span>
                       {post?.like_count > 0
@@ -257,9 +257,8 @@ const PostCard = ({ post, updatePost }) => {
             onClick={handleLike}
           >
             <Heart
-              className={`h-5 w-5 mr-2 ${
-                liked ? "text-facebook fill-facebook" : ""
-              }`}
+              className={`h-5 w-5 mr-2 ${liked ? "text-facebook fill-facebook" : ""
+                }`}
             />
             Like
           </Button>
@@ -322,6 +321,7 @@ const PostCard = ({ post, updatePost }) => {
       )}
     </Card>
   );
+
 };
 
 export default PostCard;

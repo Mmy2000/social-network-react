@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 
 const ProfilePosts = ({ posts, isCurrentUser, updatePost }) => {
+  
   return (
     <div className="space-y-4">
       {isCurrentUser && <CreatePostCard />}

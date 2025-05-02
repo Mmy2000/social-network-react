@@ -34,7 +34,7 @@ const CommentItem = ({
       toast({
         title: "Login required",
         description: "You need to be logged in to reply to a comment.",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -57,6 +57,7 @@ const CommentItem = ({
         toast({
           title: "Reply submitted",
           description: "Your reply has been posted.",
+          variant: "success",
         });
 
         setReplyText("");
@@ -72,7 +73,7 @@ const CommentItem = ({
       toast({
         title: "Login required",
         description: "You need to be logged in to like a comment.",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -96,6 +97,7 @@ const CommentItem = ({
       toast({
         title: isLiked ? "Unliked" : "Liked",
         description: `You have ${isLiked ? "unliked" : "liked"} this comment.`,
+        variant: isLiked? "default" : "success",
       });
 
       setIsLiked(!isLiked);
