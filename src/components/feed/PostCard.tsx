@@ -32,12 +32,12 @@ const PostCard = ({ post, updatePost }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user && Array.isArray(post.likes)) {
+    if (user && Array.isArray(post?.likes)) {
       setLiked(post.likes.some((likedUser) => likedUser.id === user.id));
     } else {
       setLiked(false);
     }
-  }, [user, post.likes]);
+  }, [user, post?.likes]);
 
   const handleLike = async () => {
     if (!user) {
@@ -140,7 +140,6 @@ const PostCard = ({ post, updatePost }) => {
     });
   };
 
-
   const handleUpdateComment = (updatedComment, incrementCount = false) => {
     const newComments = updateComments(post.comments, updatedComment);
     updatePost(post.id, {
@@ -151,8 +150,6 @@ const PostCard = ({ post, updatePost }) => {
         : post.comments_count,
     });
   };
-
-
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
@@ -174,20 +171,22 @@ const PostCard = ({ post, updatePost }) => {
               >
                 {post?.created_by?.profile?.full_name}
               </Link>
-              <p className="text-xs text-gray-500">{post.time_since_created}</p>
+              <p className="text-xs text-gray-500">
+                {post?.time_since_created}
+              </p>
             </div>
           </div>
           <div className="relative">
             {user?.id === post?.created_by?.id && (
               <PostOptionsDropdown post={post} updatePost={updatePost} />
             )}
-
           </div>
-          </div>
+        </div>
       </CardHeader>
-
       <CardContent className="p-4 pt-2">
-        <p className="text-sm mb-3">{post?.content}</p>
+        <Link to={`${post?.id}`}>
+          <p className="text-sm mb-3">{post?.content}</p>
+        </Link>
         <PostAttachmentsGrid attachments={post?.attachments} />
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
@@ -201,8 +200,9 @@ const PostCard = ({ post, updatePost }) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div
-                    className={`mr-4 ${liked ? "text-facebook" : "text-gray-700"
-                      }  cursor-pointer`}
+                    className={`mr-4 ${
+                      liked ? "text-facebook" : "text-gray-700"
+                    }  cursor-pointer`}
                   >
                     <span>
                       {post?.like_count > 0
@@ -221,10 +221,10 @@ const PostCard = ({ post, updatePost }) => {
                           className="flex items-center space-x-2 mb-1 hover:underline"
                         >
                           <Avatar className="h-6 w-6">
-                            <img src={like.image} alt={like.username} />
+                            <img src={like?.image} alt={like?.username} />
                           </Avatar>
                           <span className="text-sm text-gray-700">
-                            {like.username}
+                            {like?.username}
                           </span>
                         </Link>
                       ))}
@@ -259,8 +259,9 @@ const PostCard = ({ post, updatePost }) => {
             onClick={handleLike}
           >
             <Heart
-              className={`h-5 w-5 mr-2 ${liked ? "text-facebook fill-facebook" : ""
-                }`}
+              className={`h-5 w-5 mr-2 ${
+                liked ? "text-facebook fill-facebook" : ""
+              }`}
             />
             Like
           </Button>

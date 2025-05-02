@@ -56,7 +56,11 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
     });
 
     try {
-      await apiService.postNewPost("/posts/create/", formData, user?.access);
+       const res = await apiService.postNewPost(
+         "/posts/create/",
+         formData,
+         user?.access
+       );
 
       setContent("");
       setRole("public");
@@ -67,6 +71,8 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
         description: "Your post has been published successfully.",
         variant: "success",
       });
+      console.log(res);
+      
 
       if (onPostCreated) onPostCreated();
     } catch (error: any) {

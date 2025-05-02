@@ -32,11 +32,13 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     post.attachments || []
   );
   const [newAttachments, setNewAttachments] = useState([]);
+  const [loading,setLoading] = useState(false)
   const [role, setRole] = useState(post.role || "public");
   const { user } = useUser();
   const { toast } = useToast();
 
   const handleConfirm = async () => {
+    setLoading(true)
     if (modalType === "edit") {
       const formData = new FormData();
       formData.append("content", editedContent);
@@ -63,6 +65,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
           variant: "success",
           duration: 3000,
         });
+        setLoading(false)
         
       } catch (error) {
         console.error("Error updating post:", error);
@@ -72,19 +75,17 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
           variant: "error",
           duration: 3000,
         });
+        setLoading(false)
       }
     }else if (modalType === "delete") {
+      setLoading(true)
         try {
           const updated = await apiService.delete(
             `/posts/${post.id}/`,
             user?.access
           );
-          console.log("updated",updated?.data);
-          console.log(post.id);
-          
-          
-          
-          updatePost(post.id, updated?.data);
+          setLoading(false)
+          updatePost(post.id, null);
           toast({
             title: "Post Deleted",
             description: "Your post has been successfully deleted.",
@@ -99,12 +100,10 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
             variant: "error",
             duration: 3000,
           });
+          setLoading(false)
         }
-
     setModalType(null);
-
     }
-
     setModalType(null);
   };
 
@@ -150,6 +149,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
         }
         confirmText={modalType === "edit" ? "Save" : "Delete"}
         onConfirm={handleConfirm}
+        loading={loading}
       >
         {modalType === "edit" && (
           <div className="space-y-4">

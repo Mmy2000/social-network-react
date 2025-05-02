@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const ConfirmModal = ({
   open,
@@ -17,6 +18,7 @@ const ConfirmModal = ({
   confirmText = "Confirm",
   cancelText = "Cancel",
   onConfirm,
+  loading
 }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -32,7 +34,9 @@ const ConfirmModal = ({
           <Button variant="ghost" onClick={onClose}>
             {cancelText}
           </Button>
-          <Button onClick={onConfirm}>{confirmText}</Button>
+          <Button onClick={onConfirm}>
+            {loading ? <Loader2 /> : confirmText}
+            </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

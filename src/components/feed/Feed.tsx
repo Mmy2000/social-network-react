@@ -28,16 +28,23 @@ const Feed: React.FC = () => {
     refetchInterval: 60000,
   });
 
-  const updatePostById = (postId, updatedData) => {
-    queryClient.setQueryData(["posts"], (oldPosts: Array<{ id: string }> = []) =>
-      oldPosts.map((post) =>
-        post.id === postId ? { ...post, ...updatedData } : post
-      )
-    );
-  };
-  
-  
+ const updatePostById = (postId, updatedData) => {
+   queryClient.setQueryData(
+     ["posts"],
+     (oldPosts: Array<{ id: string }> = []) => {
+       if (!updatedData) {
+         // Post was deleted – remove it from the list
+         return oldPosts.filter((post) => post.id !== postId);
+       }
+       // Post was updated – update it in the list
+       return oldPosts.map((post) =>
+         post.id === postId ? { ...post, ...updatedData } : post
+       );
+     }
+   );
+ };
 
+  
   const handleNewPost = () => {
     refetch(); // Re-fetch posts after new post is created
   };
@@ -59,7 +66,9 @@ const Feed: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-4">
-      <CreatePostCard onPostCreated={handleNewPost} />
+      <CreatePostCard
+        onPostCreated={handleNewPost}
+      />
       <div className="space-y-4">
         {posts?.map((post) => (
           <PostCard key={post.id} post={post} updatePost={updatePostById} />

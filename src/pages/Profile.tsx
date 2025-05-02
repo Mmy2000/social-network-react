@@ -12,19 +12,6 @@ import { useUser } from '@/context/UserContext';
 import { Loader2 } from 'lucide-react';
 
 
-// Mock data for photos
-const mockPhotos = [
-  { id: 1, url: 'https://source.unsplash.com/photo-1494500764479-0c8f2919a3d8', description: 'Mountain sunset' },
-  { id: 2, url: 'https://source.unsplash.com/photo-1507090960745-b32f65d3113a', description: 'City lights' },
-  { id: 3, url: 'https://source.unsplash.com/photo-1471879832106-c7ab9e0cee23', description: 'Beach waves' },
-];
-
-// Mock friends data
-const mockFriends = [
-  { id: 2, name: 'Emma Thompson', avatar: 'https://source.unsplash.com/photo-1581091226825-a6a2a5aee158' },
-  { id: 3, name: 'Michael Lee', avatar: 'https://source.unsplash.com/photo-1488590528505-98d2b5aba04b' },
-  { id: 4, name: 'Sophia Garcia', avatar: 'https://source.unsplash.com/photo-1519389950473-47ba0277781c' },
-];
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -75,11 +62,20 @@ const Profile = () => {
   }, [profileId, user]);
 
   const handleUpdatePost = (postId, updatedData) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
+    setPosts((prevPosts) => {
+      if (!updatedData) {
+        // Post was deleted – remove it from the list
+        return prevPosts.filter((post) => post.id !== postId);
+      }
+      // Post was updated – update it in the list
+      return prevPosts.map((post) =>
         post.id === postId ? { ...post, ...updatedData } : post
-      )
-    );
+      );
+    });
+  };
+
+  const handleNewPost = async () => {
+    await fetchProfileData(profileId);
   };
 
   if (loading) {
@@ -109,6 +105,7 @@ const Profile = () => {
                   posts={posts}
                   isCurrentUser={isOwner}
                   updatePost={handleUpdatePost}
+                  onPostCreated={handleNewPost}
                 />
               </TabsContent>
 

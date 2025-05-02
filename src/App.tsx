@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import { UserProvider } from "./context/UserContext";
 import { PostProvider } from "./context/PostContext";
+import PostDetails from "./pages/PostDetails";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <div className="flex-1">
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/:id" element={<PostDetails />} />
                   <Route path="/profile/:id" element={<Profile />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/login" element={<Login />} />
