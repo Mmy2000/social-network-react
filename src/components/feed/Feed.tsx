@@ -36,6 +36,7 @@ const Feed: React.FC = () => {
     );
   };
   
+  
 
   const handleNewPost = () => {
     refetch(); // Re-fetch posts after new post is created

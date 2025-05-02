@@ -122,7 +122,7 @@ const PostCard = ({ post, updatePost }) => {
         variant: "error",
       });
     }
-  };
+  };  
 
   const updateComments = (comments, updatedComment) => {
 
@@ -151,6 +151,8 @@ const PostCard = ({ post, updatePost }) => {
         : post.comments_count,
     });
   };
+
+
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">

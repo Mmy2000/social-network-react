@@ -1,4 +1,5 @@
 import { useUser } from "@/context/UserContext";
+import axios from "axios";
 const API_HOST = import.meta.env.VITE_API_HOST as string;
 
 
@@ -100,11 +101,46 @@ const apiService = {
         });
         },
 
-    put: async function(url: string, data?: any): Promise<any> {
-        console.log('put', url, data);
+    put: async function (url: string, data?: any, token?: string): Promise<any> {
+        const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+        console.log('put', url, data, token);
+        
+
+        return new Promise((resolve, reject) => {
+            fetch(`${API_HOST}${url}`, {
+            method: "PUT",
+            body: data ? data : null,
+            headers: {
+                Accept: "application/json",
+                ...(token && { Authorization: `Bearer ${token}` }),
+                ...(data && !isFormData && { "Content-Type": "application/json" }), // ✅ Only set for JSON
+            },
+            })
+            .then(async (response) => {
+                const json = await response.json();
+                if (!response.ok) throw json;
+                resolve(json);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+        });
     },
-    delete: async function(url: string, data?: any): Promise<any> {
-        console.log('delete', url, data);
+
+    delete: async function (url: string, token?: string): Promise<any> {
+        try {
+            const response = await axios.delete(`${API_HOST}${url}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                },
+            });
+            return response.data;
+        } catch (error: any) {
+            // Optional: you can log or return error.response.data
+            throw error.response?.data || error;
+        }
     },
     postWithoutToken: async function(url: string, data: any): Promise<any> {
         console.log('postWithoutToken', url, data);
