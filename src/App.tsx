@@ -31,7 +31,7 @@ const App = () => (
               <div className="flex-1">
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/:id" element={<PostDetails />} />
+                  <Route path="/post/:id" element={<PostDetails />} />
                   <Route path="/profile/:id" element={<Profile />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/login" element={<Login />} />

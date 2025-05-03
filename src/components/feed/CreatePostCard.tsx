@@ -93,10 +93,24 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
     <Card className="mb-4 shadow-sm">
       <form onSubmit={handleSubmit}>
         <CardContent className="p-4">
-          <div className="flex">
-            <Avatar className="h-10 w-10 mr-3">
-              <img src={user?.profile_pic} alt={user?.first_name} />
-            </Avatar>
+          <div className="flex flex-col">
+            <div className="flex justify-between items-center">
+              <Avatar className="h-10 w-10 mr-3">
+                <img src={user?.profile_pic} alt={user?.first_name} />
+              </Avatar>
+              {/* Role selector */}
+              <div className="">
+                <Select value={role} onValueChange={setRole}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Post visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">Public</SelectItem>
+                    <SelectItem value="only_me">Only Me</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="flex-1">
               <Textarea
                 placeholder="What's on your mind?"
@@ -105,19 +119,6 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
                 onChange={(e) => setContent(e.target.value)}
               />
             </div>
-          </div>
-
-          {/* Role selector */}
-          <div className="mt-4">
-            <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Post visibility" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="only_me">Only Me</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Preview selected files */}
