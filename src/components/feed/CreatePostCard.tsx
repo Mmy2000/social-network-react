@@ -94,7 +94,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
       <form onSubmit={handleSubmit}>
         <CardContent className="p-4">
           <div className="flex flex-col">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center">
               <Avatar className="h-10 w-10 mr-3">
                 <img src={user?.profile_pic} alt={user?.first_name} />
               </Avatar>
@@ -111,7 +111,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
                 </Select>
               </div>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 mt-4">
               <Textarea
                 placeholder="What's on your mind?"
                 className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-0"
