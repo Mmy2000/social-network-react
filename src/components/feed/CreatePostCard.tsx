@@ -26,6 +26,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
   const [content, setContent] = useState("");
   const [role, setRole] = useState("public");
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [feeling , setFeeling] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user } = useUser();
@@ -51,6 +52,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
     const formData = new FormData();
     formData.append("content", content);
     formData.append("role", role);
+    formData.append("feeling",feeling);
     attachments.forEach((file) => {
       formData.append("attachments", file);
     });
@@ -65,6 +67,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
       setContent("");
       setRole("public");
       setAttachments([]);
+      setFeeling("")
 
       toast({
         title: "Post created!",
@@ -150,7 +153,17 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
             />
             <Button type="button" variant="ghost" className="flex items-center">
               <Smile className="h-5 w-5 mr-2 text-yellow-500" />
-              <span className="hidden sm:inline">Feeling</span>
+              <Select value={feeling} onValueChange={setFeeling}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Feeling" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="happy">Happy</SelectItem>
+                  <SelectItem value="sad">Sad</SelectItem>
+                  <SelectItem value="excited">Excited</SelectItem>
+                  <SelectItem value="tired">Tired</SelectItem>
+                </SelectContent>
+              </Select>
             </Button>
           </div>
           <Button

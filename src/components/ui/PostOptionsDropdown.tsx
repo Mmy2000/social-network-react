@@ -34,6 +34,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
   const [newAttachments, setNewAttachments] = useState([]);
   const [loading,setLoading] = useState(false)
   const [role, setRole] = useState(post.role || "public");
+  const [feeling, setFeeling] = useState(post.feeling || "");
   const { user } = useUser();
   const { toast } = useToast();
 
@@ -43,6 +44,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
       const formData = new FormData();
       formData.append("content", editedContent);
       formData.append("role", role);
+      formData.append("feeling",feeling)
 
       newAttachments.forEach((file) => {
         formData.append("attachments", file);
@@ -172,6 +174,20 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
                 <SelectContent>
                   <SelectItem value="public">Public</SelectItem>
                   <SelectItem value="only_me">Only Me</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Feeling</Label>
+              <Select value={feeling} onValueChange={(val) => setFeeling(val)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Feeling" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="happy">Happy</SelectItem>
+                                    <SelectItem value="sad">Sad</SelectItem>
+                                    <SelectItem value="excited">Excited</SelectItem>
+                                    <SelectItem value="tired">Tired</SelectItem>
                 </SelectContent>
               </Select>
             </div>

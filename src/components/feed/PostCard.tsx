@@ -124,32 +124,48 @@ const PostCard = ({ post, updatePost }) => {
     }
   };  
 
-  const updateComments = (comments, updatedComment) => {
-
-    return comments.map((comment) => {
-      if (comment.id === updatedComment.id) {
-        return updatedComment;
-      }
-      if (comment.replies && comment.replies.length > 0) {
-        return {
-          ...comment,
-          replies: updateComments(comment.replies, updatedComment),
-        };
-      }
-      return comment;
-    });
+  const updateComments = (comments, updatedComment, shouldAdd = true) => {
+    return comments
+      .map((comment) => {
+        if (comment.id === updatedComment.id) {
+          return shouldAdd ? updatedComment : null; // delete if !shouldAdd
+        }
+        if (comment.replies && comment.replies.length > 0) {
+          return {
+            ...comment,
+            replies: updateComments(comment.replies, updatedComment, shouldAdd),
+          };
+        }
+        return comment;
+      })
+      .filter(Boolean); // remove nulls (i.e., deleted comments)
   };
 
-  const handleUpdateComment = (updatedComment, incrementCount = false) => {
-    const newComments = updateComments(post.comments, updatedComment);
+
+  const handleUpdateComment = (updatedComment, shouldAdd = true) => {
+    const newComments = updateComments(
+      post.comments,
+      updatedComment,
+      shouldAdd
+    );
+
+    let newCount = post.comments_count;
+    if (!shouldAdd) {
+      newCount = Math.max(0, newCount - 1); // avoid negative counts
+    } else if (
+      shouldAdd &&
+      !post.comments.some((c) => c.id === updatedComment.id)
+    ) {
+      newCount += 1;
+    }
+
     updatePost(post.id, {
       ...post,
       comments: newComments,
-      comments_count: incrementCount
-        ? post.comments_count + 1
-        : post.comments_count,
+      comments_count: newCount,
     });
   };
+
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">

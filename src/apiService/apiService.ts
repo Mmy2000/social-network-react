@@ -109,7 +109,7 @@ const apiService = {
         return new Promise((resolve, reject) => {
             fetch(`${API_HOST}${url}`, {
             method: "PUT",
-            body: data ? data : null,
+            body: data ? JSON.stringify(data) : null,
             headers: {
                 Accept: "application/json",
                 ...(token && { Authorization: `Bearer ${token}` }),
