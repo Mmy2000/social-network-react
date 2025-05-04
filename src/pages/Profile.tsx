@@ -23,9 +23,10 @@ const Profile = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
   const [images, setImages] = useState(null);
+  const [friendsCount, setFriendsCount] = useState(null)
+  const [follwersCount, setFollwersCount] = useState(null);
   const profileId = id || '';
   const {user} = useUser()
-  console.log("id", id);
 
   const fetchProfileData = async (profileId: string) => {
     setLoading(true);
@@ -35,7 +36,6 @@ const Profile = () => {
         `/accounts/profile/${profileId}/`,
         token
       );
-      console.log("Profile data:", res);
 
       if (res) {
         setFriends(res?.data?.friends);
@@ -44,6 +44,9 @@ const Profile = () => {
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
         setImages(res?.data?.photos);
+        setFriendsCount(res?.data?.friends?.count)
+        setFollwersCount(res?.data?.followers?.count)
+        setIsFriend(res?.data?.is_friend);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
@@ -89,7 +92,13 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Tabs defaultValue="posts" className="w-full">
-        <ProfileHeader profile={userData} isCurrentUser={isOwner} />
+        <ProfileHeader
+          follwersCount={follwersCount}
+          isFriend={isFriend}
+          friendsCount={friendsCount}
+          profile={userData}
+          isCurrentUser={isOwner}
+        />
 
         <div className="container px-4 mx-auto max-w-screen-xl py-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">

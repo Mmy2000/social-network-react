@@ -38,7 +38,7 @@ export const PostProvider = ({ children }) => {
       toast({
         title: "Error",
         description: "Failed to like/unlike the post.",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -75,7 +75,7 @@ export const PostProvider = ({ children }) => {
       toast({
         title: "Error",
         description: "Failed to post comment",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };

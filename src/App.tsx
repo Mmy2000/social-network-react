@@ -14,12 +14,14 @@ import Login from "./pages/Login";
 import { UserProvider } from "./context/UserContext";
 import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetails";
+import { FriendProvider } from "./context/FriendContext";
+
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <UserProvider>
-    <PostProvider>
+    <FriendProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -44,7 +46,7 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
-    </PostProvider>
+    </FriendProvider>
 
   </UserProvider>
 );

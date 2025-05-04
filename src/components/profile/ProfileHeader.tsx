@@ -4,10 +4,13 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Edit, MessageCircle, UserPlus, UserCheck } from 'lucide-react';
+import { useFriend } from '@/context/FriendContext';
 
 
-const ProfileHeader = ({ profile,isCurrentUser }) => {
-  
+const ProfileHeader = ({ profile, isCurrentUser, friendsCount,follwersCount, isFriend }) => {
+    const { sendFriendRequest, loading } = useFriend();
+    console.log(profile);
+    
   return (
     <div className="bg-white shadow-sm rounded-b-lg">
       {/* Cover Photo */}
@@ -33,7 +36,10 @@ const ProfileHeader = ({ profile,isCurrentUser }) => {
           {/* Profile Picture */}
           <div className="relative">
             <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-white shadow">
-              <img src={profile?.profile?.profile_picture} alt={profile?.profile?.name} />
+              <img
+                src={profile?.profile?.profile_picture}
+                alt={profile?.profile?.name}
+              />
             </Avatar>
             {isCurrentUser && (
               <Button
@@ -48,13 +54,23 @@ const ProfileHeader = ({ profile,isCurrentUser }) => {
 
           {/* Name and stats */}
           <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold">{profile?.profile?.full_name}</h1>
-            <p className="text-gray-500">
-              <span className="text-blue-600 font-medium">
-                {profile?.profile?.friends_count}{" "}
-              </span>{" "}
-              friends
-            </p>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {profile?.profile?.full_name}
+            </h1>
+            <div className="flex">
+              <p className="text-gray-500">
+                <span className="text-blue-600 font-medium">
+                  {friendsCount}
+                </span>{" "}
+                friends
+              </p>
+              <p className="text-gray-500 ml-4">
+                <span className="text-blue-600 font-medium">
+                  {follwersCount}
+                </span>{" "}
+                followers
+              </p>
+            </div>
           </div>
 
           {/* Action buttons */}
@@ -66,15 +82,19 @@ const ProfileHeader = ({ profile,isCurrentUser }) => {
               </Button>
             ) : (
               <>
-                {true ? (
+                {isFriend ? (
                   <Button variant="outline">
                     <UserCheck className="h-4 w-4 mr-2" />
                     Friends
                   </Button>
                 ) : (
-                  <Button className="bg-facebook hover:bg-facebook-dark">
+                  <Button
+                    className="bg-facebook hover:bg-facebook-dark"
+                    onClick={() => sendFriendRequest(profile?.id)}
+                    disabled={loading}
+                  >
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Add Friend
+                    {loading ? "Sending..." : "Add Friend"}
                   </Button>
                 )}
                 <Button variant="outline">
