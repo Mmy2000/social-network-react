@@ -8,10 +8,10 @@ const FriendContext = createContext<any>(null);
 export const FriendProvider = ({ children }) => {
     const { toast } = useToast();
     const { user } = useUser();
-    const [loading, setLoading] = React.useState(false);
+    const [loadingBtn, setLoadingBtn] = React.useState(false);
 
     const sendFriendRequest = async (userId) => {
-      setLoading(true);
+      setLoadingBtn(true);
       try {
         const token = user?.access || localStorage.getItem("access") || "";
         const res = await apiService.post(
@@ -27,7 +27,7 @@ export const FriendProvider = ({ children }) => {
           variant: "error",
         });
       } finally {
-        setLoading(false);
+        setLoadingBtn(false);
       }
     };
 
@@ -35,7 +35,7 @@ export const FriendProvider = ({ children }) => {
       <FriendContext.Provider
         value={{
           sendFriendRequest,
-          loading,
+          loadingBtn,
         }}
       >
         {children}

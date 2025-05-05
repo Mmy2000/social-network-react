@@ -134,7 +134,7 @@ const Signup = () => {
         toast({
           title: "Account Created",
           description: "You have successfully signed up.",
-          variant: "default",
+          variant: "success",
           
         });
         resetForm();
@@ -144,7 +144,7 @@ const Signup = () => {
         toast({
           title: "Signup Failed",
           description: response?.message || "Unexpected error occurred.",
-          variant: "destructive",
+          variant: "error",
         });
       }
 
@@ -161,7 +161,7 @@ const Signup = () => {
       toast({
         title: "Network Error",
         description: "Please try again later.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setLoading(false);

@@ -10,24 +10,24 @@ import { Input } from "@/components/ui/input";
 import { useUser } from '@/context/UserContext';
 import apiService from '@/apiService/apiService';
 import { useToast } from '@/hooks/use-toast';
-
-const friendRequests = [
-  { id: 5, name: 'David Wilson', mutual: 8, avatar: 'https://source.unsplash.com/photo-1721322800607-8c38375eef04' },
-];
-
-const friendSuggestions = [
-  { id: 6, name: 'Jessica Brown', mutual: 12, avatar: 'https://source.unsplash.com/photo-1649972904349-6e44c42644a7' },
-  { id: 7, name: 'Alex Martinez', mutual: 5, avatar: 'https://source.unsplash.com/photo-1488590528505-98d2b5aba04b' },
-  { id: 8, name: 'Taylor Swift', mutual: 3, avatar: 'https://source.unsplash.com/photo-1581091226825-a6a2a5aee158' },
-];
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useFriend } from '@/context/FriendContext';
 
 
 const Friends = () => {
   const [friends, setFriends] = useState([]);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [friendsSuggestions, setFriendsSuggestions] = useState([]);
   const { user } = useUser();
   const { toast } = useToast();
+  const { sendFriendRequest, loadingBtn } = useFriend();
+
 
   const fetchFriendsData = async () => {
     setLoading(true)
@@ -51,8 +51,21 @@ const Friends = () => {
     try {
       const token = user?.access || null;
       const res = await apiService.get(`/accounts/friends_requests/`, token);
-      setRequests(res?.data);
+      setRequests(res?.data);  
       
+    } catch (error) {
+      setLoading(false);
+    }
+    setLoading(false);
+  }
+
+  const fetchFriendsSuggestions = async ()=>{
+    setLoading(true)
+    try {
+      const token = user?.access || null;
+      const res = await apiService.get(`/accounts/friends_suggestions/`, token);
+      console.log("sugg",res?.data?.suggestions);
+      setFriendsSuggestions(res?.data?.suggestions);
     } catch (error) {
       setLoading(false);
     }
@@ -108,17 +121,17 @@ const Friends = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-
+  };  
 
   useEffect(() => {
     if (user?.access && localStorage.getItem("access")) {
       fetchFriendsData()    
       fetchRequestsData()  
+      fetchFriendsSuggestions()
     }else{
       fetchFriendsData() 
-      fetchRequestsData()     
+      fetchRequestsData()   
+      fetchFriendsSuggestions()  
     }
   }, [user]);
 
@@ -215,14 +228,47 @@ const Friends = () => {
                         </Avatar>
                         <div className="flex-1">
                           <Link
-                            to={`/profile/${request.id}`}
+                            to={`/profile/${request?.created_by?.id}`}
                             className="font-semibold text-lg hover:underline"
                           >
                             {request?.created_by?.profile?.full_name}
                           </Link>
-                          <p className="text-sm text-gray-500">
-                            {request.mutual} mutual friends
-                          </p>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <TooltipTrigger asChild>
+                                  <p className="cursor-pointer text-sm text-gray-500">
+                                    {request?.mutual_friends_count} mutual
+                                    friends
+                                  </p>
+                                </TooltipTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <div className="flex flex-col">
+                                  {Array.isArray(request?.mutual_friends) &&
+                                    request?.mutual_friends.map((friend) => (
+                                      <Link
+                                        key={friend?.id}
+                                        to={`/profile/${friend?.id}`}
+                                        className="flex items-center space-x-2 mb-1 hover:underline"
+                                      >
+                                        <Avatar className="h-6 w-6">
+                                          <img
+                                            src={
+                                              friend?.profile?.profile_picture
+                                            }
+                                            alt={friend?.profile?.full_name}
+                                          />
+                                        </Avatar>
+                                        <span className="text-sm text-gray-700">
+                                          {friend?.profile?.full_name}
+                                        </span>
+                                      </Link>
+                                    ))}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           <div className="flex gap-2 mt-2">
                             <Button
                               size="sm"
@@ -256,30 +302,66 @@ const Friends = () => {
 
           <TabsContent value="suggestions">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {friendSuggestions.map((suggestion) => (
-                <Card key={suggestion.id} className="overflow-hidden">
+              {friendsSuggestions.map((suggestion) => (
+                <Card key={suggestion?.id} className="overflow-hidden">
                   <CardContent className="p-0">
                     <div className="flex items-center p-4">
                       <Avatar className="h-16 w-16 mr-4">
-                        <img src={suggestion.avatar} alt={suggestion.name} />
+                        <img
+                          src={suggestion?.profile?.profile_picture}
+                          alt={suggestion?.profile?.full_name}
+                        />
                       </Avatar>
                       <div className="flex-1">
                         <Link
-                          to={`/profile/${suggestion.id}`}
+                          to={`/profile/${suggestion?.id}`}
                           className="font-semibold text-lg hover:underline"
                         >
-                          {suggestion.name}
+                          {suggestion?.profile?.full_name}
                         </Link>
-                        <p className="text-sm text-gray-500">
-                          {suggestion.mutual} mutual friends
-                        </p>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <TooltipTrigger asChild>
+                                <p className="cursor-pointer text-sm text-gray-500">
+                                  {suggestion?.mutual_friends_count} mutual
+                                  friends
+                                </p>
+                              </TooltipTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              <div className="flex flex-col">
+                                {Array.isArray(suggestion?.mutual_friends) &&
+                                  suggestion?.mutual_friends.map((friend) => (
+                                    <Link
+                                      key={friend?.id}
+                                      to={`/profile/${friend?.id}`}
+                                      className="flex items-center space-x-2 mb-1 hover:underline"
+                                    >
+                                      <Avatar className="h-6 w-6">
+                                        <img
+                                          src={friend?.profile_picture}
+                                          alt={friend?.full_name}
+                                        />
+                                      </Avatar>
+                                      <span className="text-sm text-gray-700">
+                                        {friend?.full_name}
+                                      </span>
+                                    </Link>
+                                  ))}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                         <div className="flex gap-2 mt-2">
                           <Button
                             size="sm"
                             className="bg-facebook hover:bg-facebook-dark"
+                            onClick={() => sendFriendRequest(suggestion?.id)}
+                            disabled={loadingBtn}
                           >
                             <UserPlus className="h-4 w-4 mr-2" />
-                            Add Friend
+                            {loadingBtn ? "Sending..." : "Add Friend"}
                           </Button>
                           <Button size="sm" variant="outline">
                             Remove

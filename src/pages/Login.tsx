@@ -80,21 +80,21 @@ const Login = () => {
         toast({
           title: "Login Successful",
           description: "Welcome back!",
-          variant: "default",
+          variant: "success",
         });
         navigate(`/profile/${response.data.user_data.id}`);
       } else {
         toast({
           title: "Login Failed",
           description: response.message || "Invalid credentials.",
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (err) {
       toast({
         title: "Server Error",
         description: "Something went wrong. Please try again.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setLoading(false);

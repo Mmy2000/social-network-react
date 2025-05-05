@@ -22,6 +22,7 @@ const Profile = () => {
   const [posts, setPosts] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
+  const [FriendRequestStatus, setFriendRequestStatus] = useState(false);
   const [images, setImages] = useState(null);
   const [friendsCount, setFriendsCount] = useState(null)
   const [follwersCount, setFollwersCount] = useState(null);
@@ -47,6 +48,7 @@ const Profile = () => {
         setFriendsCount(res?.data?.friends?.count)
         setFollwersCount(res?.data?.followers?.count)
         setIsFriend(res?.data?.is_friend);
+        setFriendRequestStatus(res?.data?.friendship_status);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
@@ -98,6 +100,7 @@ const Profile = () => {
           friendsCount={friendsCount}
           profile={userData}
           isCurrentUser={isOwner}
+          FriendRequestStatus={FriendRequestStatus}
         />
 
         <div className="container px-4 mx-auto max-w-screen-xl py-6">

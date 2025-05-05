@@ -7,10 +7,16 @@ import { Camera, Edit, MessageCircle, UserPlus, UserCheck } from 'lucide-react';
 import { useFriend } from '@/context/FriendContext';
 
 
-const ProfileHeader = ({ profile, isCurrentUser, friendsCount,follwersCount, isFriend }) => {
-    const { sendFriendRequest, loading } = useFriend();
-    console.log(profile);
-    
+const ProfileHeader = ({
+  profile,
+  isCurrentUser,
+  friendsCount,
+  follwersCount,
+  isFriend,
+  FriendRequestStatus,
+}) => {
+  const { sendFriendRequest, loadingBtn } = useFriend();  
+
   return (
     <div className="bg-white shadow-sm rounded-b-lg">
       {/* Cover Photo */}
@@ -82,21 +88,32 @@ const ProfileHeader = ({ profile, isCurrentUser, friendsCount,follwersCount, isF
               </Button>
             ) : (
               <>
-                {isFriend ? (
+                {FriendRequestStatus === "accepted" ? (
                   <Button variant="outline">
                     <UserCheck className="h-4 w-4 mr-2" />
                     Friends
+                  </Button>
+                ) : FriendRequestStatus === "sent" ? (
+                  <Button variant="outline" disabled>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Request Sent
+                  </Button>
+                ) : FriendRequestStatus === "received" ? (
+                  <Button variant="outline" disabled>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Requested You
                   </Button>
                 ) : (
                   <Button
                     className="bg-facebook hover:bg-facebook-dark"
                     onClick={() => sendFriendRequest(profile?.id)}
-                    disabled={loading}
+                    disabled={loadingBtn}
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
-                    {loading ? "Sending..." : "Add Friend"}
+                    {loadingBtn ? "Sending..." : "Add Friend"}
                   </Button>
                 )}
+
                 <Button variant="outline">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Message
