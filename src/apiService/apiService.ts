@@ -84,11 +84,12 @@ const apiService = {
         headers: {
           Accept: "application/json",
           ...(token && { Authorization: `Bearer ${token}` }),
+          // Remove Content-Type for FormData to let browser set it automatically
+          // with the correct boundary parameter
           ...(data && !isFormData && { "Content-Type": "application/json" }),
         },
       });
       return response.data;
-      
     } catch (error: any) {
       throw error.response?.data || error;
     }

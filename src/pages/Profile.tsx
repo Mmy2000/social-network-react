@@ -50,6 +50,7 @@ const Profile = () => {
         setIsFriend(res?.data?.is_friend);
         setFriendRequestStatus(res?.data?.friendship_status);
       }
+      
     } catch (error) {
       console.error("Error fetching profile data:", error);
     } finally {
@@ -101,6 +102,7 @@ const Profile = () => {
           profile={userData}
           isCurrentUser={isOwner}
           FriendRequestStatus={FriendRequestStatus}
+          onProfileUpdated={setUserData}
         />
 
         <div className="container px-4 mx-auto max-w-screen-xl py-6">
