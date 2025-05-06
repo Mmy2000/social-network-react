@@ -3,6 +3,8 @@ import { Button } from "../ui/button";
 import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { Spinner } from "../ui/Spinner";
 
 const steps = ["Basic Info", "Profile Media", "More Details"];
 
@@ -10,6 +12,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
   const [step, setStep] = useState(0);
   const [profilePicture, setProfilePicture] = useState(null);
   const [coverPicture, setCoverPicture] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     first_name: profile?.first_name || "",
@@ -65,6 +68,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
     }
 
     try {
+      setLoading(true)
       const token = user?.access || null;
       const res = await apiService.put(
         "/accounts/update_profile/",
@@ -82,6 +86,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
           description: res?.message || "Please check your inputs",
           variant: "error",
         });
+        setLoading(false)
       }
     } catch (err) {
       console.error(err);
@@ -90,6 +95,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
         description: err.message || "An unexpected error occurred",
         variant: "error",
       });
+      setLoading(false)
     }
   };
 
@@ -463,9 +469,18 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
             <Button
               type="button"
               onClick={handleSubmit}
+              disabled={loading}
               className="px-6 py-2 bg-primary hover:bg-primary-dark"
             >
-              Save Changes
+              {loading && (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                >
+                  <Spinner />
+                </motion.div>
+              )}
+              {loading ? "Saving..." : "Save Changes"}
             </Button>
           )}
         </div>

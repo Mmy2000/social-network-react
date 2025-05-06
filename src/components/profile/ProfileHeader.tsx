@@ -38,7 +38,8 @@ const ProfileHeader = ({
           {isCurrentUser && (
             <Button
               variant="secondary"
-              size="sm"
+              onClick={() => setOpenEdit(true)}
+              size="default"
               className="absolute bottom-4 right-4 bg-white/80 hover:bg-white"
             >
               <Camera className="h-4 w-4 mr-2" />
@@ -62,6 +63,7 @@ const ProfileHeader = ({
                 <Button
                   size="icon"
                   variant="secondary"
+                  onClick={() => setOpenEdit(true)}
                   className="absolute bottom-0 right-0 rounded-full bg-gray-200 hover:bg-gray-300"
                 >
                   <Camera className="h-4 w-4" />
@@ -167,8 +169,7 @@ const ProfileHeader = ({
       </div>
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
         <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto ">
-          <DialogHeader>
-          </DialogHeader>
+          <DialogHeader></DialogHeader>
 
           <EditProfileForm
             profile={profile}
