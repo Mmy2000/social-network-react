@@ -86,6 +86,7 @@ const PostCard = ({ post, updatePost }) => {
   };
 
   const handleComment = async (e) => {
+    e.preventDefault();
     if (!user) {
       toast({
         title: "Login required",
@@ -94,7 +95,6 @@ const PostCard = ({ post, updatePost }) => {
       });
       return;
     }
-    e.preventDefault();
     const token = user?.access || localStorage.getItem("access") || "";
     try {
       if (commentText.trim()) {

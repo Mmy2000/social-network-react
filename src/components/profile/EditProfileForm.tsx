@@ -83,7 +83,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
       } else {
         toast({
           title: "Update failed",
-          description: res?.message || "Please check your inputs",
+          description: res?.data?.user?.username || "Please check your inputs",
           variant: "error",
         });
         setLoading(false)
@@ -92,7 +92,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
       console.error(err);
       toast({
         title: "Update failed",
-        description: err.message || "An unexpected error occurred",
+        description: err?.data?.user?.username || "An unexpected error occurred",
         variant: "error",
       });
       setLoading(false)

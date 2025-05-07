@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import SearchInput from '../search/SearchInput';
 const Navbar = () => {
   const location = useLocation();
   const { user,setUser } = useUser(); // Accessing user context
+  let navigate = useNavigate();
   
   const isActive = (path: string) => {
     if (path === '/') {
@@ -31,6 +32,12 @@ const Navbar = () => {
     }
     return location.pathname.startsWith(path);
   };
+
+  function LogOut() {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  }
 
   const getLinkClass = (path: string) => {
     return `px-4 py-2 mx-1 ${
@@ -110,7 +117,7 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   className="ml-4"
-                  onClick={() => setUser(null)} // clear user on logout
+                  onClick={LogOut} // clear user on logout
                 >
                   <Link to="/" className="text-facebook">
                     Logout

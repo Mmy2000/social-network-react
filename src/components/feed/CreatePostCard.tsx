@@ -45,6 +45,14 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "You need to be logged in to reply to a comment.",
+        variant: "warning",
+      });
+      return;
+    }
 
     if (!content.trim()) return;
     setIsSubmitting(true);

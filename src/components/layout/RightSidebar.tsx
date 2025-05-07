@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFriend } from '@/context/FriendContext';
+import { profile } from 'console';
 
 const friendSuggestions = [
   { id: 2, name: 'Emma Thompson', mutual: 3, avatar: 'https://source.unsplash.com/photo-1581091226825-a6a2a5aee158' },
@@ -25,17 +26,17 @@ const birthdays = [
 ];
 
 const RightSidebar = () => {
-
+  const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
   const [friendsSuggestions, setFriendsSuggestions] = useState([]);
+  const { sendFriendRequest, loadingBtn } = useFriend();  
+  const token = user?.access || localStorage.getItem("access");
 
   const fetchFriendsSuggestions = async () => {
     setLoading(true);
     try {
-      const token = user?.access || null;
       const res = await apiService.get(`/accounts/friends_suggestions/`, token);
-      console.log("sugg", res?.data?.suggestions);
       setFriendsSuggestions(res?.data?.suggestions);
     } catch (error) {
       setLoading(false);
@@ -43,13 +44,27 @@ const RightSidebar = () => {
     setLoading(false);
   };
 
-  const { sendFriendRequest, loadingBtn } = useFriend();  
+  const fetchFriendsData = async () => {
+    setLoading(true);
+    try {
+      const token = user?.access || null;
+      const res = await apiService.get(`/accounts/friends/`, token);
+      setFriends(res?.data);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+    setLoading(false);
+  };  
 
   useEffect(() => {
       if (user?.access && localStorage.getItem("access")) {
         fetchFriendsSuggestions()
+        fetchFriendsData()        
       }else{
         fetchFriendsSuggestions()  
+        fetchFriendsData()
+        
       }
     }, [user]);
 
@@ -57,7 +72,7 @@ const RightSidebar = () => {
     <aside className="hidden lg:block w-80 p-4 space-y-6">
       {/* Birthdays */}
       <div className="bg-white rounded-lg shadow p-4">
-        <h3 className="text-lg font-semibold mb-3">Birthdays</h3>
+        <h3 className="text-lg font-semibold mb-3">Trends</h3>
         {birthdays.map((person) => (
           <div key={person.id} className="flex items-center">
             <div className="flex-shrink-0 mr-3">
@@ -201,35 +216,19 @@ const RightSidebar = () => {
         </div>
 
         <ul className="space-y-1">
-          {friendSuggestions.map((friend) => (
+          {friends.map((friend) => (
             <li key={friend.id}>
               <Link
-                to={`/messages/${friend.id}`}
+                to={`/messages/${friend?.id}`}
                 className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
               >
                 <div className="relative">
                   <Avatar className="h-8 w-8 mr-3">
-                    <img src={friend.avatar} alt={friend.name} />
+                    <img src={friend?.profile?.profile_picture} alt={friend?.profile?.full_name} />
                   </Avatar>
                   <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
                 </div>
-                <span>{friend.name}</span>
-              </Link>
-            </li>
-          ))}
-          {birthdays.map((person) => (
-            <li key={person.id}>
-              <Link
-                to={`/messages/${person.id}`}
-                className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
-              >
-                <div className="relative">
-                  <Avatar className="h-8 w-8 mr-3">
-                    <img src={person.avatar} alt={person.name} />
-                  </Avatar>
-                  <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
-                </div>
-                <span>{person.name}</span>
+                <span>{friend?.profile?.full_name}</span>
               </Link>
             </li>
           ))}
