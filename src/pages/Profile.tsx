@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProfileHeader from '../components/profile/ProfileHeader';
-import ProfilePosts from '../components/profile/ProfilePosts';
-import ProfileAbout from '../components/profile/ProfileAbout';
-import ProfileFriends from '../components/profile/ProfileFriends';
-import ProfilePhotos from '../components/profile/ProfilePhotos';
-import UserDataCard from '../components/profile/UserDataCard';
-import apiService from '@/apiService/apiService';
-import { useUser } from '@/context/UserContext';
-import { Loader2 } from 'lucide-react';
-
-
+import ProfileHeader from "../components/profile/ProfileHeader";
+import ProfilePosts from "../components/profile/ProfilePosts";
+import ProfileAbout from "../components/profile/ProfileAbout";
+import ProfileFriends from "../components/profile/ProfileFriends";
+import ProfilePhotos from "../components/profile/ProfilePhotos";
+import UserDataCard from "../components/profile/UserDataCard";
+import ProfileSettings from "../components/profile/ProfileSettings";
+import apiService from "@/apiService/apiService";
+import { useUser } from "@/context/UserContext";
+import { Loader2 } from "lucide-react";
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,10 +23,10 @@ const Profile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [FriendRequestStatus, setFriendRequestStatus] = useState(false);
   const [images, setImages] = useState(null);
-  const [friendsCount, setFriendsCount] = useState(null)
+  const [friendsCount, setFriendsCount] = useState(null);
   const [follwersCount, setFollwersCount] = useState(null);
-  const profileId = id || '';
-  const {user} = useUser()
+  const profileId = id || "";
+  const { user } = useUser();
 
   const fetchProfileData = async (profileId: string) => {
     setLoading(true);
@@ -45,12 +44,11 @@ const Profile = () => {
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
         setImages(res?.data?.photos);
-        setFriendsCount(res?.data?.friends?.count)
-        setFollwersCount(res?.data?.followers?.count)
+        setFriendsCount(res?.data?.friends?.count);
+        setFollwersCount(res?.data?.followers?.count);
         setIsFriend(res?.data?.is_friend);
         setFriendRequestStatus(res?.data?.friendship_status);
       }
-      
     } catch (error) {
       console.error("Error fetching profile data:", error);
     } finally {
@@ -58,11 +56,10 @@ const Profile = () => {
     }
   };
 
-
   useEffect(() => {
     if (!user?.access && !localStorage.getItem("access")) {
-          fetchProfileData(profileId);
-    }else {
+      fetchProfileData(profileId);
+    } else {
       fetchProfileData(profileId);
     }
   }, [profileId, user]);
@@ -94,7 +91,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Tabs defaultValue="posts" className="w-full">
+      <Tabs defaultValue="posts"  className="w-full">
         <ProfileHeader
           follwersCount={follwersCount}
           isFriend={isFriend}
@@ -133,6 +130,9 @@ const Profile = () => {
 
               <TabsContent value="photos" className="mt-0">
                 <ProfilePhotos images={images} />
+              </TabsContent>
+              <TabsContent value="settings" className="mt-0">
+                <ProfileSettings />
               </TabsContent>
             </div>
           </div>

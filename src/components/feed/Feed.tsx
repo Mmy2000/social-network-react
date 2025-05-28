@@ -4,18 +4,34 @@ import PostCard from "./PostCard";
 import apiService from "@/apiService/apiService";
 import { Loader2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@/context/UserContext";
 
+const fetchPosts = async (token?: string) => {
+  try {
+    // Try to fetch posts with token if available
+    if (token) {
+      const response = await apiService.get("/posts/", token);
+      if (response.status_code === 200) {
+        return response.data;
+      }
+    }
 
-const fetchPosts = async () => {
-  const response = await apiService.getWithoutToken("/posts/");
-  if (response.status_code !== 200) {
+    // If no token or token request failed, fetch without token
+    const response = await apiService.getWithoutToken("/posts/");
+    if (response.status_code === 200) {
+      return response.data;
+    }
+
     throw new Error("Failed to fetch posts");
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw error;
   }
-  return response.data;
 };
 
 const Feed: React.FC = () => {
   const queryClient = useQueryClient();
+  const { user } = useUser();
 
   const {
     data: posts = [],
@@ -23,28 +39,27 @@ const Feed: React.FC = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
+    queryKey: ["posts", user?.access],
+    queryFn: () => fetchPosts(user?.access),
     refetchInterval: 60000,
   });
 
- const updatePostById = (postId, updatedData) => {
-   queryClient.setQueryData(
-     ["posts"],
-     (oldPosts: Array<{ id: string }> = []) => {
-       if (!updatedData) {
-         // Post was deleted – remove it from the list
-         return oldPosts.filter((post) => post.id !== postId);
-       }
-       // Post was updated – update it in the list
-       return oldPosts.map((post) =>
-         post.id === postId ? { ...post, ...updatedData } : post
-       );
-     }
-   );
- };
+  const updatePostById = (postId, updatedData) => {
+    queryClient.setQueryData(
+      ["posts"],
+      (oldPosts: Array<{ id: string }> = []) => {
+        if (!updatedData) {
+          // Post was deleted – remove it from the list
+          return oldPosts.filter((post) => post.id !== postId);
+        }
+        // Post was updated – update it in the list
+        return oldPosts.map((post) =>
+          post.id === postId ? { ...post, ...updatedData } : post
+        );
+      }
+    );
+  };
 
-  
   const handleNewPost = () => {
     refetch(); // Re-fetch posts after new post is created
   };
@@ -62,13 +77,10 @@ const Feed: React.FC = () => {
       <div className="text-center mt-5 text-red-500">Failed to load posts.</div>
     );
   }
-  
 
   return (
     <div className="max-w-xl mx-auto py-4">
-      <CreatePostCard
-        onPostCreated={handleNewPost}
-      />
+      <CreatePostCard onPostCreated={handleNewPost} />
       <div className="space-y-4">
         {posts?.map((post) => (
           <PostCard key={post.id} post={post} updatePost={updatePostById} />

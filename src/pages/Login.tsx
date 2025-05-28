@@ -6,8 +6,6 @@ import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
 import { Spinner } from "@/components/ui/Spinner";
 
-
-
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -190,6 +188,12 @@ const Login = () => {
             {errors.password && (
               <p className="text-sm text-red-500 mt-1">{errors.password}</p>
             )}
+            <Link
+              to="/reset-password"
+              className="block text-sm text-blue-600 hover:underline mt-1 text-right"
+            >
+              Forgot Password?
+            </Link>
           </motion.div>
 
           <motion.button
@@ -203,7 +207,7 @@ const Login = () => {
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
               >
-                <Spinner/>
+                <Spinner />
               </motion.div>
             )}
             {loading ? "Logging in..." : "Login"}

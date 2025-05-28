@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Friends from "./pages/Friends";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import { UserProvider } from "./context/UserContext";
 import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetails";
@@ -38,6 +39,7 @@ const App = () => (
                   <Route path="/profile/:id" element={<Profile />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/friends" element={<Friends />} />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/chat/:id" element={<ChatDetails />} />

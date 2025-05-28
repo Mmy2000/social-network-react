@@ -1,16 +1,16 @@
-import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   AlertTriangle,
-  Bell, 
-  Home, 
-  MessageCircle, 
-  User, 
-  Users
-} from 'lucide-react';
+  Bell,
+  Home,
+  MessageCircle,
+  User,
+  Users,
+} from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import {
   Tooltip,
@@ -18,17 +18,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import SearchInput from '../search/SearchInput';
-
+import SearchInput from "../search/SearchInput";
+import NotificationPopover from "../notifications/NotificationPopover";
 
 const Navbar = () => {
   const location = useLocation();
-  const { user,setUser } = useUser(); // Accessing user context
+  const { user, setUser } = useUser(); // Accessing user context
   let navigate = useNavigate();
-  
+
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === "/") {
+      return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
@@ -41,17 +41,17 @@ const Navbar = () => {
 
   const getLinkClass = (path: string) => {
     return `px-4 py-2 mx-1 ${
-      isActive(path) 
-        ? 'text-facebook border-b-2 border-facebook' 
-        : 'text-gray-600 hover:text-facebook animate-hover'
+      isActive(path)
+        ? "text-facebook border-b-2 border-facebook"
+        : "text-gray-600 hover:text-facebook animate-hover"
     }`;
   };
 
   const getMobileLinkClass = (path: string) => {
     return `px-4 py-2 ${
       isActive(path)
-        ? 'text-facebook border-b-2 border-facebook'
-        : 'text-gray-600'
+        ? "text-facebook border-b-2 border-facebook"
+        : "text-gray-600"
     } flex flex-col items-center`;
   };
 
@@ -81,10 +81,7 @@ const Navbar = () => {
           </nav>
 
           <div className="flex items-center">
-            <Button variant="ghost" size="icon" className="relative mr-2">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-            </Button>
+            {user && <NotificationPopover />}
             {user ? (
               <>
                 {!user.isActive && (
