@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,7 +14,9 @@ import { UserProvider } from "./context/UserContext";
 import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetails";
 import { FriendProvider } from "./context/FriendContext";
-
+import Chat from "./pages/Chat";
+import ChatDetails from "./pages/ChatDetails";
+import ActiveAccount from "./pages/ActiveAccount";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,9 @@ const App = () => (
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/friends" element={<Friends />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/chat/:id" element={<ChatDetails />} />
+                  <Route path="/activate" element={<ActiveAccount />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
@@ -47,7 +51,6 @@ const App = () => (
         </TooltipProvider>
       </QueryClientProvider>
     </FriendProvider>
-
   </UserProvider>
 );
 

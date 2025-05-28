@@ -8,7 +8,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/context/UserContext";
 import { Spinner } from "@/components/ui/Spinner";
 
-
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -133,13 +132,12 @@ const Signup = () => {
 
         toast({
           title: "Account Created",
-          description: "You have successfully signed up.",
+          description: "Please check your email for the activation code.",
           variant: "success",
-          
         });
         resetForm();
-        // Redirect to the profile page or any other page
-        navigate(`/profile/${response.data.user_data.id}`);
+        // Navigate to the account activation page
+        navigate("/activate", { state: { email: form.email } });
       } else {
         toast({
           title: "Signup Failed",
@@ -281,7 +279,7 @@ const Signup = () => {
             variants={itemVariants}
             disabled={loading}
           >
-            {loading && <Spinner  />}
+            {loading && <Spinner />}
             {loading ? "Creating..." : "Create Account"}
           </motion.button>
         </motion.form>
