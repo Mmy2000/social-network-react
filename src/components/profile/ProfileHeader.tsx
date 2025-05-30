@@ -86,12 +86,22 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
     // If there's a pending friend request
     if (friendRequestStatus === "received") {
+      console.log(
+        "Rendering received friend request buttons. Profile data:",
+        profile
+      );
       return (
         <div className="flex gap-2">
           <Button
             variant="default"
             className="flex items-center gap-2"
-            onClick={() => onUpdateFriendRequest("accepted")}
+            onClick={() => {
+              console.log(
+                "Accepting friend request. Status:",
+                friendRequestStatus
+              );
+              onUpdateFriendRequest("accepted");
+            }}
             disabled={isLoading(profile?.id)}
           >
             {isLoading(profile?.id) ? (
@@ -104,7 +114,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Button
             variant="outline"
             className="flex items-center gap-2"
-            onClick={() => onUpdateFriendRequest("rejected")}
+            onClick={() => {
+              console.log(
+                "Rejecting friend request. Status:",
+                friendRequestStatus
+              );
+              onUpdateFriendRequest("rejected");
+            }}
             disabled={isLoading(profile?.id)}
           >
             {isLoading(profile?.id) ? (

@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { UserCheck, UserPlus, UserMinus, Search, Loader2 } from "lucide-react";
+import {
+  UserCheck,
+  UserPlus,
+  UserMinus,
+  Search,
+  Loader2,
+  UserX,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Tooltip,
@@ -25,8 +32,7 @@ const Friends = () => {
     sendFriendRequest,
     updateFriendRequest,
     removeFriend,
-    isLoading,    
-    
+    isLoading,
   } = useFriends();
 
   if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
@@ -71,38 +77,38 @@ const Friends = () => {
                 friends?.map((friend) => (
                   <Card key={friend.id} className="overflow-hidden">
                     <CardContent className="p-0">
-                    <div className="flex items-center p-4">
-                      <Avatar className="h-16 w-16 mr-4">
-                        <img
-                          src={friend?.profile?.profile_picture}
-                          alt={friend?.profile?.full_name}
-                        />
-                      </Avatar>
-                      <div className="flex-1">
-                        <Link
-                          to={`/profile/${friend.id}`}
-                          className="font-semibold text-lg hover:underline"
-                        >
-                          {friend?.profile?.full_name}
-                        </Link>
-                        <div className="flex flex-col gap-2 mt-2">
-                          <Button size="sm" variant="ghost" className="h-8">
-                            <UserCheck className="h-4 w-4 mr-2" />
-                            Friends
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8"
-                            onClick={() => removeFriend(friend?.id)}
-                            disabled={isLoading(friend?.profile?.id)}
+                      <div className="flex items-center p-4">
+                        <Avatar className="h-16 w-16 mr-4">
+                          <img
+                            src={friend?.profile?.profile_picture}
+                            alt={friend?.profile?.full_name}
+                          />
+                        </Avatar>
+                        <div className="flex-1">
+                          <Link
+                            to={`/profile/${friend.id}`}
+                            className="font-semibold text-lg hover:underline"
                           >
-                            <UserMinus className="h-4 w-4 mr-2" />
-                            Remove
-                          </Button>
+                            {friend?.profile?.full_name}
+                          </Link>
+                          <div className="flex flex-col gap-2 mt-2">
+                            <Button size="sm" variant="ghost" className="h-8">
+                              <UserCheck className="h-4 w-4 mr-2" />
+                              Friends
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8"
+                              onClick={() => removeFriend(friend?.id)}
+                              disabled={isLoading(friend?.profile?.id)}
+                            >
+                              <UserMinus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
                     </CardContent>
                   </Card>
                 ))
@@ -130,66 +136,84 @@ const Friends = () => {
                           >
                             {request?.created_by?.profile?.full_name}
                           </Link>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <p className="cursor-pointer text-sm text-gray-500">
-                                  {request?.mutual_friends_count} mutual friends
-                                </p>
-                              </TooltipTrigger>
-                              <TooltipContent side="top">
-                                <div className="flex flex-col">
-                                  {Array.isArray(request?.mutual_friends) &&
-                                    request?.mutual_friends.map((friend) => (
-                                      <Link
-                                        key={friend?.id}
-                                        to={`/profile/${friend?.id}`}
-                                        className="flex items-center space-x-2 mb-1 hover:underline"
-                                      >
-                                        <Avatar className="h-6 w-6">
-                                          <img
-                                            src={
-                                              friend?.profile?.profile_picture
-                                            }
-                                            alt={friend?.profile?.full_name}
-                                          />
-                                        </Avatar>
-                                        <span className="text-sm text-gray-700">
-                                          {friend?.profile?.full_name}
-                                        </span>
-                                      </Link>
-                                    ))}
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <div className="flex gap-2 mt-2">
-                            <Button
-                              size="sm"
-                              className="bg-facebook hover:bg-facebook-dark"
-                              onClick={() =>
-                                updateFriendRequest({
-                                  requestId: request.id,
-                                  status: "accepted",
-                                })
-                              }
-                              disabled={isLoading(request?.created_by?.id)}
-                            >
-                              Accept
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() =>
-                                updateFriendRequest({
-                                  requestId: request.id,
-                                  status: "rejected",
-                                })
-                              }
-                              disabled={isLoading(request?.created_by?.id)}
-                            >
-                              Decline
-                            </Button>
+                          <div className="flex flex-col space-y-2">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <p className="cursor-pointer text-sm text-gray-500">
+                                    {request?.mutual_friends_count} mutual
+                                    friends
+                                  </p>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <div className="flex flex-col">
+                                    {Array.isArray(request?.mutual_friends) &&
+                                      request?.mutual_friends.map((friend) => (
+                                        <Link
+                                          key={friend?.id}
+                                          to={`/profile/${friend?.id}`}
+                                          className="flex items-center space-x-2 mb-1 hover:underline"
+                                        >
+                                          <Avatar className="h-6 w-6">
+                                            <img
+                                              src={
+                                                friend?.profile?.profile_picture
+                                              }
+                                              alt={friend?.profile?.full_name}
+                                            />
+                                          </Avatar>
+                                          <span className="text-sm text-gray-700">
+                                            {friend?.profile?.full_name}
+                                          </span>
+                                        </Link>
+                                      ))}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                size="sm"
+                                className="bg-facebook hover:bg-facebook-dark flex-1"
+                                onClick={() =>
+                                  updateFriendRequest({
+                                    requestId: request.id,
+                                    status: "accepted",
+                                  })
+                                }
+                                disabled={isLoading(request.id)}
+                              >
+                                {isLoading(request.id) ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <UserCheck className="h-4 w-4 mr-2" />
+                                )}
+                                {isLoading(request.id)
+                                  ? "Accepting..."
+                                  : "Accept"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() =>
+                                  updateFriendRequest({
+                                    requestId: request.id,
+                                    status: "rejected",
+                                  })
+                                }
+                                disabled={isLoading(request.id)}
+                              >
+                                {isLoading(request.id) ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <UserX className="h-4 w-4 mr-2" />
+                                )}
+                                {isLoading(request.id)
+                                  ? "Declining..."
+                                  : "Decline"}
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -211,65 +235,67 @@ const Friends = () => {
                   <Card key={suggestion?.id} className="overflow-hidden">
                     <CardContent className="p-0">
                       <div className="flex items-center p-4">
-                      <Avatar className="h-16 w-16 mr-4">
-                        <img
-                          src={suggestion?.profile?.profile_picture}
-                          alt={suggestion?.profile?.full_name}
-                        />
-                      </Avatar>
-                      <div className="flex-1">
-                        <Link
-                          to={`/profile/${suggestion?.id}`}
-                          className="font-semibold text-lg hover:underline"
-                        >
-                          {suggestion?.profile?.full_name}
-                        </Link>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <p className="cursor-pointer text-sm text-gray-500">
-                                {suggestion?.mutual_friends_count} mutual
-                                friends
-                              </p>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <div className="flex flex-col">
-                                {Array.isArray(suggestion?.mutual_friends) &&
-                                  suggestion?.mutual_friends.map((friend) => (
-                                    <Link
-                                      key={friend?.id}
-                                      to={`/profile/${friend?.id}`}
-                                      className="flex items-center space-x-2 mb-1 hover:underline"
-                                    >
-                                      <Avatar className="h-6 w-6">
-                                        <img
-                                          src={friend?.profile_picture}
-                                          alt={friend?.full_name}
-                                        />
-                                      </Avatar>
-                                      <span className="text-sm text-gray-700">
-                                        {friend?.full_name}
-                                      </span>
-                                    </Link>
-                                  ))}
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <div className="flex gap-2 mt-2">
-                          <Button
-                            size="sm"
-                            className="bg-facebook hover:bg-facebook-dark"
-                            onClick={() => sendFriendRequest(suggestion?.id)}
-                            disabled={isLoading(suggestion?.id)}
+                        <Avatar className="h-16 w-16 mr-4">
+                          <img
+                            src={suggestion?.profile?.profile_picture}
+                            alt={suggestion?.profile?.full_name}
+                          />
+                        </Avatar>
+                        <div className="flex-1">
+                          <Link
+                            to={`/profile/${suggestion?.id}`}
+                            className="font-semibold text-lg hover:underline"
                           >
-                            <UserPlus className="h-4 w-4 mr-2" />
-                            {isLoading(suggestion?.id) ? "Sending..." : "Add Friend"}
-                          </Button>
+                            {suggestion?.profile?.full_name}
+                          </Link>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="cursor-pointer text-sm text-gray-500">
+                                  {suggestion?.mutual_friends_count} mutual
+                                  friends
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <div className="flex flex-col">
+                                  {Array.isArray(suggestion?.mutual_friends) &&
+                                    suggestion?.mutual_friends.map((friend) => (
+                                      <Link
+                                        key={friend?.id}
+                                        to={`/profile/${friend?.id}`}
+                                        className="flex items-center space-x-2 mb-1 hover:underline"
+                                      >
+                                        <Avatar className="h-6 w-6">
+                                          <img
+                                            src={friend?.profile_picture}
+                                            alt={friend?.full_name}
+                                          />
+                                        </Avatar>
+                                        <span className="text-sm text-gray-700">
+                                          {friend?.full_name}
+                                        </span>
+                                      </Link>
+                                    ))}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <div className="flex gap-2 mt-2">
+                            <Button
+                              size="sm"
+                              className="bg-facebook hover:bg-facebook-dark"
+                              onClick={() => sendFriendRequest(suggestion?.id)}
+                              disabled={isLoading(suggestion?.id)}
+                            >
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              {isLoading(suggestion?.id)
+                                ? "Sending..."
+                                : "Add Friend"}
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
+                    </CardContent>
                   </Card>
                 ))
               )}

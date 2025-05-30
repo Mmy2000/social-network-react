@@ -12,6 +12,7 @@ import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import { Loader2 } from "lucide-react";
 import { useFriends } from "@/hooks/useFriends";
+import { toast } from "@/components/ui/use-toast";
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +34,7 @@ const Profile = () => {
     updateFriendRequest,
     removeFriend,
     isLoading,
+    requests,
   } = useFriends();
 
   const fetchProfileData = async (profileId: string) => {
@@ -45,6 +47,7 @@ const Profile = () => {
       );
 
       if (res) {
+        console.log("Profile API Response:", res.data);
         setPosts(res?.data?.posts);
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
@@ -76,16 +79,49 @@ const Profile = () => {
   };
 
   const handleUpdateFriendRequest = async (status: "accepted" | "rejected") => {
-    await updateFriendRequest({
-      requestId: userData?.friend_request_id,
-      status,
-    });
-    if (status === "accepted") {
-      setIsFriend(true);
-      setFriendRequestStatus(null);
-      setFriendsCount((prev) => prev + 1);
-    } else {
-      setFriendRequestStatus(null);
+    // Find the friend request for this profile
+    const request = requests.find(
+      (req) =>
+        req.created_by?.id === userData?.id ||
+        req.created_for?.id === userData?.id
+    );
+
+    if (!request) {
+      toast({
+        title: "Error",
+        description: "Could not find friend request information.",
+        variant: "error",
+      });
+      return;
+    }
+
+    try {
+      await updateFriendRequest({
+        requestId: request.id,
+        status,
+      });
+
+      // Update state dynamically based on the status
+      if (status === "accepted") {
+        setIsFriend(true);
+        setFriendRequestStatus(null);
+        setFriendsCount((prev) => prev + 1);
+        // Add the new friend to userFriends array
+        const newFriend = {
+          id: userData?.id,
+          profile: userData?.profile,
+        };
+        setUserFriends((prev) => (prev ? [...prev, newFriend] : [newFriend]));
+      } else {
+        setFriendRequestStatus(null);
+      }
+    } catch (error) {
+      console.error("Error updating friend request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update friend request. Please try again.",
+        variant: "error",
+      });
     }
   };
 
@@ -119,7 +155,7 @@ const Profile = () => {
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
-  }  
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

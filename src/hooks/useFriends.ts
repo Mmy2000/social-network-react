@@ -98,19 +98,24 @@ export const useFriends = () => {
   // Update friend request mutation (accept/reject)
   const updateFriendRequestMutation = useMutation({
     mutationFn: async ({ requestId, status }: { requestId: number; status: "accepted" | "rejected" }) => {
+      console.log("Updating friend request:", { requestId, status });
       setLoadingStates((prev) => ({ ...prev, [requestId]: true }));
       try {
+        const token = getToken();
+        console.log("Using token:", token);
         const response = await apiService.put(
           `/accounts/friend-request/${requestId}/update/`,
           { status },
-          getToken()
+          token
         );
+        console.log("Friend request update response:", response);
         return response.data;
       } finally {
         setLoadingStates((prev) => ({ ...prev, [requestId]: false }));
       }
     },
-    onSuccess: (_, { status }) => {
+    onSuccess: (data, { status }) => {
+      console.log("Friend request update successful:", data);
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
       toast({
@@ -118,7 +123,8 @@ export const useFriends = () => {
         variant: "success",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Friend request update error:", error);
       toast({
         title: "Error",
         description: "Failed to update friend request",
