@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/context/UserContext";
 import clsx from "clsx";
-import apiService from "@/apiService/apiService";
 import { Heart, MoreHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -15,6 +14,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import ConfirmModal from "../modal/ConfirmModal";
+import { usePost } from "@/hooks/usePost";
 
 const CommentItem = ({
   comment,
@@ -36,6 +36,12 @@ const CommentItem = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const {
+    addCommentMutation,
+    deleteCommentMutation,
+    editCommentMutation,
+    likeCommentMutation,
+  } = usePost();
 
   const handleReplySubmit = async (e) => {
     e.preventDefault();
@@ -49,32 +55,25 @@ const CommentItem = ({
       return;
     }
 
-    if (replyText.trim()) {
-      try {
-        const token = user?.access || localStorage.getItem("access") || "";
-        const res = await apiService.post(
-          `/posts/${post.id}/comment/`,
-          { content: replyText, parent: comment.id },
-          token
-        );
+    if (!replyText.trim()) return;
 
-        const updatedComment = {
-          ...comment,
-          replies: [...(comment.replies || []), res.data],
-        };
-        onUpdateComment(updatedComment, true);
+    try {
+      const newComment = await addCommentMutation.mutateAsync({
+        postId: post.id,
+        content: replyText,
+        parentId: comment.id,
+      });
 
-        toast({
-          title: "Reply submitted",
-          description: "Your reply has been posted.",
-          variant: "success",
-        });
+      const updatedComment = {
+        ...comment,
+        replies: [...(comment.replies || []), newComment],
+      };
+      onUpdateComment(updatedComment, true);
 
-        setReplyText("");
-        setShowReplyBox(false);
-      } catch (error) {
-        console.error("Error submitting reply:", error);
-      }
+      setReplyText("");
+      setShowReplyBox(false);
+    } catch (error) {
+      console.error("Error submitting reply:", error);
     }
   };
 
@@ -88,9 +87,8 @@ const CommentItem = ({
       return;
     }
 
-    const token = user?.access || localStorage.getItem("access") || "";
     try {
-      await apiService.post(`/posts/comment/${comment.id}/like/`, null, token);
+      await likeCommentMutation.mutateAsync(comment.id);
 
       const updatedLikedBy = isLiked
         ? comment?.likes?.filter((u) => u.id !== user.id)
@@ -103,13 +101,6 @@ const CommentItem = ({
       };
 
       onUpdateComment(updatedComment);
-
-      toast({
-        title: isLiked ? "Unliked" : "Liked",
-        description: `You have ${isLiked ? "unliked" : "liked"} this comment.`,
-        variant: isLiked ? "default" : "success",
-      });
-
       setIsLiked(!isLiked);
       setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
     } catch (error) {
@@ -122,45 +113,30 @@ const CommentItem = ({
     setIsDeleting(true);
 
     try {
-      const token = user?.access || localStorage.getItem("access") || "";
-      await apiService.delete(`/posts/comment/${comment.id}/delete/`, token);
-      onUpdateComment(comment, false); // false = delete
-      toast({
-        title: "Comment deleted",
-        variant: "success",
-      });
+      await deleteCommentMutation.mutateAsync(comment.id);
+      onUpdateComment(comment, false);
       setShowDeleteModal(false);
-    } catch (err) {
-      console.error("Error deleting comment:", err);
-      toast({
-        title: "Delete failed",
-        description: "Something went wrong. Please try again.",
-        variant: "error",
-      });
+    } catch (error) {
+      console.error("Error deleting comment:", error);
     } finally {
       setIsDeleting(false);
     }
   };
-
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!user) return;
 
     try {
-      const token = user?.access || localStorage.getItem("access") || "";
-      const res = await apiService.put(
-        `/posts/comment/${comment.id}/update/`,
-        { content: editText },
-        token
-      );
+      const updatedComment = await editCommentMutation.mutateAsync({
+        commentId: comment.id,
+        content: editText,
+      });
 
-      const updatedComment = { ...comment, content: res.data.content };
-      onUpdateComment(updatedComment);
-      toast({ title: "Comment updated", variant: "success" });
+      onUpdateComment({ ...comment, content: updatedComment.content });
       setIsEditing(false);
-    } catch (err) {
-      console.error("Error editing comment:", err);
+    } catch (error) {
+      console.error("Error editing comment:", error);
     }
   };
 
@@ -323,7 +299,9 @@ const CommentItem = ({
         title="Delete Comment"
         content="Are you sure you want to delete this comment? This action cannot be undone."
         onConfirm={confirmDelete}
-        loading={isDeleting} children={undefined}      />
+        loading={isDeleting}
+        children={undefined}
+      />
     </>
   );
 };

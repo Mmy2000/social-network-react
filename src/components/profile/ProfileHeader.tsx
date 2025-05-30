@@ -1,10 +1,18 @@
-
-import React from 'react';
+import React from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Edit, MessageCircle, UserPlus, UserCheck } from 'lucide-react';
-import { useFriend } from '@/context/FriendContext';
+import {
+  Camera,
+  Edit,
+  MessageCircle,
+  UserPlus,
+  UserCheck,
+  UserX,
+  Settings,
+  UserMinus,
+} from "lucide-react";
+import { useUser } from "@/context/UserContext";
 import {
   Dialog,
   DialogContent,
@@ -12,20 +20,113 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import EditProfileForm from './EditProfileForm';
+import EditProfileForm from "./EditProfileForm";
 
+interface ProfileHeaderProps {
+  profile: any;
+  isCurrentUser: boolean;
+  friendsCount: number;
+  follwersCount: number;
+  isFriend: boolean;
+  friendRequestStatus: string;
+  onProfileUpdated: (data: any) => void;
+  onSendFriendRequest: () => void;
+  onUpdateFriendRequest: (status: "accepted" | "rejected") => void;
+  onRemoveFriend: () => void;
+  isSendingRequest: boolean;
+  isUpdatingRequest: boolean;
+  isRemovingFriend: boolean;
+}
 
-const ProfileHeader = ({
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   profile,
   isCurrentUser,
   friendsCount,
   follwersCount,
   isFriend,
-  FriendRequestStatus,
+  friendRequestStatus,
   onProfileUpdated,
+  onSendFriendRequest,
+  onUpdateFriendRequest,
+  onRemoveFriend,
+  isSendingRequest,
+  isUpdatingRequest,
+  isRemovingFriend,
 }) => {
-  const { sendFriendRequest, loadingBtn } = useFriend();
+  const { user } = useUser();
   const [openEdit, setOpenEdit] = useState(false);
+
+  const renderFriendshipButton = () => {
+    if (isCurrentUser) return null;
+
+    // If they are already friends
+    if (isFriend) {
+      return (
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={onRemoveFriend}
+          disabled={isRemovingFriend}
+        >
+          <UserCheck className="h-4 w-4" />
+          {isRemovingFriend ? "Removing..." : "Friends"}
+        </Button>
+      );
+    }
+
+    // If there's a pending friend request
+    if (friendRequestStatus === "received") {
+      return (
+        <div className="flex gap-2">
+          <Button
+            variant="default"
+            className="flex items-center gap-2"
+            onClick={() => onUpdateFriendRequest("accepted")}
+            disabled={isUpdatingRequest}
+          >
+            <UserCheck className="h-4 w-4" />
+            Accept
+          </Button>
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={() => onUpdateFriendRequest("rejected")}
+            disabled={isUpdatingRequest}
+          >
+            <UserX className="h-4 w-4" />
+            Decline
+          </Button>
+        </div>
+      );
+    }
+
+    // If we've sent them a request
+    if (friendRequestStatus === "sent") {
+      return (
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          disabled={true}
+        >
+          <UserPlus className="h-4 w-4" />
+          Request Sent
+        </Button>
+      );
+    }
+
+    // If no friendship exists
+    return (
+      <Button
+        variant="default"
+        className="flex items-center gap-2"
+        onClick={onSendFriendRequest}
+        disabled={isSendingRequest}
+      >
+        <UserPlus className="h-4 w-4" />
+        {isSendingRequest ? "Sending..." : "Add Friend"}
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -94,45 +195,12 @@ const ProfileHeader = ({
 
             {/* Action buttons */}
             <div className="mt-4 sm:mt-0 flex gap-2">
-              {isCurrentUser ? (
-                <Button variant="outline" onClick={() => setOpenEdit(true)}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Profile
-                </Button>
-              ) : (
-                <>
-                  {FriendRequestStatus === "accepted" ? (
-                    <Button variant="outline">
-                      <UserCheck className="h-4 w-4 mr-2" />
-                      Friends
-                    </Button>
-                  ) : FriendRequestStatus === "sent" ? (
-                    <Button variant="outline" disabled>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Request Sent
-                    </Button>
-                  ) : FriendRequestStatus === "received" ? (
-                    <Button variant="outline" disabled>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Requested You
-                    </Button>
-                  ) : (
-                    <Button
-                      className="bg-facebook hover:bg-facebook-dark"
-                      onClick={() => sendFriendRequest(profile?.id)}
-                      disabled={loadingBtn}
-                    >
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      {loadingBtn ? "Sending..." : "Add Friend"}
-                    </Button>
-                  )}
+              {renderFriendshipButton()}
 
-                  <Button variant="outline">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Message
-                  </Button>
-                </>
-              )}
+              <Button variant="outline">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Message
+              </Button>
             </div>
           </div>
 

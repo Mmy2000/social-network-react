@@ -11,22 +11,30 @@ import ProfileSettings from "../components/profile/ProfileSettings";
 import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import { Loader2 } from "lucide-react";
+import { useFriends } from "@/hooks/useFriends";
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
-  const [friends, setFriends] = useState(null);
-  const [follwers, setFollwers] = useState(null);
   const [posts, setPosts] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
-  const [FriendRequestStatus, setFriendRequestStatus] = useState(false);
+  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
+  const [friendsCount, setFriendsCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
   const [images, setImages] = useState(null);
-  const [friendsCount, setFriendsCount] = useState(null);
-  const [follwersCount, setFollwersCount] = useState(null);
   const profileId = id || "";
   const { user } = useUser();
+  const {
+    friends,
+    sendFriendRequest,
+    updateFriendRequest,
+    removeFriend,
+    isSendingRequest,
+    isUpdatingRequest,
+    isRemovingFriend,
+  } = useFriends();
 
   const fetchProfileData = async (profileId: string) => {
     setLoading(true);
@@ -38,16 +46,14 @@ const Profile = () => {
       );
 
       if (res) {
-        setFriends(res?.data?.friends);
-        setFollwers(res?.data?.followers);
         setPosts(res?.data?.posts);
         setIsOwner(res?.data?.is_owner);
         setUserData(res?.data?.user_data);
         setImages(res?.data?.photos);
-        setFriendsCount(res?.data?.friends?.count);
-        setFollwersCount(res?.data?.followers?.count);
         setIsFriend(res?.data?.is_friend);
         setFriendRequestStatus(res?.data?.friendship_status);
+        setFriendsCount(res?.data?.friends?.count);
+        setFollowersCount(res?.data?.followers?.count);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
@@ -63,6 +69,32 @@ const Profile = () => {
       fetchProfileData(profileId);
     }
   }, [profileId, user]);
+
+  const handleSendFriendRequest = async () => {
+    await sendFriendRequest(userData?.id);
+    setFriendRequestStatus("sent");
+  };
+
+  const handleUpdateFriendRequest = async (status: "accepted" | "rejected") => {
+    await updateFriendRequest({
+      requestId: userData?.friend_request_id,
+      status,
+    });
+    if (status === "accepted") {
+      setIsFriend(true);
+      setFriendRequestStatus(null);
+      setFriendsCount((prev) => prev + 1);
+    } else {
+      setFriendRequestStatus(null);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    await removeFriend(userData?.id);
+    setIsFriend(false);
+    setFriendRequestStatus(null);
+    setFriendsCount((prev) => prev - 1);
+  };
 
   const handleUpdatePost = (postId, updatedData) => {
     setPosts((prevPosts) => {
@@ -91,15 +123,21 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Tabs defaultValue="posts"  className="w-full">
+      <Tabs defaultValue="posts" className="w-full">
         <ProfileHeader
-          follwersCount={follwersCount}
+          follwersCount={followersCount}
           isFriend={isFriend}
           friendsCount={friendsCount}
           profile={userData}
           isCurrentUser={isOwner}
-          FriendRequestStatus={FriendRequestStatus}
+          friendRequestStatus={friendRequestStatus}
           onProfileUpdated={setUserData}
+          onSendFriendRequest={handleSendFriendRequest}
+          onUpdateFriendRequest={handleUpdateFriendRequest}
+          onRemoveFriend={handleRemoveFriend}
+          isSendingRequest={isSendingRequest}
+          isUpdatingRequest={isUpdatingRequest}
+          isRemovingFriend={isRemovingFriend}
         />
 
         <div className="container px-4 mx-auto max-w-screen-xl py-6">

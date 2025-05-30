@@ -18,6 +18,7 @@ import { FriendProvider } from "./context/FriendContext";
 import Chat from "./pages/Chat";
 import ChatDetails from "./pages/ChatDetails";
 import ActiveAccount from "./pages/ActiveAccount";
+import AuthRoute from "./components/auth/AuthRoute";
 
 const queryClient = new QueryClient();
 
@@ -37,8 +38,22 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/post/:id" element={<PostDetails />} />
                   <Route path="/profile/:id" element={<Profile />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/login" element={<Login />} />
+                  <Route
+                    path="/signup"
+                    element={
+                      <AuthRoute>
+                        <Signup />
+                      </AuthRoute>
+                    }
+                  />
+                  <Route
+                    path="/login"
+                    element={
+                      <AuthRoute>
+                        <Login />
+                      </AuthRoute>
+                    }
+                  />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/friends" element={<Friends />} />
                   <Route path="/chat" element={<Chat />} />

@@ -10,10 +10,15 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MessageCircle, Share, MoreHorizontal, AlertTriangle } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Share,
+  MoreHorizontal,
+  AlertTriangle,
+} from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import CommentItem from "./CommentItem";
-import apiService from "@/apiService/apiService";
 import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
@@ -23,6 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import PostAttachmentsGrid from "./PostAttachmentsGrid ";
 import PostOptionsDropdown from "../ui/PostOptionsDropdown";
+import { usePost } from "@/hooks/usePost";
 
 const PostCard = ({ post, updatePost }) => {
   const [liked, setLiked] = useState(false);
@@ -30,6 +36,13 @@ const PostCard = ({ post, updatePost }) => {
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
   const { toast } = useToast();
+  const {
+    likeMutation,
+    addCommentMutation,
+    likeCommentMutation,
+    deleteCommentMutation,
+    editCommentMutation,
+  } = usePost();
 
   useEffect(() => {
     if (user && Array.isArray(post?.likes)) {
@@ -48,18 +61,13 @@ const PostCard = ({ post, updatePost }) => {
       });
       return;
     }
+
     try {
-      const token = user?.access || localStorage.getItem("access") || "";
-      const response = await apiService.post(
-        `/posts/${post.id}/like/`,
-        null,
-        token
-      );
+      await likeMutation.mutateAsync(post.id);
 
       const updatedLikeCount = liked
         ? post.like_count - 1
         : post.like_count + 1;
-
       updatePost(post.id, {
         like_count: updatedLikeCount,
         likes: liked
@@ -68,20 +76,8 @@ const PostCard = ({ post, updatePost }) => {
       });
 
       setLiked(!liked);
-
-      toast({
-        title: liked ? "Unliked" : "Liked",
-        description: `You have ${liked ? "unliked" : "liked"} this post.`,
-        duration: 2000,
-        variant: liked ? "default" : "success",
-      });
     } catch (error) {
       console.error("Failed to like/unlike the post", error);
-      toast({
-        title: "Error",
-        description: "Failed to like/unlike the post.",
-        variant: "error",
-      });
     }
   };
 
@@ -90,68 +86,36 @@ const PostCard = ({ post, updatePost }) => {
     if (!user) {
       toast({
         title: "Login required",
-        description: "You need to be logged in to like a post.",
+        description: "You need to be logged in to comment on a post.",
         variant: "warning",
       });
       return;
     }
-    const token = user?.access || localStorage.getItem("access") || "";
-    try {
-      if (commentText.trim()) {
-        const res = await apiService.post(
-          `/posts/${post.id}/comment/`,
-          { content: commentText },
-          token
-        );
-        setCommentText("");
-        updatePost(post.id, {
-          comments: [...post.comments, res.data],
-          comments_count: post.comments_count + 1,
-        });
-        toast({
-          title: "Comment posted",
-          description: "Your comment has been posted successfully.",
-          duration: 2000,
-          variant: "success",
-        });
-      }
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to post comment",
-        variant: "error",
-      });
-    }
-  };  
 
-  const updateComments = (comments, updatedComment, shouldAdd = true) => {
-    return comments
-      .map((comment) => {
-        if (comment.id === updatedComment.id) {
-          return shouldAdd ? updatedComment : null; // delete if !shouldAdd
-        }
-        if (comment.replies && comment.replies.length > 0) {
-          return {
-            ...comment,
-            replies: updateComments(comment.replies, updatedComment, shouldAdd),
-          };
-        }
-        return comment;
-      })
-      .filter(Boolean); // remove nulls (i.e., deleted comments)
+    if (!commentText.trim()) return;
+
+    try {
+      await addCommentMutation.mutateAsync({
+        postId: post.id,
+        content: commentText,
+      });
+
+      setCommentText("");
+    } catch (error) {
+      console.error("Failed to post comment", error);
+    }
   };
 
-
-  const handleUpdateComment = (updatedComment, shouldAdd = true) => {
+  const handleUpdateComment = async (updatedComment, shouldAdd = true) => {
     const newComments = updateComments(
       post.comments,
       updatedComment,
       shouldAdd
     );
-
     let newCount = post.comments_count;
+
     if (!shouldAdd) {
-      newCount = Math.max(0, newCount - 1); // avoid negative counts
+      newCount = Math.max(0, newCount - 1);
     } else if (
       shouldAdd &&
       !post.comments.some((c) => c.id === updatedComment.id)
@@ -166,6 +130,22 @@ const PostCard = ({ post, updatePost }) => {
     });
   };
 
+  const updateComments = (comments, updatedComment, shouldAdd = true) => {
+    return comments
+      .map((comment) => {
+        if (comment.id === updatedComment.id) {
+          return shouldAdd ? updatedComment : null;
+        }
+        if (comment.replies && comment.replies.length > 0) {
+          return {
+            ...comment,
+            replies: updateComments(comment.replies, updatedComment, shouldAdd),
+          };
+        }
+        return comment;
+      })
+      .filter(Boolean);
+  };
 
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
@@ -340,7 +320,6 @@ const PostCard = ({ post, updatePost }) => {
       )}
     </Card>
   );
-
 };
 
 export default PostCard;

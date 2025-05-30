@@ -1,113 +1,115 @@
-
-import React, { useEffect, useState } from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Link } from 'react-router-dom';
-import apiService from '@/apiService/apiService';
-import { useUser } from '@/context/UserContext';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useFriend } from '@/context/FriendContext';
-import { profile } from 'console';
-
-const friendSuggestions = [
-  { id: 2, name: 'Emma Thompson', mutual: 3, avatar: 'https://source.unsplash.com/photo-1581091226825-a6a2a5aee158' },
-  { id: 3, name: 'Michael Lee', mutual: 5, avatar: 'https://source.unsplash.com/photo-1488590528505-98d2b5aba04b' },
-  { id: 4, name: 'Sophia Garcia', mutual: 2, avatar: 'https://source.unsplash.com/photo-1519389950473-47ba0277781c' }
-];
+import { Loader2, UserPlus, UserCheck, UserX } from "lucide-react";
+import { useFriends } from "@/hooks/useFriends";
 
 const birthdays = [
-  { id: 5, name: 'David Wilson', avatar: 'https://source.unsplash.com/photo-1721322800607-8c38375eef04' },
+  {
+    id: 5,
+    name: "David Wilson",
+    avatar: "https://source.unsplash.com/photo-1721322800607-8c38375eef04",
+  },
 ];
 
 const RightSidebar = () => {
-  const [friends, setFriends] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user } = useUser();
-  const [friendsSuggestions, setFriendsSuggestions] = useState([]);
-  const { sendFriendRequest, loadingBtn } = useFriend();  
-  const token = user?.access || localStorage.getItem("access");
+  const {
+    friends,
+    suggestions,
+    requests,
+    isLoadingFriends,
+    isLoadingSuggestions,
+    isLoadingRequests,
+    sendFriendRequest,
+    updateFriendRequest,
+    removeFriend,
+    isSendingRequest,
+    isUpdatingRequest,
+    isRemovingFriend,
+  } = useFriends();
 
-  const fetchFriendsSuggestions = async () => {
-    setLoading(true);
-    try {
-      const res = await apiService.get(`/accounts/friends_suggestions/`, token);
-      setFriendsSuggestions(res?.data?.suggestions);
-    } catch (error) {
-      setLoading(false);
-    }
-    setLoading(false);
-  };
-
-  const fetchFriendsData = async () => {
-    setLoading(true);
-    try {
-      const token = user?.access || null;
-      const res = await apiService.get(`/accounts/friends/`, token);
-      setFriends(res?.data);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-    setLoading(false);
-  };  
-
-  useEffect(() => {
-      if (user?.access && localStorage.getItem("access")) {
-        fetchFriendsSuggestions()
-        fetchFriendsData()        
-      }else{
-        fetchFriendsSuggestions()  
-        fetchFriendsData()
-        
-      }
-    }, [user]);
+  if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
+    return (
+      <div className="flex items-center justify-center mt-10">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <aside className="hidden lg:block w-80 p-4 space-y-6">
-      {/* Birthdays */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <h3 className="text-lg font-semibold mb-3">Trends</h3>
-        {birthdays.map((person) => (
-          <div key={person.id} className="flex items-center">
-            <div className="flex-shrink-0 mr-3">
-              <div className="bg-blue-100 text-facebook rounded-full p-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
+      {/* Friend Requests */}
+      {requests && requests.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="text-lg font-semibold mb-3">Friend Requests</h3>
+          <div className="space-y-4">
+            {requests.map((request) => (
+              <div key={request.id} className="flex items-center">
+                <Avatar className="h-10 w-10 mr-3">
+                  <img
+                    src={request.created_by?.profile?.profile_picture}
+                    alt={request.created_by?.profile?.full_name}
+                  />
+                </Avatar>
+                <div className="flex-1">
+                  <Link
+                    to={`/profile/${request.created_by?.id}`}
+                    className="font-medium text-sm hover:underline"
+                  >
+                    {request.created_by?.profile?.full_name}
+                  </Link>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      onClick={() =>
+                        updateFriendRequest({
+                          requestId: request.id,
+                          status: "accepted",
+                        })
+                      }
+                      size="sm"
+                      variant="default"
+                      className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
+                      disabled={isUpdatingRequest}
+                    >
+                      <UserCheck className="h-4 w-4 mr-1" />
+                      Accept
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        updateFriendRequest({
+                          requestId: request.id,
+                          status: "rejected",
+                        })
+                      }
+                      size="sm"
+                      variant="outline"
+                      className="text-xs h-7"
+                      disabled={isUpdatingRequest}
+                    >
+                      <UserX className="h-4 w-4 mr-1" />
+                      Decline
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <p className="text-sm">
-                <span className="font-medium">{person.name}'s</span> birthday is
-                today
-              </p>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Friend Suggestions */}
-      <div className="bg-white rounded-lg shadow p-4">
+      <div>
         <h3 className="text-lg font-semibold mb-3">People You May Know</h3>
         <div className="space-y-4">
-          {friendsSuggestions.map((friend) => (
+          {suggestions.map((friend) => (
             <div key={friend.id} className="flex">
               <Avatar className="h-10 w-10 mr-3">
                 <img
@@ -125,11 +127,9 @@ const RightSidebar = () => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TooltipTrigger asChild>
-                        <p className="cursor-pointer text-sm text-gray-500">
-                          {friend?.mutual_friends_count} mutual friends
-                        </p>
-                      </TooltipTrigger>
+                      <p className="cursor-pointer text-sm text-gray-500">
+                        {friend?.mutual_friends_count} mutual friends
+                      </p>
                     </TooltipTrigger>
                     <TooltipContent side="top">
                       <div className="flex flex-col">
@@ -155,17 +155,16 @@ const RightSidebar = () => {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <div className="flex space-x-2 mt-2">
+                <div className="flex gap-2 mt-2">
                   <Button
                     onClick={() => sendFriendRequest(friend?.id)}
                     size="sm"
                     variant="default"
                     className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
+                    disabled={isSendingRequest}
                   >
-                    {loadingBtn ? "Sending..." : "Add Friend"}
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs h-7">
-                    Remove
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    {isSendingRequest ? "Sending..." : "Add Friend"}
                   </Button>
                 </div>
               </div>
@@ -178,7 +177,7 @@ const RightSidebar = () => {
       <div>
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-gray-500 font-medium">Contacts</h3>
-          <div className="flex space-x-2">
+          <div className="flex gap-1">
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -224,9 +223,14 @@ const RightSidebar = () => {
               >
                 <div className="relative">
                   <Avatar className="h-8 w-8 mr-3">
-                    <img src={friend?.profile?.profile_picture} alt={friend?.profile?.full_name} />
+                    <img
+                      src={friend?.profile?.profile_picture}
+                      alt={friend?.profile?.full_name}
+                    />
                   </Avatar>
-                  <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
+                  {friend?.is_online && (
+                    <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
+                  )}
                 </div>
                 <span>{friend?.profile?.full_name}</span>
               </Link>

@@ -37,17 +37,18 @@ const Feed: React.FC = () => {
     data: posts = [],
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["posts", user?.access],
     queryFn: () => fetchPosts(user?.access),
-    refetchInterval: 60000,
+    refetchInterval: 60000, // Refetch every minute
+    staleTime: 30000, // Consider data stale after 30 seconds
   });
 
-  const updatePostById = (postId, updatedData) => {
+  const updatePostById = (postId: string, updatedData: any) => {
+    // Update the post in the posts list cache
     queryClient.setQueryData(
-      ["posts"],
-      (oldPosts: Array<{ id: string }> = []) => {
+      ["posts", user?.access],
+      (oldPosts: any[] = []) => {
         if (!updatedData) {
           // Post was deleted – remove it from the list
           return oldPosts.filter((post) => post.id !== postId);
@@ -58,10 +59,17 @@ const Feed: React.FC = () => {
         );
       }
     );
+
+    // Also update the individual post cache if it exists
+    queryClient.setQueryData(["post", postId], (oldPost: any) => {
+      if (!updatedData) return null;
+      return { ...oldPost, ...updatedData };
+    });
   };
 
   const handleNewPost = () => {
-    refetch(); // Re-fetch posts after new post is created
+    // Invalidate and refetch posts query
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
   };
 
   if (isLoading) {

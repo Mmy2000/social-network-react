@@ -1,149 +1,42 @@
-
-import React, { useEffect, useState } from 'react';
+import React from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Link } from 'react-router-dom';
-import { UserCheck, UserPlus, UserMinus, Search, Loader2 } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { UserCheck, UserPlus, UserMinus, Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useUser } from '@/context/UserContext';
-import apiService from '@/apiService/apiService';
-import { useToast } from '@/hooks/use-toast';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useFriend } from '@/context/FriendContext';
-
+import { useFriends } from "@/hooks/useFriends";
 
 const Friends = () => {
-  const [friends, setFriends] = useState([]);
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [friendsSuggestions, setFriendsSuggestions] = useState([]);
-  const { user } = useUser();
-  const { toast } = useToast();
-  const { sendFriendRequest, loadingBtn } = useFriend();
+  const {
+    friends,
+    requests,
+    suggestions,
+    isLoadingFriends,
+    isLoadingSuggestions,
+    isLoadingRequests,
+    sendFriendRequest,
+    updateFriendRequest,
+    removeFriend,
+    isSendingRequest,
+    isUpdatingRequest,
+    isRemovingFriend,
+  } = useFriends();
 
-
-  const fetchFriendsData = async () => {
-    setLoading(true)
-    try {
-      const token = user?.access || null;
-      const res = await apiService.get(
-        `/accounts/friends/`,
-        token
-      );
-      setFriends(res?.data)
-
-    } catch(error) {
-      console.log(error);
-      setLoading(false)
-    }
-    setLoading(false)
-  }  
-
-  const fetchRequestsData = async () => {
-    setLoading(true)
-    try {
-      const token = user?.access || null;
-      const res = await apiService.get(`/accounts/friends_requests/`, token);
-      setRequests(res?.data);  
-      
-    } catch (error) {
-      setLoading(false);
-    }
-    setLoading(false);
-  }
-
-  const fetchFriendsSuggestions = async ()=>{
-    setLoading(true)
-    try {
-      const token = user?.access || null;
-      const res = await apiService.get(`/accounts/friends_suggestions/`, token);
-      console.log("sugg",res?.data?.suggestions);
-      setFriendsSuggestions(res?.data?.suggestions);
-    } catch (error) {
-      setLoading(false);
-    }
-    setLoading(false);
-  }
-
-  const handleUpdateRequest = async (
-    requestId: number,
-    status: "accepted" | "rejected"
-  ) => {
-    setLoading(true);
-    try {
-      const token = user?.access || null;
-      const res = await apiService.put(
-        `/accounts/friend-request/${requestId}/update/`,
-        { status }, // Backend expects something like { "status": "accepted" }
-        token
-      );
-      console.log(res);
-      
-      toast({
-        title: `Request ${res?.status} successfully`,
-        variant: "success",
-      });
-      fetchRequestsData();
-      fetchFriendsData();
-    } catch (error) {
-      console.log("Update request error:", error);
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRemoveFriend = async (friendId: number) => {
-    setLoading(true);
-    try {
-      const token = user?.access || null;
-      await apiService.delete(`/accounts/friends/remove/${friendId}/`, token);
-
-      toast({
-        title: "Friend removed successfully.",
-        variant: "success",
-      });
-
-      fetchFriendsData();
-    } catch (error) {
-      console.error("Remove friend error:", error);
-      toast({
-        title: "Failed to remove friend.",
-        variant: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };  
-
-  useEffect(() => {
-    if (user?.access && localStorage.getItem("access")) {
-      fetchFriendsData()    
-      fetchRequestsData()  
-      fetchFriendsSuggestions()
-    }else{
-      fetchFriendsData() 
-      fetchRequestsData()   
-      fetchFriendsSuggestions()  
-    }
-  }, [user]);
-
-  if (loading) {
+  if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
     return (
       <div className="flex items-center justify-center mt-10">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
   }
-  console.log(requests);
-  
 
   return (
     <div className="container mx-auto px-4 max-w-screen-xl py-6">
@@ -173,9 +66,12 @@ const Friends = () => {
 
           <TabsContent value="all">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {friends?.map((friend) => (
-                <Card key={friend.id} className="overflow-hidden">
-                  <CardContent className="p-0">
+              {friends?.length === 0 ? (
+                <p>No friends found</p>
+              ) : (
+                friends?.map((friend) => (
+                  <Card key={friend.id} className="overflow-hidden">
+                    <CardContent className="p-0">
                     <div className="flex items-center p-4">
                       <Avatar className="h-16 w-16 mr-4">
                         <img
@@ -190,26 +86,28 @@ const Friends = () => {
                         >
                           {friend?.profile?.full_name}
                         </Link>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <Button size="sm" variant="ghost" className="h-8">
-                          <UserCheck className="h-4 w-4 mr-2" />
-                          Friends
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8"
-                          onClick={() => handleRemoveFriend(friend?.id)}
-                        >
-                          <UserMinus className="h-4 w-4 mr-2" />
-                          Remove
-                        </Button>
+                        <div className="flex flex-col gap-2 mt-2">
+                          <Button size="sm" variant="ghost" className="h-8">
+                            <UserCheck className="h-4 w-4 mr-2" />
+                            Friends
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8"
+                            onClick={() => removeFriend(friend?.id)}
+                            disabled={isRemovingFriend}
+                          >
+                            <UserMinus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
           </TabsContent>
 
@@ -236,12 +134,9 @@ const Friends = () => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <TooltipTrigger asChild>
-                                  <p className="cursor-pointer text-sm text-gray-500">
-                                    {request?.mutual_friends_count} mutual
-                                    friends
-                                  </p>
-                                </TooltipTrigger>
+                                <p className="cursor-pointer text-sm text-gray-500">
+                                  {request?.mutual_friends_count} mutual friends
+                                </p>
                               </TooltipTrigger>
                               <TooltipContent side="top">
                                 <div className="flex flex-col">
@@ -274,8 +169,12 @@ const Friends = () => {
                               size="sm"
                               className="bg-facebook hover:bg-facebook-dark"
                               onClick={() =>
-                                handleUpdateRequest(request.id, "accepted")
+                                updateFriendRequest({
+                                  requestId: request.id,
+                                  status: "accepted",
+                                })
                               }
+                              disabled={isUpdatingRequest}
                             >
                               Accept
                             </Button>
@@ -283,8 +182,12 @@ const Friends = () => {
                               size="sm"
                               variant="outline"
                               onClick={() =>
-                                handleUpdateRequest(request.id, "rejected")
+                                updateFriendRequest({
+                                  requestId: request.id,
+                                  status: "rejected",
+                                })
                               }
+                              disabled={isUpdatingRequest}
                             >
                               Decline
                             </Button>
@@ -302,10 +205,13 @@ const Friends = () => {
 
           <TabsContent value="suggestions">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {friendsSuggestions.map((suggestion) => (
-                <Card key={suggestion?.id} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="flex items-center p-4">
+              {suggestions?.length === 0 ? (
+                <p>No suggestions found</p>
+              ) : (
+                suggestions?.map((suggestion) => (
+                  <Card key={suggestion?.id} className="overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="flex items-center p-4">
                       <Avatar className="h-16 w-16 mr-4">
                         <img
                           src={suggestion?.profile?.profile_picture}
@@ -322,12 +228,10 @@ const Friends = () => {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <TooltipTrigger asChild>
-                                <p className="cursor-pointer text-sm text-gray-500">
-                                  {suggestion?.mutual_friends_count} mutual
-                                  friends
-                                </p>
-                              </TooltipTrigger>
+                              <p className="cursor-pointer text-sm text-gray-500">
+                                {suggestion?.mutual_friends_count} mutual
+                                friends
+                              </p>
                             </TooltipTrigger>
                             <TooltipContent side="top">
                               <div className="flex flex-col">
@@ -358,20 +262,18 @@ const Friends = () => {
                             size="sm"
                             className="bg-facebook hover:bg-facebook-dark"
                             onClick={() => sendFriendRequest(suggestion?.id)}
-                            disabled={loadingBtn}
+                            disabled={isSendingRequest}
                           >
                             <UserPlus className="h-4 w-4 mr-2" />
-                            {loadingBtn ? "Sending..." : "Add Friend"}
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            Remove
+                            {isSendingRequest ? "Sending..." : "Add Friend"}
                           </Button>
                         </div>
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                  </Card>
+                ))
+              )}
             </div>
           </TabsContent>
         </Tabs>
