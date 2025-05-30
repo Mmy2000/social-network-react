@@ -22,6 +22,7 @@ const Profile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [friendRequestStatus, setFriendRequestStatus] = useState(null);
   const [friendsCount, setFriendsCount] = useState(0);
+  const [userFriends, setUserFriends] = useState(null);
   const [followersCount, setFollowersCount] = useState(0);
   const [images, setImages] = useState(null);
   const profileId = id || "";
@@ -51,6 +52,7 @@ const Profile = () => {
         setIsFriend(res?.data?.is_friend);
         setFriendRequestStatus(res?.data?.friendship_status);
         setFriendsCount(res?.data?.friends?.count);
+        setUserFriends(res?.data?.friends?.users);
         setFollowersCount(res?.data?.followers?.count);
       }
     } catch (error) {
@@ -159,7 +161,7 @@ const Profile = () => {
               </TabsContent>
 
               <TabsContent value="friends" className="mt-0">
-                <ProfileFriends friends={friends} />
+                <ProfileFriends friends={userFriends} />
               </TabsContent>
 
               <TabsContent value="photos" className="mt-0">
