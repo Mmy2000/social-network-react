@@ -25,9 +25,8 @@ const Friends = () => {
     sendFriendRequest,
     updateFriendRequest,
     removeFriend,
-    isSendingRequest,
-    isUpdatingRequest,
-    isRemovingFriend,
+    isLoading,    
+    
   } = useFriends();
 
   if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
@@ -96,7 +95,7 @@ const Friends = () => {
                             variant="ghost"
                             className="h-8"
                             onClick={() => removeFriend(friend?.id)}
-                            disabled={isRemovingFriend}
+                            disabled={isLoading(friend?.profile?.id)}
                           >
                             <UserMinus className="h-4 w-4 mr-2" />
                             Remove
@@ -174,7 +173,7 @@ const Friends = () => {
                                   status: "accepted",
                                 })
                               }
-                              disabled={isUpdatingRequest}
+                              disabled={isLoading(request?.created_by?.id)}
                             >
                               Accept
                             </Button>
@@ -187,7 +186,7 @@ const Friends = () => {
                                   status: "rejected",
                                 })
                               }
-                              disabled={isUpdatingRequest}
+                              disabled={isLoading(request?.created_by?.id)}
                             >
                               Decline
                             </Button>
@@ -262,10 +261,10 @@ const Friends = () => {
                             size="sm"
                             className="bg-facebook hover:bg-facebook-dark"
                             onClick={() => sendFriendRequest(suggestion?.id)}
-                            disabled={isSendingRequest}
+                            disabled={isLoading(suggestion?.id)}
                           >
                             <UserPlus className="h-4 w-4 mr-2" />
-                            {isSendingRequest ? "Sending..." : "Add Friend"}
+                            {isLoading(suggestion?.id) ? "Sending..." : "Add Friend"}
                           </Button>
                         </div>
                       </div>

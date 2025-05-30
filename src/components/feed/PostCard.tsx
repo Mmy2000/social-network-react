@@ -186,7 +186,7 @@ const PostCard = ({ post, updatePost }) => {
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-2">
-        <Link to={`post/${post?.id}`}>
+        <Link to={`/post/${post?.id}`}>
           <p className="text-sm mb-3">{post?.content}</p>
         </Link>
         <PostAttachmentsGrid attachments={post?.attachments} />

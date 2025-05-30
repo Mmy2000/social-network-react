@@ -80,7 +80,7 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
             {user && <NotificationPopover />}
             {user ? (
               <>
