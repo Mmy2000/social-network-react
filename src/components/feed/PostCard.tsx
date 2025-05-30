@@ -285,12 +285,12 @@ const PostCard = ({ post, updatePost }) => {
             <Avatar className="h-8 w-8 mr-2">
               <img src={user?.profile_pic} alt="Current user" />
             </Avatar>
-            <div className="flex-1 relative">
+            <div className="flex-1 relative border-0 outline-none">
               <Textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 placeholder="Write a comment..."
-                className="min-h-0 h-10 py-2 resize-none bg-white"
+                className="min-h-0 h-10 py-2 resize-none bg-white "
               />
               <Button
                 type="submit"
