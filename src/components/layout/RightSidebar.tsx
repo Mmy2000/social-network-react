@@ -16,7 +16,7 @@ const birthdays = [
   {
     id: 5,
     name: "David Wilson",
-    avatar: "https://source.unsplash.com/photo-1721322800607-8c38375eef04",
+    avatar: "https://source.unsplash.com/photo-1488590528505-98d2b5aba04b",
   },
 ];
 
@@ -31,9 +31,7 @@ const RightSidebar = () => {
     sendFriendRequest,
     updateFriendRequest,
     removeFriend,
-    isSendingRequest,
-    isUpdatingRequest,
-    isRemovingFriend,
+    isLoading,
   } = useFriends();
 
   if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
@@ -77,10 +75,14 @@ const RightSidebar = () => {
                       size="sm"
                       variant="default"
                       className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
-                      disabled={isUpdatingRequest}
+                      disabled={isLoading(request.id)}
                     >
-                      <UserCheck className="h-4 w-4 mr-1" />
-                      Accept
+                      {isLoading(request.id) ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <UserCheck className="h-4 w-4 mr-1" />
+                      )}
+                      {isLoading(request.id) ? "Accepting..." : "Accept"}
                     </Button>
                     <Button
                       onClick={() =>
@@ -92,10 +94,14 @@ const RightSidebar = () => {
                       size="sm"
                       variant="outline"
                       className="text-xs h-7"
-                      disabled={isUpdatingRequest}
+                      disabled={isLoading(request.id)}
                     >
-                      <UserX className="h-4 w-4 mr-1" />
-                      Decline
+                      {isLoading(request.id) ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <UserX className="h-4 w-4 mr-1" />
+                      )}
+                      {isLoading(request.id) ? "Declining..." : "Decline"}
                     </Button>
                   </div>
                 </div>
@@ -106,7 +112,7 @@ const RightSidebar = () => {
       )}
 
       {/* Friend Suggestions */}
-      <div>
+      <div className="bg-white rounded-lg shadow p-4">
         <h3 className="text-lg font-semibold mb-3">People You May Know</h3>
         <div className="space-y-4">
           {suggestions.map((friend) => (
@@ -131,7 +137,7 @@ const RightSidebar = () => {
                         {friend?.mutual_friends_count} mutual friends
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent side="top">
+                    <TooltipContent>
                       <div className="flex flex-col">
                         {Array.isArray(friend?.mutual_friends) &&
                           friend?.mutual_friends.map((user) => (
@@ -161,10 +167,14 @@ const RightSidebar = () => {
                     size="sm"
                     variant="default"
                     className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
-                    disabled={isSendingRequest}
+                    disabled={isLoading(friend?.id)}
                   >
-                    <UserPlus className="h-4 w-4 mr-1" />
-                    {isSendingRequest ? "Sending..." : "Add Friend"}
+                    {isLoading(friend?.id) ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <UserPlus className="h-4 w-4 mr-1" />
+                    )}
+                    {isLoading(friend?.id) ? "Sending..." : "Add Friend"}
                   </Button>
                 </div>
               </div>
@@ -174,46 +184,8 @@ const RightSidebar = () => {
       </div>
 
       {/* Contacts */}
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-gray-500 font-medium">Contacts</h3>
-          <div className="flex gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </Button>
-          </div>
-        </div>
-
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-3">Contacts</h3>
         <ul className="space-y-1">
           {friends.map((friend) => (
             <li key={friend.id}>

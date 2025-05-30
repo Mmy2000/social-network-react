@@ -11,6 +11,7 @@ import {
   UserX,
   Settings,
   UserMinus,
+  Loader2,
 } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import {
@@ -33,9 +34,7 @@ interface ProfileHeaderProps {
   onSendFriendRequest: () => void;
   onUpdateFriendRequest: (status: "accepted" | "rejected") => void;
   onRemoveFriend: () => void;
-  isSendingRequest: boolean;
-  isUpdatingRequest: boolean;
-  isRemovingFriend: boolean;
+  isLoading: (userId: number) => boolean;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -49,28 +48,39 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onSendFriendRequest,
   onUpdateFriendRequest,
   onRemoveFriend,
-  isSendingRequest,
-  isUpdatingRequest,
-  isRemovingFriend,
+  isLoading,
 }) => {
   const { user } = useUser();
   const [openEdit, setOpenEdit] = useState(false);
 
   const renderFriendshipButton = () => {
-    if (isCurrentUser) return null;
+    if (isCurrentUser) {
+      return (
+        <Button variant="outline" onClick={() => setOpenEdit(true)}>
+          <Edit className="h-4 w-4 mr-2" />
+          Edit Profile
+        </Button>
+      );
+    }
 
     // If they are already friends
     if (isFriend) {
       return (
-        <Button
-          variant="outline"
-          className="flex items-center gap-2"
-          onClick={onRemoveFriend}
-          disabled={isRemovingFriend}
-        >
-          <UserCheck className="h-4 w-4" />
-          {isRemovingFriend ? "Removing..." : "Friends"}
-        </Button>
+        <>
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={onRemoveFriend}
+            disabled={isLoading(profile?.id)}
+          >
+            {isLoading(profile?.id) ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserCheck className="h-4 w-4" />
+            )}
+            {isLoading(profile?.id) ? "Removing..." : "Friends"}
+          </Button>
+        </>
       );
     }
 
@@ -82,19 +92,27 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             variant="default"
             className="flex items-center gap-2"
             onClick={() => onUpdateFriendRequest("accepted")}
-            disabled={isUpdatingRequest}
+            disabled={isLoading(profile?.id)}
           >
-            <UserCheck className="h-4 w-4" />
-            Accept
+            {isLoading(profile?.id) ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserCheck className="h-4 w-4" />
+            )}
+            {isLoading(profile?.id) ? "Accepting..." : "Accept"}
           </Button>
           <Button
             variant="outline"
             className="flex items-center gap-2"
             onClick={() => onUpdateFriendRequest("rejected")}
-            disabled={isUpdatingRequest}
+            disabled={isLoading(profile?.id)}
           >
-            <UserX className="h-4 w-4" />
-            Decline
+            {isLoading(profile?.id) ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserX className="h-4 w-4" />
+            )}
+            {isLoading(profile?.id) ? "Declining..." : "Decline"}
           </Button>
         </div>
       );
@@ -120,10 +138,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         variant="default"
         className="flex items-center gap-2"
         onClick={onSendFriendRequest}
-        disabled={isSendingRequest}
+        disabled={isLoading(profile?.id)}
       >
-        <UserPlus className="h-4 w-4" />
-        {isSendingRequest ? "Sending..." : "Add Friend"}
+        {isLoading(profile?.id) ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <UserPlus className="h-4 w-4" />
+        )}
+        {isLoading(profile?.id) ? "Sending..." : "Add Friend"}
       </Button>
     );
   };
@@ -150,11 +172,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </div>
 
         {/* Profile Info */}
-        <div className="px-4 pt-4 md:px-8">
+        <div className="container mt-4 px-4 mx-auto max-w-screen-xl">
           <div className="flex flex-col sm:flex-row items-center sm:items-end relative -mt-12 sm:-mt-16 md:-mt-20 mb-4">
             {/* Profile Picture */}
             <div className="relative">
-              <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-white shadow">
+              <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-white shadow ">
                 <img
                   src={profile?.profile?.profile_picture}
                   alt={profile?.profile?.name}
@@ -194,13 +216,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </div>
 
             {/* Action buttons */}
-            <div className="mt-4 sm:mt-0 flex gap-2">
+            <div className="flex gap-2 mt-4 sm:mt-0">
               {renderFriendshipButton()}
-
-              <Button variant="outline">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Message
-              </Button>
+              {!isCurrentUser && (
+                <Button variant="outline">
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Message
+                </Button>
+              )}
             </div>
           </div>
 
@@ -231,19 +254,33 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               >
                 Photos
               </TabsTrigger>
+              {isCurrentUser && (
+                <TabsTrigger
+                  value="settings"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                >
+                  Settings
+                </TabsTrigger>
+              )}
             </TabsList>
           </div>
         </div>
       </div>
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto ">
-          <DialogHeader></DialogHeader>
 
-          <EditProfileForm
-            profile={profile}
-            onClose={() => setOpenEdit(false)}
-            onProfileUpdated={onProfileUpdated}
-          />
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
+          <DialogHeader className="px-6 py-4 border-b">
+            <DialogTitle className="text-2xl font-bold">
+              Edit Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="p-6">
+            <EditProfileForm
+              profile={profile}
+              onClose={() => setOpenEdit(false)}
+              onProfileUpdated={onProfileUpdated}
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </>

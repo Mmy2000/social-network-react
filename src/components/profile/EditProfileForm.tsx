@@ -5,6 +5,17 @@ import { useUser } from "@/context/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Spinner } from "../ui/Spinner";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { cn } from "@/lib/utils";
 
 const steps = ["Basic Info", "Profile Media", "More Details"];
 
@@ -68,7 +79,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
     }
 
     try {
-      setLoading(true)
+      setLoading(true);
       const token = user?.access || null;
       const res = await apiService.put(
         "/accounts/update_profile/",
@@ -86,16 +97,17 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
           description: res?.data?.user?.username || "Please check your inputs",
           variant: "error",
         });
-        setLoading(false)
+        setLoading(false);
       }
     } catch (err) {
       console.error(err);
       toast({
         title: "Update failed",
-        description: err?.data?.user?.username || "An unexpected error occurred",
+        description:
+          err?.data?.user?.username || "An unexpected error occurred",
         variant: "error",
       });
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -104,383 +116,337 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
     setCoverPicture(profile?.profile?.cover_picture);
   }, [profile]);
 
-  return (
-    <div className="w-full mx-auto bg-white dark:bg-gray-800 overflow-hidden">
-      <div className="px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-            Edit Profile
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Update your personal information
-          </p>
-        </div>
-
-        {/* Step Indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between relative">
-            <div className="absolute top-1/2 h-0.5 w-full bg-gray-200 dark:bg-gray-700 -z-10"></div>
-            {steps.map((label, index) => (
-              <div key={index} className="flex flex-col items-center z-10">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors
-                    ${
-                      step === index
-                        ? "bg-primary text-white border-2 border-primary"
-                        : step > index
-                        ? "bg-green-100 text-green-600 border-2 border-green-500"
-                        : "bg-gray-100 text-gray-600 border-2 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"
-                    }`}
-                >
-                  {index + 1}
-                </div>
-                <span
-                  className={`mt-2 text-sm font-medium ${
-                    step === index
-                      ? "text-primary dark:text-primary-light"
-                      : "text-gray-500 dark:text-gray-400"
-                  }`}
-                >
-                  {label}
-                </span>
+  const renderStepContent = () => {
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="first_name">First Name</Label>
+                <Input
+                  id="first_name"
+                  name="first_name"
+                  value={form.first_name}
+                  onChange={handleChange}
+                  placeholder="Enter your first name"
+                />
               </div>
-            ))}
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name</Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  value={form.last_name}
+                  onChange={handleChange}
+                  placeholder="Enter your last name"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  value={form.username}
+                  onChange={handleChange}
+                  placeholder="Choose a username"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  name="bio"
+                  value={form.bio}
+                  onChange={handleChange}
+                  placeholder="Write something about yourself"
+                  className="resize-none h-24"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Form Content */}
-        <div className="space-y-6">
-          {/* Step 1: Basic Info */}
-          {step === 0 && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b pb-2">
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={form.first_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={form.last_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-                <div className="md:col-span-2 space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    value={form.username}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Media */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b pb-2">
-                Profile Media
-              </h3>
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Profile Picture
-                    </label>
-                    {profilePicture && (
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={profilePicture}
-                          alt="Current Profile"
-                          className="w-20 h-20 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          Current profile picture
-                        </div>
-                      </div>
-                    )}
-                    <div className="mt-2">
-                      <label className="flex flex-col items-center px-4 py-3 bg-white dark:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                        <svg
-                          className="w-8 h-8 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                          />
-                        </svg>
-                        <span className="mt-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                          {form.profile_picture
-                            ? form.profile_picture.name
-                            : "Click to upload new profile picture"}
-                        </span>
-                        <input
-                          type="file"
-                          name="profile_picture"
-                          onChange={handleChange}
-                          className="hidden"
-                          accept="image/*"
-                        />
-                      </label>
-                    </div>
+        );
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Profile Picture</Label>
+                {profilePicture && (
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={profilePicture}
+                      alt="Current Profile"
+                      className="w-20 h-20 rounded-full object-cover"
+                    />
+                    <p className="text-sm text-gray-500">
+                      Current profile picture
+                    </p>
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Cover Picture
-                    </label>
-                    {coverPicture && (
-                      <div className="space-y-2">
-                        <img
-                          src={coverPicture}
-                          alt="Current Cover"
-                          className="w-full h-40 rounded-lg object-cover border border-gray-200 dark:border-gray-600"
+                )}
+                <div className="mt-2">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                         />
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          Current cover picture
-                        </div>
-                      </div>
-                    )}
-                    <div className="mt-2">
-                      <label className="flex flex-col items-center px-4 py-3 bg-white dark:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                        <svg
-                          className="w-8 h-8 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                          />
-                        </svg>
-                        <span className="mt-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                          {form.cover_picture
-                            ? form.cover_picture.name
-                            : "Click to upload new cover picture"}
-                        </span>
-                        <input
-                          type="file"
-                          name="cover_picture"
-                          onChange={handleChange}
-                          className="hidden"
-                          accept="image/*"
-                        />
-                      </label>
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG or JPEG (MAX. 800x400px)
+                      </p>
                     </div>
+                    <input
+                      type="file"
+                      name="profile_picture"
+                      onChange={handleChange}
+                      className="hidden"
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Cover Picture</Label>
+                {coverPicture && (
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={coverPicture}
+                      alt="Current Cover"
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    <p className="text-sm text-gray-500">
+                      Current cover picture
+                    </p>
                   </div>
+                )}
+                <div className="mt-2">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG or JPEG (MAX. 1920x1080px)
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      name="cover_picture"
+                      onChange={handleChange}
+                      className="hidden"
+                      accept="image/*"
+                    />
+                  </label>
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Step 3: More Details */}
-          {step === 2 && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 border-b pb-2">
-                Additional Details
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2 space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Bio
-                  </label>
-                  <textarea
-                    name="bio"
-                    value={form.bio}
-                    onChange={handleChange}
-                    rows={3}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Gender
-                  </label>
-                  <select
-                    name="gender"
-                    value={form.gender}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Marital Status
-                  </label>
-                  <select
-                    name="marital_status"
-                    value={form.marital_status}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    name="country"
-                    value={form.country}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone_number"
-                    value={form.phone_number}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    value={form.date_of_birth}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Education
-                  </label>
-                  <input
-                    type="text"
-                    name="education"
-                    value={form.education}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Work
-                  </label>
-                  <input
-                    type="text"
-                    name="work"
-                    value={form.work}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="gender">Gender</Label>
+                <Select
+                  name="gender"
+                  value={form.gender}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, gender: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="marital_status">Marital Status</Label>
+                <Select
+                  name="marital_status"
+                  value={form.marital_status}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, marital_status: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="single">Single</SelectItem>
+                    <SelectItem value="married">Married</SelectItem>
+                    <SelectItem value="divorced">Divorced</SelectItem>
+                    <SelectItem value="widowed">Widowed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="country">Country</Label>
+                <Input
+                  id="country"
+                  name="country"
+                  value={form.country}
+                  onChange={handleChange}
+                  placeholder="Enter your country"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  placeholder="Enter your city"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone_number">Phone Number</Label>
+                <Input
+                  id="phone_number"
+                  name="phone_number"
+                  value={form.phone_number}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_of_birth">Date of Birth</Label>
+                <Input
+                  id="date_of_birth"
+                  name="date_of_birth"
+                  type="date"
+                  value={form.date_of_birth}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="education">Education</Label>
+                <Input
+                  id="education"
+                  name="education"
+                  value={form.education}
+                  onChange={handleChange}
+                  placeholder="Enter your education"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="work">Work</Label>
+                <Input
+                  id="work"
+                  name="work"
+                  value={form.work}
+                  onChange={handleChange}
+                  placeholder="Enter your work"
+                />
               </div>
             </div>
-          )}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="w-full">
+      {/* Step Indicator */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between relative">
+          <div className="absolute top-1/2 h-0.5 w-full bg-gray-200 -z-10"></div>
+          {steps.map((label, index) => (
+            <button
+              key={index}
+              onClick={() => setStep(index)}
+              className="flex flex-col items-center z-10"
+            >
+              <div
+                className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
+                  step === index
+                    ? "bg-blue-600 text-white"
+                    : step > index
+                    ? "bg-green-100 text-green-600 border-2 border-green-500"
+                    : "bg-gray-100 text-gray-600 border-2 border-gray-300"
+                )}
+              >
+                {step > index ? "✓" : index + 1}
+              </div>
+              <span
+                className={cn(
+                  "mt-2 text-sm font-medium",
+                  step === index ? "text-blue-600" : "text-gray-500"
+                )}
+              >
+                {label}
+              </span>
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Navigation Buttons */}
-        <div className="mt-8 flex justify-between">
-          {step > 0 ? (
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => setStep(step - 1)}
-              className="px-6 py-2"
-            >
-              Back
-            </Button>
-          ) : (
-            <div></div> // Empty div to maintain space
-          )}
+      {/* Form Content */}
+      <div className="mt-8">{renderStepContent()}</div>
 
-          {step < steps.length - 1 ? (
-            <Button
-              type="button"
-              onClick={() => setStep(step + 1)}
-              className="px-6 py-2"
-            >
-              Next
-            </Button>
-          ) : (
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-8 pt-6 border-t">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => step > 0 && setStep(step - 1)}
+          disabled={step === 0}
+        >
+          Previous
+        </Button>
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          {step === steps.length - 1 ? (
             <Button
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="px-6 py-2 bg-primary hover:bg-primary-dark"
+              className="min-w-[100px]"
             >
-              {loading && (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                >
-                  <Spinner />
-                </motion.div>
-              )}
-              {loading ? "Saving..." : "Save Changes"}
+              {loading ? <Spinner /> : "Save Changes"}
+            </Button>
+          ) : (
+            <Button type="button" onClick={() => setStep(step + 1)}>
+              Next
             </Button>
           )}
         </div>

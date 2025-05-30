@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,8 +31,10 @@ import PostOptionsDropdown from "../ui/PostOptionsDropdown";
 import { usePost } from "@/hooks/usePost";
 
 const PostCard = ({ post, updatePost }) => {
+  const location = useLocation();
+  const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(isPostDetailPage);
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
   const { toast } = useToast();
@@ -51,6 +53,10 @@ const PostCard = ({ post, updatePost }) => {
       setLiked(false);
     }
   }, [user, post?.likes]);
+
+  useEffect(() => {
+    setShowComments(isPostDetailPage);
+  }, [isPostDetailPage]);
 
   const handleLike = async () => {
     if (!user) {

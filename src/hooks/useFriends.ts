@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiService from "@/apiService/apiService";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/context/UserContext";
+import { useState } from "react";
 
 interface Profile {
   profile_picture: string;
@@ -27,6 +28,7 @@ export const useFriends = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user } = useUser();
+  const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
 
   // Helper function to get token
   const getToken = () => user?.access || localStorage.getItem("access") || "";
@@ -64,12 +66,17 @@ export const useFriends = () => {
   // Send friend request mutation
   const sendFriendRequestMutation = useMutation({
     mutationFn: async (userId: number) => {
-      const response = await apiService.post(
-        `/accounts/friend-request/send/`,
-        { created_for: userId },
-        getToken()
-      );
-      return response.data;
+      setLoadingStates((prev) => ({ ...prev, [userId]: true }));
+      try {
+        const response = await apiService.post(
+          `/accounts/friend-request/send/`,
+          { created_for: userId },
+          getToken()
+        );
+        return response.data;
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [userId]: false }));
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendSuggestions"] });
@@ -91,12 +98,17 @@ export const useFriends = () => {
   // Update friend request mutation (accept/reject)
   const updateFriendRequestMutation = useMutation({
     mutationFn: async ({ requestId, status }: { requestId: number; status: "accepted" | "rejected" }) => {
-      const response = await apiService.put(
-        `/accounts/friend-request/${requestId}/update/`,
-        { status },
-        getToken()
-      );
-      return response.data;
+      setLoadingStates((prev) => ({ ...prev, [requestId]: true }));
+      try {
+        const response = await apiService.put(
+          `/accounts/friend-request/${requestId}/update/`,
+          { status },
+          getToken()
+        );
+        return response.data;
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [requestId]: false }));
+      }
     },
     onSuccess: (_, { status }) => {
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
@@ -118,7 +130,12 @@ export const useFriends = () => {
   // Remove friend mutation
   const removeFriendMutation = useMutation({
     mutationFn: async (friendId: number) => {
-      await apiService.delete(`/accounts/friends/remove/${friendId}/`, getToken());
+      setLoadingStates((prev) => ({ ...prev, [friendId]: true }));
+      try {
+        await apiService.delete(`/accounts/friends/remove/${friendId}/`, getToken());
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [friendId]: false }));
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friends"] });
@@ -145,8 +162,6 @@ export const useFriends = () => {
     sendFriendRequest: sendFriendRequestMutation.mutate,
     updateFriendRequest: updateFriendRequestMutation.mutate,
     removeFriend: removeFriendMutation.mutate,
-    isSendingRequest: sendFriendRequestMutation.isPending,
-    isUpdatingRequest: updateFriendRequestMutation.isPending,
-    isRemovingFriend: removeFriendMutation.isPending,
+    isLoading: (userId: number) => loadingStates[userId] || false,
   };
 }; 

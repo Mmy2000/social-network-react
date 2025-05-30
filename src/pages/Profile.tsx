@@ -31,9 +31,7 @@ const Profile = () => {
     sendFriendRequest,
     updateFriendRequest,
     removeFriend,
-    isSendingRequest,
-    isUpdatingRequest,
-    isRemovingFriend,
+    isLoading,
   } = useFriends();
 
   const fetchProfileData = async (profileId: string) => {
@@ -119,7 +117,7 @@ const Profile = () => {
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
-  }
+  }  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -135,9 +133,7 @@ const Profile = () => {
           onSendFriendRequest={handleSendFriendRequest}
           onUpdateFriendRequest={handleUpdateFriendRequest}
           onRemoveFriend={handleRemoveFriend}
-          isSendingRequest={isSendingRequest}
-          isUpdatingRequest={isUpdatingRequest}
-          isRemovingFriend={isRemovingFriend}
+          isLoading={isLoading}
         />
 
         <div className="container px-4 mx-auto max-w-screen-xl py-6">

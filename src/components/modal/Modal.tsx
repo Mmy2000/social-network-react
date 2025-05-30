@@ -33,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-center fixed inset-0 z-50 bg-black/50 backdrop-blur-none">
+    <div className="flex items-center justify-center fixed inset-0 z-50 bg-black/50 backdrop-blur-none  ">
       <div className="relative w-[90%] md:w-[80%] lg:w-[700px] my-6 mx-auto max-w-3xl max-h-screen overflow-y-auto">
         <div
           className={`transition-all transform duration-500 ${
