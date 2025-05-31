@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import EditProfileForm from "./EditProfileForm";
+import { useChat } from "@/hooks/useChat";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -52,6 +53,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }) => {
   const { user } = useUser();
   const [openEdit, setOpenEdit] = useState(false);
+  const { startConversation } = useChat();
+  const [isStartingChat, setIsStartingChat] = useState(false);
+
+  const handleStartChat = async () => {
+    if (!profile?.id) return;
+    setIsStartingChat(true);
+    try {
+      await startConversation(profile.id);
+    } finally {
+      setIsStartingChat(false);
+    }
+  };
 
   const renderFriendshipButton = () => {
     if (isCurrentUser) {
@@ -235,9 +248,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <div className="flex gap-2 mt-4 sm:mt-0">
               {renderFriendshipButton()}
               {!isCurrentUser && (
-                <Button variant="outline">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Message
+                <Button
+                  variant="outline"
+                  onClick={handleStartChat}
+                  disabled={isStartingChat}
+                >
+                  {isStartingChat ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                  )}
+                  {isStartingChat ? "Starting..." : "Message"}
                 </Button>
               )}
             </div>

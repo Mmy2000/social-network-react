@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Loader2, UserPlus, UserCheck, UserX } from "lucide-react";
 import { useFriends } from "@/hooks/useFriends";
+import { useChat } from "@/hooks/useChat";
 
 const birthdays = [
   {
@@ -33,6 +34,18 @@ const RightSidebar = () => {
     removeFriend,
     isLoading,
   } = useFriends();
+
+  const { startConversation } = useChat();
+  const [startingChatWith, setStartingChatWith] = useState<number | null>(null);
+
+  const handleStartChat = async (friendId: number) => {
+    setStartingChatWith(friendId);
+    try {
+      await startConversation(friendId);
+    } finally {
+      setStartingChatWith(null);
+    }
+  };
 
   if (isLoadingFriends || isLoadingSuggestions || isLoadingRequests) {
     return (
@@ -189,9 +202,10 @@ const RightSidebar = () => {
         <ul className="space-y-1">
           {friends.map((friend) => (
             <li key={friend.id}>
-              <Link
-                to={`/messages/${friend?.id}`}
-                className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
+              <button
+                onClick={() => handleStartChat(friend.id)}
+                disabled={startingChatWith === friend.id}
+                className="w-full flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover disabled:opacity-50"
               >
                 <div className="relative">
                   <Avatar className="h-8 w-8 mr-3">
@@ -204,8 +218,13 @@ const RightSidebar = () => {
                     <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
                   )}
                 </div>
-                <span>{friend?.profile?.full_name}</span>
-              </Link>
+                <span className="flex-1 text-left">
+                  {friend?.profile?.full_name}
+                </span>
+                {startingChatWith === friend.id && (
+                  <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                )}
+              </button>
             </li>
           ))}
         </ul>
