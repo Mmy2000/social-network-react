@@ -5,7 +5,6 @@ const API_HOST = import.meta.env.VITE_API_HOST as string;
 const apiService = {
   get: async function (url: string, token?: string): Promise<any> {
     console.log("get", url);
-    console.log("Access Token:", token);
 
     try {
       const response = await axios.get(`${API_HOST}${url}`, {
@@ -15,7 +14,6 @@ const apiService = {
           ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
-      console.log("Response:", response.data);
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error;
@@ -31,7 +29,6 @@ const apiService = {
           "Content-Type": "application/json",
         },
       });
-      console.log("Response:", response.data);
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error;
@@ -48,7 +45,6 @@ const apiService = {
           ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
-      console.log("Response:", response.data);
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error;
@@ -119,7 +115,6 @@ const apiService = {
           "Content-Type": "application/json",
         },
       });
-      console.log("Response:", response.data);
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error;

@@ -101,14 +101,26 @@ const PostCard = ({ post, updatePost }) => {
     if (!commentText.trim()) return;
 
     try {
-      await addCommentMutation.mutateAsync({
+      const newComment = await addCommentMutation.mutateAsync({
         postId: post.id,
         content: commentText,
       });
 
+      // Update the post with the new comment
+      updatePost(post.id, {
+        comments: [...post.comments, newComment],
+        comments_count: post.comments_count + 1,
+      });
+
       setCommentText("");
+      setShowComments(true); // Show comments section after adding a comment
     } catch (error) {
       console.error("Failed to post comment", error);
+      toast({
+        title: "Error",
+        description: "Failed to post comment. Please try again.",
+        variant: "error",
+      });
     }
   };
 

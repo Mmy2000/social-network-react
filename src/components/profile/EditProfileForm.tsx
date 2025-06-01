@@ -42,7 +42,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
     cover_picture: null,
   });
 
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { toast } = useToast();
 
   const handleChange = (e) => {
@@ -88,6 +88,17 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
       );
 
       if (res?.status_code == 200) {
+        if (user) {
+          const updatedUser = {
+            ...user,
+            first_name: form.first_name,
+            last_name: form.last_name,
+            username: form.username,
+            profile_pic: res.data.profile?.profile_picture || user.profile_pic,
+          };
+          setUser(updatedUser);
+        }
+
         onClose();
         toast({ title: "Profile updated successfully", variant: "success" });
         onProfileUpdated(res?.data);

@@ -134,14 +134,41 @@ const Profile = () => {
 
   const handleUpdatePost = (postId, updatedData) => {
     setPosts((prevPosts) => {
+      if (!prevPosts) return prevPosts;
+
       if (!updatedData) {
         // Post was deleted – remove it from the list
         return prevPosts.filter((post) => post.id !== postId);
       }
-      // Post was updated – update it in the list
-      return prevPosts.map((post) =>
-        post.id === postId ? { ...post, ...updatedData } : post
-      );
+
+      // Find the post to update
+      const postIndex = prevPosts.findIndex((post) => post.id === postId);
+      if (postIndex === -1) return prevPosts;
+
+      // Create a copy of the post
+      const updatedPost = { ...prevPosts[postIndex] };
+
+      // Handle comments update
+      if ("comments" in updatedData) {
+        updatedPost.comments = updatedData.comments;
+      }
+      if ("comments_count" in updatedData) {
+        updatedPost.comments_count = updatedData.comments_count;
+      }
+
+      // Handle likes update
+      if ("likes" in updatedData) {
+        updatedPost.likes = updatedData.likes;
+      }
+      if ("like_count" in updatedData) {
+        updatedPost.like_count = updatedData.like_count;
+      }
+
+      // Update other fields
+      Object.assign(updatedPost, updatedData);
+
+      // Return new array with updated post
+      return prevPosts.map((post) => (post.id === postId ? updatedPost : post));
     });
   };
 

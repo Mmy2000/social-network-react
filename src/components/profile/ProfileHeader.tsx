@@ -54,7 +54,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const { user } = useUser();
   const [openEdit, setOpenEdit] = useState(false);
   const { startConversation } = useChat();
-  const [isStartingChat, setIsStartingChat] = useState(false);
+  const [isStartingChat, setIsStartingChat] = useState(false);  
 
   const handleStartChat = async () => {
     if (!profile?.id) return;
@@ -99,10 +99,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
     // If there's a pending friend request
     if (friendRequestStatus === "received") {
-      console.log(
-        "Rendering received friend request buttons. Profile data:",
-        profile
-      );
+      
       return (
         <div className="flex gap-2">
           <Button

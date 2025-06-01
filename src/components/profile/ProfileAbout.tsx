@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 
 
 const ProfileAbout = ({ info }) => {
-  console.log(info, "info");
   
   return (
     <Card>

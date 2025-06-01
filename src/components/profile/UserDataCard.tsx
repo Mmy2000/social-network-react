@@ -6,7 +6,6 @@ import { UserRound, MapPin, Briefcase, GraduationCap } from 'lucide-react';
 
 
 const UserDataCard = ({ profile }) => {
-  console.log(profile, "profile");
     
   return (
     <Card className="sticky top-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-shadow duration-300">
