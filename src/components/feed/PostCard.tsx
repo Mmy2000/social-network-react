@@ -29,6 +29,7 @@ import {
 import PostAttachmentsGrid from "./PostAttachmentsGrid ";
 import PostOptionsDropdown from "../ui/PostOptionsDropdown";
 import { usePost } from "@/hooks/usePost";
+import Reactions, { REACTIONS } from "../reactions/Reactions";
 
 const PostCard = ({ post, updatePost }) => {
   const location = useLocation();
@@ -58,32 +59,57 @@ const PostCard = ({ post, updatePost }) => {
     setShowComments(isPostDetailPage);
   }, [isPostDetailPage]);
 
-  const handleLike = async () => {
+  const handleLike = async (reactionType) => {
     if (!user) {
       toast({
         title: "Login required",
-        description: "You need to be logged in to like a post.",
+        description: "You need to be logged in to react to a post.",
         variant: "warning",
       });
       return;
     }
 
     try {
-      await likeMutation.mutateAsync(post.id);
+      await likeMutation.mutateAsync({ postId: post.id, reactionType });
 
-      const updatedLikeCount = liked
-        ? post.like_count - 1
-        : post.like_count + 1;
+      // Create a new reaction object
+      const newReaction = {
+        id: Date.now(), // temporary ID
+        username: user.username,
+        image: user.profile_pic,
+        reaction_type: reactionType,
+        reaction_display: getReactionEmoji(reactionType),
+      };
+
+      // If user already reacted, update their reaction, otherwise add new reaction
+      const existingReactionIndex = post.likes.findIndex(
+        (like) => like.id === user.id
+      );
+      let updatedLikes;
+
+      if (existingReactionIndex !== -1) {
+        // Update existing reaction
+        updatedLikes = [...post.likes];
+        updatedLikes[existingReactionIndex] = newReaction;
+      } else {
+        // Add new reaction
+        updatedLikes = [...post.likes, newReaction];
+      }
+
+      // Update post state
       updatePost(post.id, {
-        like_count: updatedLikeCount,
-        likes: liked
-          ? post.likes.filter((u) => u.id !== user.id)
-          : [...post.likes, user],
+        like_count: updatedLikes.length,
+        likes: updatedLikes,
       });
 
-      setLiked(!liked);
+      setLiked(true);
     } catch (error) {
-      console.error("Failed to like/unlike the post", error);
+      console.error("Failed to update reaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update reaction",
+        variant: "error",
+      });
     }
   };
 
@@ -165,6 +191,11 @@ const PostCard = ({ post, updatePost }) => {
       .filter(Boolean);
   };
 
+  const getReactionEmoji = (reactionType) => {
+    const reaction = REACTIONS.find((r) => r.type === reactionType);
+    return reaction ? reaction.emoji : null;
+  };
+
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
       <CardHeader className="p-4 pb-2">
@@ -205,23 +236,27 @@ const PostCard = ({ post, updatePost }) => {
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
           <div className="flex items-center">
-            {liked && (
-              <div className="bg-facebook rounded-full p-1 mr-1">
-                <Heart className="h-3 w-3 text-white fill-white" />
-              </div>
-            )}
+            {post?.likes
+              ?.filter(
+                (like, index, self) =>
+                  self.findIndex(
+                    (l) => l.reaction_display === like.reaction_display
+                  ) === index
+              )
+              .map((like) => (
+                <div key={like?.reaction_display} className="mr-0">
+                  {like?.reaction_display}
+                </div>
+              ))}
+
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
-                    className={`mr-4 ${
-                      liked ? "text-facebook" : "text-gray-700"
-                    }  cursor-pointer`}
-                  >
+                  <div className="mr-4 text-gray-700 cursor-pointer">
                     <span>
                       {post?.like_count > 0
-                        ? `${post?.like_count} likes`
-                        : "0 likes"}
+                        ? `${post?.like_count} Reactions`
+                        : "0 Reactions"}
                     </span>
                   </div>
                 </TooltipTrigger>
@@ -238,7 +273,7 @@ const PostCard = ({ post, updatePost }) => {
                             <img src={like?.image} alt={like?.username} />
                           </Avatar>
                           <span className="text-sm text-gray-700">
-                            {like?.username}
+                            {like?.username} {like?.reaction_display}
                           </span>
                         </Link>
                       ))}
@@ -267,18 +302,18 @@ const PostCard = ({ post, updatePost }) => {
 
       <CardFooter className="p-1">
         <div className="flex w-full">
-          <Button
-            variant="ghost"
-            className="flex-1 rounded-none"
-            onClick={handleLike}
-          >
-            <Heart
-              className={`h-5 w-5 mr-2 ${
-                liked ? "text-facebook fill-facebook" : ""
-              }`}
-            />
-            Like
-          </Button>
+          <Reactions
+            type="post"
+            likes={post?.likes || []}
+            likeCount={post?.like_count || 0}
+            onReact={handleLike}
+            selectedReaction={
+              liked && post?.likes?.length > 0
+                ? post.likes.find((like) => like.id === user?.id)
+                    ?.reaction_display
+                : undefined
+            }
+          />
 
           <Button
             variant="ghost"

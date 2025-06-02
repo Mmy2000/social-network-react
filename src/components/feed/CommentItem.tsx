@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ConfirmModal from "../modal/ConfirmModal";
 import { usePost } from "@/hooks/usePost";
+import Reactions from "../reactions/Reactions";
 
 const CommentItem = ({
   comment,
@@ -77,7 +78,7 @@ const CommentItem = ({
     }
   };
 
-  const handleLikeToggle = async () => {
+  const handleLikeToggle = async (reactionType: string) => {
     if (!user) {
       toast({
         title: "Login required",
@@ -88,7 +89,10 @@ const CommentItem = ({
     }
 
     try {
-      await likeCommentMutation.mutateAsync(comment.id);
+      await likeCommentMutation.mutateAsync({
+        commentId: comment.id,
+        reactionType: reactionType,
+      });
 
       const updatedLikedBy = isLiked
         ? comment?.likes?.filter((u) => u.id !== user.id)
@@ -139,6 +143,8 @@ const CommentItem = ({
       console.error("Error editing comment:", error);
     }
   };
+
+  console.log(comment);
 
   return (
     <>
@@ -217,8 +223,8 @@ const CommentItem = ({
               <p className="text-sm mt-1">{comment?.content}</p>
             )}
 
-            <div className="flex gap-4 mt-1 text-xs text-muted-foreground ml-1">
-              <button
+            <div className="flex gap-4 items-center justify-start mt-1 text-xs text-muted-foreground ml-1">
+              {/* <button
                 onClick={handleLikeToggle}
                 className={`flex items-center gap-1 transition hover:underline ${
                   isLiked ? "text-facebook" : "text-gray-700"
@@ -232,7 +238,17 @@ const CommentItem = ({
                 ) : (
                   "Like"
                 )}
-              </button>
+              </button> */}
+              <Reactions
+                type="comment"
+                likes={comment?.likes || []}
+                likeCount={comment?.like_count || 0}
+                onReact={handleLikeToggle}
+                selectedReaction={
+                  comment?.likes?.find((like) => like.id === user?.id)
+                    ?.reaction_display
+                }
+              />
               <button
                 onClick={() => setShowReplyBox(!showReplyBox)}
                 className="hover:underline"

@@ -43,24 +43,34 @@ export const usePost = () => {
   };
 
   // Like/Unlike Post Mutation
-  const likeMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      const response = await apiService.post(`/posts/${postId}/like/`, null, getToken());
+  const likeMutation = useMutation({    
+    mutationFn: async ({ postId, reactionType }: { postId: number; reactionType: string }) => {
+      const response = await apiService.post(`/posts/${postId}/like/`, { reaction_type: reactionType }, getToken());
       return response.data;
     },
-    onSuccess: (_, postId) => {
+    onSuccess: (_, variables) => {
+      // Invalidate all posts queries
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.invalidateQueries({ queryKey: ["post", postId.toString()] });
+      
+      // Invalidate the specific post query
+      queryClient.invalidateQueries({ queryKey: ["post", variables.postId.toString()] });
+      
+      // Invalidate profile posts if we're on a profile page
+      queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+      
+      // Invalidate user feed
+      queryClient.invalidateQueries({ queryKey: ["user-feed"] });
+
       toast({
         title: "Success",
-        description: "Post like status updated",
+        description: "Reaction updated successfully",
         variant: "success",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update like status",
+        description: "Failed to update reaction",
         variant: "error",
       });
     },
@@ -145,22 +155,35 @@ export const usePost = () => {
 
   // Like Comment Mutation
   const likeCommentMutation = useMutation({
-    mutationFn: async (commentId: number) => {
-      const response = await apiService.post(`/posts/comment/${commentId}/like/`, null, getToken());
+    mutationFn: async ({ commentId, reactionType }: { commentId: number; reactionType: string }) => {
+      const response = await apiService.post(`/posts/comment/${commentId}/like/`, { reaction_type: reactionType }, getToken());
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Invalidate all posts queries to update lists
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+      
+      // Invalidate the specific post query where this comment belongs
+      if (data?.post_id) {
+        queryClient.invalidateQueries({ queryKey: ["post", data.post_id.toString()] });
+      }
+      
+      // Invalidate profile posts
+      queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+      
+      // Invalidate user feed
+      queryClient.invalidateQueries({ queryKey: ["user-feed"] });
+
       toast({
         title: "Success",
-        description: "Comment like status updated",
+        description: "Reaction updated successfully",
         variant: "success",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update comment like status",
+        description: "Failed to update reaction",
         variant: "error",
       });
     },
