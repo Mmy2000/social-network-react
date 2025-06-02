@@ -35,6 +35,7 @@ const PostCard = ({ post, updatePost }) => {
   const location = useLocation();
   const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);
+  const [isReacting, setIsReacting] = useState(false);
   const [showComments, setShowComments] = useState(isPostDetailPage);
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
@@ -60,6 +61,7 @@ const PostCard = ({ post, updatePost }) => {
   }, [isPostDetailPage]);
 
   const handleLike = async (reactionType) => {
+    setIsReacting(true);
     if (!user) {
       toast({
         title: "Login required",
@@ -71,7 +73,6 @@ const PostCard = ({ post, updatePost }) => {
 
     try {
       await likeMutation.mutateAsync({ postId: post.id, reactionType });
-
       // Create a new reaction object
       const reaction = REACTIONS.find((r) => r.type === reactionType);
       const newReaction = {
@@ -111,7 +112,7 @@ const PostCard = ({ post, updatePost }) => {
         description: "Failed to update reaction",
         variant: "error",
       });
-    }
+    } 
   };
 
   const handleComment = async (e) => {

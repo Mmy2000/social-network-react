@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   HoverCard,
   HoverCardContent,
@@ -7,7 +7,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const REACTIONS = [
@@ -42,8 +42,17 @@ const Reactions: React.FC<ReactionsProps> = ({
   selectedReaction,
   type,
 }) => {
-  console.log(selectedReaction);
-  
+  const [loadingReaction, setLoadingReaction] = useState<string | null>(null);
+
+  const handleReactionClick = async (reactionType: string) => {
+    setLoadingReaction(reactionType);
+    try {
+      await onReact(reactionType);
+    } finally {
+      setLoadingReaction(null);
+    }
+  };
+
   return (
     <HoverCard openDelay={100} closeDelay={200}>
       <HoverCardTrigger asChild>
@@ -109,8 +118,9 @@ const Reactions: React.FC<ReactionsProps> = ({
             {REACTIONS.map((reaction) => (
               <button
                 key={reaction.type}
-                onClick={() => onReact(reaction.type)}
+                onClick={() => handleReactionClick(reaction.type)}
                 className="relative group"
+                disabled={loadingReaction !== null}
               >
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   {reaction.name}
@@ -122,7 +132,11 @@ const Reactions: React.FC<ReactionsProps> = ({
                       "scale-125 bg-gray-100"
                   )}
                 >
-                  {reaction.emoji}
+                  {loadingReaction === reaction.type ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                  ) : (
+                    reaction.emoji
+                  )}
                 </div>
               </button>
             ))}

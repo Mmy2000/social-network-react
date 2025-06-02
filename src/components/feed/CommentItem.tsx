@@ -266,21 +266,7 @@ const CommentItem = ({
             )}
 
             <div className="flex gap-4 items-center justify-start mt-1 text-xs text-muted-foreground ml-1">
-              {/* <button
-                onClick={handleLikeToggle}
-                className={`flex items-center gap-1 transition hover:underline ${
-                  isLiked ? "text-facebook" : "text-gray-700"
-                }`}
-              >
-                {isLiked ? (
-                  <>
-                    <Heart className="h-4 w-4 fill-facebook text-facebook" />{" "}
-                    Liked
-                  </>
-                ) : (
-                  "Like"
-                )}
-              </button> */}
+              
               <Reactions
                 type="comment"
                 likes={comment?.likes || []}
