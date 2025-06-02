@@ -73,12 +73,13 @@ const PostCard = ({ post, updatePost }) => {
       await likeMutation.mutateAsync({ postId: post.id, reactionType });
 
       // Create a new reaction object
+      const reaction = REACTIONS.find((r) => r.type === reactionType);
       const newReaction = {
-        id: Date.now(), // temporary ID
+        id: user.id, // Use actual user ID instead of timestamp
         username: user.username,
         image: user.profile_pic,
         reaction_type: reactionType,
-        reaction_display: getReactionEmoji(reactionType),
+        reaction_display: reaction?.emoji || "👍", // Use the actual emoji from REACTIONS
       };
 
       // If user already reacted, update their reaction, otherwise add new reaction

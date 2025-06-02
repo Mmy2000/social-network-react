@@ -13,9 +13,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import ConfirmModal from "../modal/ConfirmModal";
 import { usePost } from "@/hooks/usePost";
-import Reactions from "../reactions/Reactions";
+import Reactions, { REACTIONS } from "../reactions/Reactions";
 
 const CommentItem = ({
   comment,
@@ -94,19 +100,55 @@ const CommentItem = ({
         reactionType: reactionType,
       });
 
-      const updatedLikedBy = isLiked
-        ? comment?.likes?.filter((u) => u.id !== user.id)
-        : [...(comment?.likes || []), user];
+      // Create a new reaction object
+      const reaction = REACTIONS.find((r) => r.type === reactionType);
+      const newReaction = {
+        id: user.id,
+        username: user.username,
+        image: user.profile_pic,
+        reaction_type: reactionType,
+        reaction_display: reaction?.emoji || "👍",
+      };
+
+      // Check if user already has a reaction
+      const existingReactionIndex = comment.likes.findIndex(
+        (like) => like.id === user.id
+      );
+
+      // Check if clicking the same reaction (to remove it)
+      const isRemovingReaction =
+        existingReactionIndex !== -1 &&
+        comment.likes[existingReactionIndex].reaction_type === reactionType;
+
+      let updatedLikes;
+      let newLikeCount;
+
+      if (isRemovingReaction) {
+        // Remove the reaction
+        updatedLikes = comment.likes.filter((like) => like.id !== user.id);
+        newLikeCount = comment.like_count - 1;
+        setIsLiked(false);
+      } else if (existingReactionIndex !== -1) {
+        // Update existing reaction
+        updatedLikes = [...comment.likes];
+        updatedLikes[existingReactionIndex] = newReaction;
+        newLikeCount = comment.like_count; // Keep the same count when updating
+        setIsLiked(true);
+      } else {
+        // Add new reaction
+        updatedLikes = [...comment.likes, newReaction];
+        newLikeCount = comment.like_count + 1;
+        setIsLiked(true);
+      }
 
       const updatedComment = {
         ...comment,
-        liked_by: updatedLikedBy,
-        like_count: isLiked ? likeCount - 1 : likeCount + 1,
+        likes: updatedLikes,
+        like_count: newLikeCount,
       };
 
       onUpdateComment(updatedComment);
-      setIsLiked(!isLiked);
-      setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      setLikeCount(newLikeCount);
     } catch (error) {
       console.error("Error liking comment:", error);
     }
@@ -256,13 +298,52 @@ const CommentItem = ({
                 Reply
               </button>
               <span>{comment?.time_since_created}</span>
-              <span>
-                {likeCount > 0 && (
-                  <span className="ml-2 text-xs bg-gray-300 text-gray-800 px-1.5 py-0.5 rounded-full">
-                    👍 {likeCount}
-                  </span>
-                )}
-              </span>
+              {likeCount > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="ml-2 text-xs bg-gray-300 text-gray-800 px-1.5 py-0.5 rounded-full cursor-pointer">
+                        {comment?.likes
+                          ?.filter(
+                            (like, index, self) =>
+                              self.findIndex(
+                                (l) =>
+                                  l.reaction_display === like.reaction_display
+                              ) === index
+                          )
+                          .map((like) => like.reaction_display)
+                          .join("")}{" "}
+                        {likeCount}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="bg-white p-2 shadow-lg"
+                    >
+                      <div className="flex flex-col gap-1">
+                        {Array.isArray(comment?.likes) &&
+                          comment.likes.map((like) => (
+                            <Link
+                              key={like?.id}
+                              to={`/profile/${like?.id}`}
+                              className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded transition-colors"
+                            >
+                              <Avatar className="h-6 w-6">
+                                <img src={like?.image} alt={like?.username} />
+                              </Avatar>
+                              <span className="text-sm font-medium">
+                                {like?.username}
+                              </span>
+                              <span className="text-sm ml-auto opacity-70">
+                                {like?.reaction_display}
+                              </span>
+                            </Link>
+                          ))}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
 
             {showReplyBox && (

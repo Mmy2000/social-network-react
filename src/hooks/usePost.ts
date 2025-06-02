@@ -45,6 +45,8 @@ export const usePost = () => {
   // Like/Unlike Post Mutation
   const likeMutation = useMutation({    
     mutationFn: async ({ postId, reactionType }: { postId: number; reactionType: string }) => {
+      console.log(postId, reactionType);
+      
       const response = await apiService.post(`/posts/${postId}/like/`, { reaction_type: reactionType }, getToken());
       return response.data;
     },
