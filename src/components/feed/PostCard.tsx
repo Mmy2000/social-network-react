@@ -16,6 +16,7 @@ import {
   Share,
   MoreHorizontal,
   AlertTriangle,
+  Loader,
 } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import CommentItem from "./CommentItem";
@@ -35,7 +36,7 @@ const PostCard = ({ post, updatePost }) => {
   const location = useLocation();
   const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);
-  const [isReacting, setIsReacting] = useState(false);
+  const [loadingComment, setLoadingComment] = useState(false);
   const [showComments, setShowComments] = useState(isPostDetailPage);
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
@@ -61,7 +62,6 @@ const PostCard = ({ post, updatePost }) => {
   }, [isPostDetailPage]);
 
   const handleLike = async (reactionType) => {
-    setIsReacting(true);
     if (!user) {
       toast({
         title: "Login required",
@@ -116,6 +116,7 @@ const PostCard = ({ post, updatePost }) => {
   };
 
   const handleComment = async (e) => {
+    setLoadingComment(true);
     e.preventDefault();
     if (!user) {
       toast({
@@ -149,6 +150,8 @@ const PostCard = ({ post, updatePost }) => {
         description: "Failed to post comment. Please try again.",
         variant: "error",
       });
+    } finally {
+      setLoadingComment(false);
     }
   };
 
@@ -351,8 +354,11 @@ const PostCard = ({ post, updatePost }) => {
                 type="submit"
                 size="sm"
                 className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent"
-                disabled={!commentText.trim()}
+                disabled={!commentText.trim() || loadingComment}
               >
+                {loadingComment ? (
+                  <Loader className="h-3 w-3 animate-spin mr-1" />
+                ) : null}
                 Post
               </Button>
             </div>

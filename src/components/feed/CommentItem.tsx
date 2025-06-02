@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/context/UserContext";
 import clsx from "clsx";
-import { Heart, MoreHorizontal } from "lucide-react";
+import { Heart, MoreHorizontal, Loader } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -42,6 +42,8 @@ const CommentItem = ({
   const [editText, setEditText] = useState(comment?.content || "");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [isUpdatingComment, setIsUpdatingComment] = useState(false);
   const { toast } = useToast();
   const {
     addCommentMutation,
@@ -64,6 +66,7 @@ const CommentItem = ({
 
     if (!replyText.trim()) return;
 
+    setIsSubmittingReply(true);
     try {
       const newComment = await addCommentMutation.mutateAsync({
         postId: post.id,
@@ -79,8 +82,20 @@ const CommentItem = ({
 
       setReplyText("");
       setShowReplyBox(false);
+      toast({
+        title: "Success",
+        description: "Reply added successfully",
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error submitting reply:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add reply. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSubmittingReply(false);
     }
   };
 
@@ -173,6 +188,7 @@ const CommentItem = ({
     e.preventDefault();
     if (!user) return;
 
+    setIsUpdatingComment(true);
     try {
       const updatedComment = await editCommentMutation.mutateAsync({
         commentId: comment.id,
@@ -181,12 +197,22 @@ const CommentItem = ({
 
       onUpdateComment({ ...comment, content: updatedComment.content });
       setIsEditing(false);
+      toast({
+        title: "Success",
+        description: "Comment updated successfully",
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error editing comment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update comment. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsUpdatingComment(false);
     }
   };
-
-  console.log(comment);
 
   return (
     <>
@@ -242,9 +268,18 @@ const CommentItem = ({
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                   className="text-sm"
+                  disabled={isUpdatingComment}
                 />
-                <div className="flex gap-2 mt-1">
-                  <Button size="sm" type="submit" className="text-xs">
+                <div className="flex gap-2 pt-1">
+                  <Button
+                    size="sm"
+                    type="submit"
+                    className="text-xs"
+                    disabled={isUpdatingComment}
+                  >
+                    {isUpdatingComment ? (
+                      <Loader className="h-3 w-3 animate-spin mr-1" />
+                    ) : null}
                     Save
                   </Button>
                   <Button
@@ -256,6 +291,7 @@ const CommentItem = ({
                       setEditText(comment.content);
                     }}
                     className="text-xs"
+                    disabled={isUpdatingComment}
                   >
                     Cancel
                   </Button>
@@ -266,7 +302,6 @@ const CommentItem = ({
             )}
 
             <div className="flex gap-4 items-center justify-start mt-1 text-xs text-muted-foreground ml-1">
-              
               <Reactions
                 type="comment"
                 likes={comment?.likes || []}
@@ -346,14 +381,18 @@ const CommentItem = ({
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Write a reply..."
                     className="min-h-0 h-8 py-1 px-3 resize-none text-sm rounded-full bg-gray-100"
+                    disabled={isSubmittingReply}
                   />
                 </div>
                 <Button
                   type="submit"
                   size="sm"
                   className="h-8 px-3 text-sm text-facebook-light"
-                  disabled={!replyText.trim()}
+                  disabled={!replyText.trim() || isSubmittingReply}
                 >
+                  {isSubmittingReply ? (
+                    <Loader className="h-3 w-3 animate-spin mr-1" />
+                  ) : null}
                   Reply
                 </Button>
               </form>
