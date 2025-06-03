@@ -5,12 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import PostAttachmentsGrid from "./PostAttachmentsGrid ";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiService from "@/apiService/apiService";
-
+import { useUser } from "@/context/UserContext";
 interface SharedPostCardProps {
   postID: any; // Replace with proper type when available
 }
 
 const SharedPostCard: React.FC<SharedPostCardProps> = ({ postID }) => {
+  const { user } = useUser();
   if (!postID) return null;
   const feelingEmojis = {
     happy: "😊",
@@ -22,7 +23,11 @@ const SharedPostCard: React.FC<SharedPostCardProps> = ({ postID }) => {
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", postID],
     queryFn: async () => {
-      const response = await apiService.get(`/posts/${postID}`);
+      if (user?.access) { 
+        const response = await apiService.get(`/posts/${postID}`, user.access);
+        return response.data;
+      }
+      const response = await apiService.getWithoutToken(`/posts/${postID}`);
       return response.data;
     },
     enabled: !!postID,
