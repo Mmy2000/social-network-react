@@ -1,42 +1,85 @@
+import React from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const ConfirmModal = ({
+interface ConfirmModalProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  content?: string;
+  children?: React.ReactNode;
+  confirmText?: string;
+  onConfirm: () => void;
+  loading?: boolean;
+  isEdit?: boolean;
+}
+
+const ConfirmModal: React.FC<ConfirmModalProps> = ({
   open,
   onClose,
   title,
   content,
   children,
   confirmText = "Confirm",
-  cancelText = "Cancel",
   onConfirm,
-  loading
+  loading = false,
+  isEdit = false,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent
+        className={cn(
+          "sm:max-w-[425px]",
+          isEdit && "sm:max-w-[700px] h-[80vh] overflow-y-auto"
+        )}
+      >
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {content && <DialogDescription>{content}</DialogDescription>}
+          <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
+          {content && (
+            <DialogDescription className="text-gray-500">
+              {content}
+            </DialogDescription>
+          )}
         </DialogHeader>
 
-        {children}
+        {isEdit && (
+          <div className={cn("space-y-6")}>{children}</div>
+        )}
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>
-            {cancelText}
+        <DialogFooter className="sm:justify-end gap-2 mt-6">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
           </Button>
-          <Button onClick={onConfirm}>
-            {loading ? <Loader2 /> : confirmText}
-            </Button>
+          <Button
+            type="button"
+            variant={isEdit ? "default" : "destructive"}
+            onClick={onConfirm}
+            disabled={loading}
+            className="min-w-[100px]"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader className="h-4 w-4 animate-spin" />
+                {isEdit ? "Saving..." : "Deleting..."}
+              </span>
+            ) : (
+              confirmText
+            )}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -191,6 +191,54 @@ export const usePost = () => {
     },
   });
 
+  const sharePostMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await apiService.postNewPost(
+        `/posts/share/`,
+        formData,
+        user?.access
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-feed"] });
+    },
+  });
+
+  // Save Post Mutation
+  const savePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const response = await apiService.post(
+        `/posts/${postId}/save/`,
+        {},
+        user?.access
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+    },
+  });
+
+  // Add to Favorites Mutation
+  const favoritePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const response = await apiService.post(
+        `/posts/${postId}/favorite/`,
+        {},
+        user?.access
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["favorite-posts"] });
+    },
+  });
+
   return {
     likeMutation,
     addCommentMutation,
@@ -198,5 +246,8 @@ export const usePost = () => {
     editCommentMutation,
     likeCommentMutation,
     updatePostCache,
+    sharePostMutation,
+    savePostMutation,
+    favoritePostMutation,
   };
 }; 

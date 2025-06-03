@@ -3,9 +3,19 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Bookmark,
+  Star,
+  Flag,
+  Copy,
+  Link as LinkIcon,
+} from "lucide-react";
 import { useState } from "react";
 import ConfirmModal from "../modal/ConfirmModal";
 import { Input } from "@/components/ui/input";
@@ -21,8 +31,8 @@ import {
 import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
 import { useToast } from "./use-toast";
-
-
+import { usePost } from "@/hooks/usePost";
+import SharedPostCard from "../feed/SharedPostCard";
 
 const PostOptionsDropdown = ({ post, updatePost }) => {
   const [modalType, setModalType] = useState(null); // 'edit' or 'delete'
@@ -31,19 +41,65 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     post.attachments || []
   );
   const [newAttachments, setNewAttachments] = useState([]);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [role, setRole] = useState(post.role || "public");
   const [feeling, setFeeling] = useState(post.feeling || "");
   const { user } = useUser();
   const { toast } = useToast();
+  const { savePostMutation, favoritePostMutation, sharePostMutation } =
+    usePost();
+
+  const handleSavePost = async () => {
+    try {
+      await savePostMutation.mutateAsync(post.id);
+      toast({
+        title: "Post saved",
+        description: "The post has been saved to your collection.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save the post.",
+        variant: "error",
+      });
+    }
+  };
+
+  const handleFavoritePost = async () => {
+    try {
+      await favoritePostMutation.mutateAsync(post.id);
+      toast({
+        title: "Added to favorites",
+        description: "The post has been added to your favorites.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add the post to favorites.",
+        variant: "error",
+      });
+    }
+  };
+
+  const handleCopyLink = () => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    navigator.clipboard.writeText(postUrl);
+    toast({
+      title: "Link copied",
+      description: "Post link has been copied to clipboard.",
+      variant: "success",
+    });
+  };
 
   const handleConfirm = async () => {
-    setLoading(true)
+    setLoading(true);
     if (modalType === "edit") {
       const formData = new FormData();
       formData.append("content", editedContent);
       formData.append("role", role);
-      formData.append("feeling",feeling)
+      formData.append("feeling", feeling);
 
       newAttachments.forEach((file) => {
         formData.append("attachments", file);
@@ -59,15 +115,14 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
           formData,
           user?.access
         );
-        updatePost(post.id, updated?.data);      
+        updatePost(post.id, updated?.data);
         toast({
           title: "Post updated",
           description: "Your post has been successfully updated.",
           variant: "success",
           duration: 3000,
         });
-        setLoading(false)
-        
+        setLoading(false);
       } catch (error) {
         console.error("Error updating post:", error);
         toast({
@@ -76,34 +131,34 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
           variant: "error",
           duration: 3000,
         });
-        setLoading(false)
+        setLoading(false);
       }
-    }else if (modalType === "delete") {
-      setLoading(true)
-        try {
-          const updated = await apiService.delete(
-            `/posts/${post.id}/`,
-            user?.access
-          );
-          setLoading(false)
-          updatePost(post.id, null);
-          toast({
-            title: "Post Deleted",
-            description: "Your post has been successfully deleted.",
-            variant: "success",
-            duration: 3000,
-          });
-        } catch (error) {
-          console.log("Delete error:", error);
-          toast({
-            title: "Error",
-            description: error?.message || "Failed to delete the post.",
-            variant: "error",
-            duration: 3000,
-          });
-          setLoading(false)
-        }
-    setModalType(null);
+    } else if (modalType === "delete") {
+      setLoading(true);
+      try {
+        const updated = await apiService.delete(
+          `/posts/${post.id}/`,
+          user?.access
+        );
+        setLoading(false);
+        updatePost(post.id, null);
+        toast({
+          title: "Post Deleted",
+          description: "Your post has been successfully deleted.",
+          variant: "success",
+          duration: 3000,
+        });
+      } catch (error) {
+        console.log("Delete error:", error);
+        toast({
+          title: "Error",
+          description: error?.message || "Failed to delete the post.",
+          variant: "error",
+          duration: 3000,
+        });
+        setLoading(false);
+      }
+      setModalType(null);
     }
     setModalType(null);
   };
@@ -121,6 +176,32 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     setNewAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleShareSubmit = async (shareData) => {
+    try {
+      const formData = new FormData();
+      formData.append("shared_post_id", shareData.originalPostId);
+      formData.append("content", shareData.content);
+      formData.append("feeling", shareData.feeling);
+      formData.append("role", shareData.role);
+
+      await sharePostMutation.mutateAsync(formData);
+
+      toast({
+        title: "Post shared",
+        description: "The post has been shared successfully.",
+        variant: "success",
+      });
+      setModalType(null);
+    } catch (error) {
+      console.error("Error sharing post:", error);
+      toast({
+        title: "Error",
+        description: "Failed to share the post. Please try again.",
+        variant: "error",
+      });
+    }
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -129,12 +210,49 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
             <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setModalType("edit")}>
-            Edit
+        <DropdownMenuContent align="end" className="w-56">
+          {user?.id === post?.created_by?.id ? (
+            <>
+              <DropdownMenuItem onClick={() => setModalType("edit")}>
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit post
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setModalType("delete")}
+                className="text-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete post
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          ) : null}
+
+          <DropdownMenuItem onClick={handleSavePost}>
+            <Bookmark className="h-4 w-4 mr-2" />
+            Save post
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setModalType("delete")}>
-            Delete
+
+          <DropdownMenuItem onClick={handleFavoritePost}>
+            <Star className="h-4 w-4 mr-2" />
+            Add to favorites
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={handleCopyLink}>
+            <LinkIcon className="h-4 w-4 mr-2" />
+            Copy link
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => window.print()}>
+            <Copy className="h-4 w-4 mr-2" />
+            Print post
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem className="text-red-600">
+            <Flag className="h-4 w-4 mr-2" />
+            Report post
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -146,107 +264,155 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
         content={
           modalType === "delete"
             ? "Are you sure you want to delete this post? This action is permanent."
-            : null
+            : "Update your post details below"
         }
-        confirmText={modalType === "edit" ? "Save" : "Delete"}
+        confirmText={modalType === "edit" ? "Save Changes" : "Delete"}
         onConfirm={handleConfirm}
         loading={loading}
+        isEdit={modalType === "edit"}
       >
         {modalType === "edit" && (
-          <div className="space-y-4">
-            {/* Post Content */}
-            <div>
-              <Label>Post Content</Label>
+          <div className="space-y-6">
+            {/* Post Content Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Post Content</Label>
               <Textarea
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
+                className="min-h-[120px] resize-none"
+                placeholder="What's on your mind?"
               />
             </div>
 
-            {/* Role Selection */}
-            <div>
-              <Label>Visibility</Label>
-              <Select value={role} onValueChange={(val) => setRole(val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="public">Public</SelectItem>
-                  <SelectItem value="only_me">Only Me</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Feeling</Label>
-              <Select value={feeling} onValueChange={(val) => setFeeling(val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Feeling" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="happy">Happy</SelectItem>
-                                    <SelectItem value="sad">Sad</SelectItem>
-                                    <SelectItem value="excited">Excited</SelectItem>
-                                    <SelectItem value="tired">Tired</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Post Settings Section */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Visibility</Label>
+                <Select value={role} onValueChange={(val) => setRole(val)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">
+                      <div className="flex items-center">
+                        <span className="mr-2">🌎</span> Public
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="only_me">
+                      <div className="flex items-center">
+                        <span className="mr-2">🔒</span> Only Me
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Feeling</Label>
+                <Select
+                  value={feeling}
+                  onValueChange={(val) => setFeeling(val)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="How are you feeling?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="happy">😊 Happy</SelectItem>
+                    <SelectItem value="sad">😢 Sad</SelectItem>
+                    <SelectItem value="excited">🤩 Excited</SelectItem>
+                    <SelectItem value="tired">😴 Tired</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* Attachments */}
-            <div>
-              <Label>Attachments</Label>
-              <Input
-                type="file"
-                multiple
-                onChange={handleNewAttachmentChange}
-              />
+            {/* Attachments Section - Only show if not a shared post */}
+            {!post?.shared_from && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">
+                    Media Attachments
+                  </Label>
+                  <Input
+                    type="file"
+                    multiple
+                    onChange={handleNewAttachmentChange}
+                    className="w-auto text-sm"
+                    accept="image/*,video/*"
+                  />
+                </div>
 
-              {/* Existing attachments (images/URLs) */}
-              <span className="text-sm mt-2 text-gray-800">Existing Images:</span>
-              {/* Existing attachments (URLs) */}
-              {existingAttachments.length > 0 && (
-                <div className="mt-2 grid grid-cols-3 gap-2">
-                  {existingAttachments.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url.image}
-                        alt={`attachment-${index}`}
-                        className="w-full h-24 object-cover rounded"
-                      />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white p-1 rounded-full text-xs hidden group-hover:block"
-                        onClick={() => removeExistingAttachment(index)}
-                      >
-                        ✕
-                      </button>
+                {/* Existing Attachments */}
+                {existingAttachments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm text-gray-500">
+                      Current Media
+                    </Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {existingAttachments.map((url, index) => (
+                        <div
+                          key={index}
+                          className="relative group aspect-square rounded-lg overflow-hidden"
+                        >
+                          <img
+                            src={url.image}
+                            alt={`attachment-${index}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200" />
+                          <button
+                            type="button"
+                            className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            onClick={() => removeExistingAttachment(index)}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-      
-                {/* Existing attachments (URLs) */}<span className="text-sm mt-2 text-gray-800">New Images:</span>
-              {/* New uploads (File previews) */}
-              {newAttachments.length > 0 && (
-                <div className="mt-2 grid grid-cols-3 gap-2">
-                  {newAttachments.map((file, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={file.name}
-                        className="w-full h-24 object-cover rounded"
-                      />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-black bg-opacity-50 text-white p-1 rounded-full text-xs hidden group-hover:block"
-                        onClick={() => removeNewAttachment(index)}
-                      >
-                        ✕
-                      </button>
+                  </div>
+                )}
+
+                {/* New Attachments Preview */}
+                {newAttachments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm text-gray-500">New Media</Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {newAttachments.map((file, index) => (
+                        <div
+                          key={index}
+                          className="relative group aspect-square rounded-lg overflow-hidden"
+                        >
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200" />
+                          <button
+                            type="button"
+                            className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            onClick={() => removeNewAttachment(index)}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Show shared post preview if it's a shared post */}
+            {post?.shared_from && (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Shared Post</Label>
+                <div className="border rounded-lg overflow-hidden">
+                  <SharedPostCard postID={post.shared_from} />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </ConfirmModal>
