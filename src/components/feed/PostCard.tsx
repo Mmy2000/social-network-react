@@ -371,9 +371,33 @@ const PostCard = ({ post, updatePost }) => {
                 "0 comments"
               )}
               {post?.share_count > 0 && (
-                <span  className="font-medium text-gray-500 hover:text-gray-700">
-                  {post?.share_count} shares
-                </span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                    <span className="font-medium text-gray-500 hover:text-gray-700">
+                      {post?.share_count} shares
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <div className="flex flex-col">
+                      {post?.shared_users.map((share) => (
+                        <Link
+                          key={share?.id}
+                          to={`/profile/${share?.id}`}
+                          className="flex items-center space-x-2 mb-1 hover:underline"
+                        >
+                          <Avatar className="h-6 w-6">
+                            <img src={share?.image} alt={share?.username} />
+                          </Avatar>
+                          <span className="text-sm text-gray-700">
+                            {share?.username}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           </div>
