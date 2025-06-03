@@ -16,7 +16,11 @@ const PostDetails = () => {
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", id],
     queryFn: async () => {
-      const response = await apiService.get(`/posts/${id}`);
+      if (user?.access) {
+        const response = await apiService.get(`/posts/${id}`, user.access);
+        return response.data;
+      }
+      const response = await apiService.getWithoutToken(`/posts/${id}`);
       return response.data;
     },
     enabled: !!id,
