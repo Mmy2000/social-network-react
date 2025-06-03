@@ -217,9 +217,13 @@ export const usePost = () => {
       );
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (_, postId) => {
+      // Invalidate all relevant queries
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-feed"] });
     },
   });
 
@@ -233,9 +237,13 @@ export const usePost = () => {
       );
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (_, postId) => {
+      // Invalidate all relevant queries
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["favorite-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-feed"] });
     },
   });
 

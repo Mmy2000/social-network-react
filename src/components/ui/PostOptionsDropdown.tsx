@@ -33,6 +33,7 @@ import apiService from "@/apiService/apiService";
 import { useToast } from "./use-toast";
 import { usePost } from "@/hooks/usePost";
 import SharedPostCard from "../feed/SharedPostCard";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PostOptionsDropdown = ({ post, updatePost }) => {
   const [modalType, setModalType] = useState(null); // 'edit' or 'delete'
@@ -48,6 +49,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
   const { toast } = useToast();
   const { savePostMutation, favoritePostMutation, sharePostMutation } =
     usePost();
+  const queryClient = useQueryClient();
 
   const handleSavePost = async () => {
     try {
@@ -137,12 +139,22 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     } else if (modalType === "delete") {
       setLoading(true);
       try {
-        const updated = await apiService.delete(
-          `/posts/${post.id}/`,
-          user?.access
-        );
+        await apiService.delete(`/posts/${post.id}/`, user?.access);
         setLoading(false);
+
+        // Update all relevant caches
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+        queryClient.invalidateQueries({ queryKey: ["favorite-posts"] });
+        queryClient.invalidateQueries({
+          queryKey: ["post", post.id.toString()],
+        });
+        queryClient.invalidateQueries({ queryKey: ["profile-posts"] });
+        queryClient.invalidateQueries({ queryKey: ["user-feed"] });
+
+        // Update local state
         updatePost(post.id, null);
+
         toast({
           title: "Post Deleted",
           description: "Your post has been successfully deleted.",
