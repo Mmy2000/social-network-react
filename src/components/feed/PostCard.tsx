@@ -358,7 +358,7 @@ const PostCard = ({ post, updatePost }) => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
               {post?.comments_count > 0 ? (
                 <Button
                   variant="ghost"
@@ -369,6 +369,11 @@ const PostCard = ({ post, updatePost }) => {
                 </Button>
               ) : (
                 "0 comments"
+              )}
+              {post?.share_count > 0 && (
+                <span  className="font-medium text-gray-500 hover:text-gray-700">
+                  {post?.share_count} shares
+                </span>
               )}
             </div>
           </div>
