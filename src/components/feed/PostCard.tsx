@@ -48,6 +48,13 @@ const PostCard = ({ post, updatePost }) => {
     deleteCommentMutation,
     editCommentMutation,
   } = usePost();
+  const feelingEmojis = {
+    happy: "😊",
+    sad: "😢",
+    excited: "🤩",
+    tired: "😴",
+  };
+
 
   useEffect(() => {
     if (user && Array.isArray(post?.likes)) {
@@ -112,7 +119,7 @@ const PostCard = ({ post, updatePost }) => {
         description: "Failed to update reaction",
         variant: "error",
       });
-    } 
+    }
   };
 
   const handleComment = async (e) => {
@@ -201,6 +208,8 @@ const PostCard = ({ post, updatePost }) => {
     return reaction ? reaction.emoji : null;
   };
 
+  console.log(post);
+
   return (
     <Card className="mb-4 shadow-sm overflow-hidden">
       <CardHeader className="p-4 pb-2">
@@ -221,6 +230,19 @@ const PostCard = ({ post, updatePost }) => {
               >
                 {post?.created_by?.profile?.full_name}
               </Link>
+
+              {post?.feeling && (
+                <>
+                  <span className="text-muted-foreground text-xs font-normal">
+                    {" "}
+                    —{" "}
+                  </span>
+                  <span className="bg-gray-100 px-2 py-1 rounded-md text-muted-foreground text-xs font-normal">
+                    {feelingEmojis[post.feeling]} feeling {post.feeling}
+                  </span>
+                </>
+              )}
+
               <p className="text-xs text-gray-500">
                 {post?.time_since_created}
               </p>
