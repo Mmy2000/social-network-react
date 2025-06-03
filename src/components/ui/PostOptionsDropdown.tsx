@@ -51,16 +51,17 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
 
   const handleSavePost = async () => {
     try {
-      await savePostMutation.mutateAsync(post.id);
+      const response = await savePostMutation.mutateAsync(post.id);
+      console.log(response);
       toast({
-        title: "Post saved",
-        description: "The post has been saved to your collection.",
+        title: "Saved posts updated",
+        description: response?.message,
         variant: "success",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save the post.",
+        description: error?.message || "Failed to save the post.",
         variant: "error",
       });
     }
@@ -68,16 +69,16 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
 
   const handleFavoritePost = async () => {
     try {
-      await favoritePostMutation.mutateAsync(post.id);
+      const response = await favoritePostMutation.mutateAsync(post.id);
       toast({
-        title: "Added to favorites",
-        description: "The post has been added to your favorites.",
+        title: "Favorites updated",
+        description: response?.message,
         variant: "success",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to add the post to favorites.",
+        description: error?.message || "Failed to add the post to favorites.",
         variant: "error",
       });
     }
@@ -176,32 +177,6 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     setNewAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleShareSubmit = async (shareData) => {
-    try {
-      const formData = new FormData();
-      formData.append("shared_post_id", shareData.originalPostId);
-      formData.append("content", shareData.content);
-      formData.append("feeling", shareData.feeling);
-      formData.append("role", shareData.role);
-
-      await sharePostMutation.mutateAsync(formData);
-
-      toast({
-        title: "Post shared",
-        description: "The post has been shared successfully.",
-        variant: "success",
-      });
-      setModalType(null);
-    } catch (error) {
-      console.error("Error sharing post:", error);
-      toast({
-        title: "Error",
-        description: "Failed to share the post. Please try again.",
-        variant: "error",
-      });
-    }
-  };
-
   return (
     <>
       <DropdownMenu>
@@ -230,12 +205,12 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
 
           <DropdownMenuItem onClick={handleSavePost}>
             <Bookmark className="h-4 w-4 mr-2" />
-            Save post
+            {post?.is_saved ? "Remove from saved" : "Save post"}
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={handleFavoritePost}>
             <Star className="h-4 w-4 mr-2" />
-            Add to favorites
+            {post?.is_favorited ? "Remove from favorites" : "Add to favorites"}
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={handleCopyLink}>

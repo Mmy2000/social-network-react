@@ -215,7 +215,7 @@ export const usePost = () => {
         {},
         user?.access
       );
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -231,7 +231,7 @@ export const usePost = () => {
         {},
         user?.access
       );
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
