@@ -118,17 +118,17 @@ const Signup = () => {
       );
 
       if (response?.data?.access) {
-        setUser({
-          id: response.data.user_data.id,
-          first_name: response.data.user_data.first_name,
-          last_name: response.data.user_data.last_name,
-          email: response.data.user_data.email,
-          username: response.data.user_data.username,
-          profile_pic: response.data.user_data.profile.profile_picture,
-          isActive: response.data.user_data.is_active,
-          access: response.data.access,
-          refresh: response.data.refresh,
-        });
+        // setUser({
+        //   id: response.data.user_data.id,
+        //   first_name: response.data.user_data.first_name,
+        //   last_name: response.data.user_data.last_name,
+        //   email: response.data.user_data.email,
+        //   username: response.data.user_data.username,
+        //   profile_pic: response.data.user_data.profile.profile_picture,
+        //   isActive: response.data.user_data.is_active,
+        //   access: response.data.access,
+        //   refresh: response.data.refresh,
+        // });
 
         toast({
           title: "Account Created",
