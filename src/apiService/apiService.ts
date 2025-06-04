@@ -14,8 +14,11 @@ const apiService = {
           ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
+      console.log("response", response);
+      
       return response.data;
     } catch (error: any) {
+      console.log("error", error);
       throw error.response?.data || error;
     }
   },

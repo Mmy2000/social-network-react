@@ -21,6 +21,7 @@ import ActiveAccount from "./pages/ActiveAccount";
 import AuthRoute from "./components/auth/AuthRoute";
 import SavedPosts from "./pages/SavedPosts";
 import FavoritePosts from "./pages/FavoritePosts";
+import Groups from "@/pages/groups";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => (
                   <Route path="/activate" element={<ActiveAccount />} />
                   <Route path="/saved" element={<SavedPosts />} />
                   <Route path="/favorites" element={<FavoritePosts />} />
+                  <Route path="/groups" element={<Groups />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
