@@ -63,6 +63,16 @@ export const useFriends = () => {
     enabled: !!user?.access,
   });
 
+  // Fetch group invitations
+  const { data: groupInvitations = [], isLoading: isLoadingGroupInvitations } = useQuery({
+    queryKey: ["groupInvitations"],
+    queryFn: async () => {
+      const response = await apiService.get("/groups/invitations/", getToken());
+      return response.data;
+    },
+    enabled: !!user?.access,
+  });
+
   // Send friend request mutation
   const sendFriendRequestMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -102,20 +112,17 @@ export const useFriends = () => {
       setLoadingStates((prev) => ({ ...prev, [requestId]: true }));
       try {
         const token = getToken();
-        console.log("Using token:", token);
         const response = await apiService.put(
           `/accounts/friend-request/${requestId}/update/`,
           { status },
           token
         );
-        console.log("Friend request update response:", response);
         return response.data;
       } finally {
         setLoadingStates((prev) => ({ ...prev, [requestId]: false }));
       }
     },
     onSuccess: (data, { status }) => {
-      console.log("Friend request update successful:", data);
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
       toast({
@@ -145,6 +152,7 @@ export const useFriends = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      
       toast({
         title: "Friend removed successfully.",
         variant: "success",
@@ -158,16 +166,50 @@ export const useFriends = () => {
     },
   });
 
+  // Handle group invitation response
+  const handleGroupInvitationMutation = useMutation({
+    mutationFn: async ({ invitationId, action }: { invitationId: number; action: "accept" | "decline" }) => {
+      setLoadingStates((prev) => ({ ...prev, [invitationId]: true }));
+      try {
+        const response = await apiService.post(
+          `/groups/invitations/${invitationId}/respond/`,
+          { action },
+          getToken()
+        );
+        return response.data;
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [invitationId]: false }));
+      }
+    },
+    onSuccess: (data, { action }) => {
+      queryClient.invalidateQueries({ queryKey: ["groupInvitations"] });
+      toast({
+        title: `Invitation ${action}ed successfully`,
+        variant: "success",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to process invitation",
+        variant: "error",
+      });
+    },
+  });
+
   return {
     friends,
     suggestions,
     requests,
+    groupInvitations,
     isLoadingFriends,
     isLoadingSuggestions,
     isLoadingRequests,
+    isLoadingGroupInvitations,
     sendFriendRequest: sendFriendRequestMutation.mutate,
     updateFriendRequest: updateFriendRequestMutation.mutate,
     removeFriend: removeFriendMutation.mutate,
+    handleGroupInvitation: handleGroupInvitationMutation.mutate,
     isLoading: (userId: number) => loadingStates[userId] || false,
   };
 }; 

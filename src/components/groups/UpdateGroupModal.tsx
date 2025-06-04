@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
 import { Loader } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 interface UpdateGroupModalProps {
   group: any;
@@ -37,12 +38,14 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
   const [formData, setFormData] = useState({
     name: group.name,
     description: group.description,
-    privacy: group.privacy || "public",
+    privacy: group.privacy || "false",
     cover_image: null as File | null,
   });
   const { toast } = useToast();
   const { user } = useUser();
   const queryClient = useQueryClient();
+  const { id } = useParams();
+
 
   const updateGroupMutation = useMutation({
     mutationFn: async (data: FormData) => {
@@ -50,6 +53,8 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["group", id] });
+
       toast({
         title: "Success",
         description: "Group updated successfully",
@@ -81,7 +86,7 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("description", formData.description);
-    formDataToSend.append("privacy", formData.privacy);
+    formDataToSend.append("is_private", formData.privacy);
 
     if (formData.cover_image instanceof File) {
       formDataToSend.append("cover_image", formData.cover_image);
@@ -155,8 +160,8 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
                 <SelectValue placeholder="Select privacy setting" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="private">Private</SelectItem>
+                <SelectItem value="false">Public</SelectItem>
+                <SelectItem value="true">Private</SelectItem>
               </SelectContent>
             </Select>
           </div>

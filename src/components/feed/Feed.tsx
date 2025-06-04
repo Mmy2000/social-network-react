@@ -5,19 +5,20 @@ import apiService from "@/apiService/apiService";
 import { Loader2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/context/UserContext";
+import { useParams } from "react-router-dom";
 
-const fetchPosts = async (token?: string) => {
+const fetchPosts = async (token?: string, groupId?: string) => {
   try {
     // Try to fetch posts with token if available
     if (token) {
-      const response = await apiService.get("/posts/", token);
+      const response = await apiService.get(`/posts/${groupId ? `?group_id=${groupId}` : ""}`, token);
       if (response.status_code === 200) {
         return response.data;
       }
     }
 
     // If no token or token request failed, fetch without token
-    const response = await apiService.getWithoutToken("/posts/");
+    const response = await apiService.getWithoutToken(`/posts/${groupId ? `?group_id=${groupId}` : ""}`);
     if (response.status_code === 200) {
       return response.data;
     }
@@ -29,20 +30,22 @@ const fetchPosts = async (token?: string) => {
   }
 };
 
-const Feed: React.FC = () => {
+const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
   const queryClient = useQueryClient();
   const { user } = useUser();
+  const { id } = useParams();
 
   const {
     data: posts = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["posts", user?.access],
-    queryFn: () => fetchPosts(user?.access),
-    refetchInterval: 60000, // Refetch every minute
-    staleTime: 30000, // Consider data stale after 30 seconds
+    queryKey: ["posts", groupId, user?.access],
+    queryFn: () => fetchPosts(user?.access, groupId),
+    refetchInterval: 60000,
+    staleTime: 30000,
   });
+
 
   const updatePostById = (postId: string, updatedData: any) => {
     // Update the post in the posts list cache
@@ -55,7 +58,7 @@ const Feed: React.FC = () => {
         }
         // Post was updated – update it in the list
         return oldPosts.map((post) =>
-          post.id === postId ? { ...post, ...updatedData } : post
+          post.id === postId ? { ...post, ...updatedData, group: groupId } : post
         );
       }
     );
@@ -79,6 +82,7 @@ const Feed: React.FC = () => {
       </div>
     );
   }
+  
 
   if (isError) {
     return (
@@ -88,10 +92,10 @@ const Feed: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-4">
-      <CreatePostCard onPostCreated={handleNewPost} />
+      <CreatePostCard groupId={id} onPostCreated={handleNewPost} />
       <div className="space-y-4">
         {posts?.map((post) => (
-          <PostCard key={post.id} post={post} updatePost={updatePostById} />
+          <PostCard key={post.id} groupId={groupId} post={post} updatePost={updatePostById} />
         ))}
       </div>
     </div>

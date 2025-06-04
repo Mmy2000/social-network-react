@@ -33,8 +33,9 @@ import { usePost } from "@/hooks/usePost";
 import Reactions, { REACTIONS } from "../reactions/Reactions";
 import SharedPostCard from "./SharedPostCard";
 import SharePostModal from "../modal/SharePostModal";
+import { useQueryClient } from "@tanstack/react-query";
 
-const PostCard = ({ post, updatePost }) => {
+const PostCard = ({ post, updatePost, groupId }) => {
   const location = useLocation();
   const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);
@@ -43,6 +44,7 @@ const PostCard = ({ post, updatePost }) => {
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     likeMutation,
     addCommentMutation,
@@ -65,7 +67,12 @@ const PostCard = ({ post, updatePost }) => {
     } else {
       setLiked(false);
     }
-  }, [user, post?.likes]);
+
+    // Always invalidate ["posts"] if groupId is falsy (e.g., feed page)
+    const queryKey = groupId ? ["posts", groupId] : ["posts"];
+    queryClient.invalidateQueries({ queryKey });
+  }, [user, post?.likes, groupId]);
+
 
   useEffect(() => {
     setShowComments(isPostDetailPage);
@@ -248,7 +255,7 @@ const PostCard = ({ post, updatePost }) => {
       });
       throw error;
     }
-  };
+  };  
 
   return (
     <>

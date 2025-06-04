@@ -14,6 +14,7 @@ import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
 import ConfirmModal from "../modal/ConfirmModal";
 import UpdateGroupModal from "./UpdateGroupModal";
+import { useNavigate } from "react-router-dom";
 
 interface GroupOptionsDropdownProps {
   group: any;
@@ -28,6 +29,7 @@ const GroupOptionsDropdown: React.FC<GroupOptionsDropdownProps> = ({
   const { toast } = useToast();
   const { user } = useUser();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const deleteGroupMutation = useMutation({
     mutationFn: async () => {
@@ -41,6 +43,7 @@ const GroupOptionsDropdown: React.FC<GroupOptionsDropdownProps> = ({
         variant: "success",
       });
       setModalType(null);
+      navigate("/groups");
     },
     onError: (error: any) => {
       toast({

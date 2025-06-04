@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 import SearchInput from "../search/SearchInput";
 import NotificationPopover from "../notifications/NotificationPopover";
+import { useFriends } from "@/hooks/useFriends";
 
 const Navbar = () => {
   const location = useLocation();
@@ -55,6 +56,8 @@ const Navbar = () => {
     } flex flex-col items-center`;
   };
 
+  const { requests, groupInvitations } = useFriends();
+
   return (
     <header className="sticky top-0 bg-white border-b border-gray-200 z-30">
       <div className="container mx-auto px-4 max-w-screen-xl">
@@ -72,7 +75,12 @@ const Navbar = () => {
             <Link to="/" className={getLinkClass("/")}>
               <Home className="w-6 h-6" />
             </Link>
-            <Link to="/friends" className={getLinkClass("/friends")}>
+            <Link to="/friends" className={`${getLinkClass("/friends")} relative`}>
+              {(requests.length > 0 || groupInvitations.length > 0 )&& (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {requests.length + groupInvitations.length}
+                </span>
+              )}
               <Users className="w-6 h-6" />
             </Link>
             <Link to="/chat" className={getLinkClass("/chat")}>

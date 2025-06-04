@@ -20,9 +20,10 @@ import { Spinner } from "../ui/Spinner";
 
 interface CreatePostCardProps {
   onPostCreated?: () => void;
+  groupId?: string;
 }
 
-const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
+const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId }) => {
   const [content, setContent] = useState("");
   const [role, setRole] = useState("public");
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -56,19 +57,26 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
 
     if (!content.trim()) return;
     setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append("content", content);
-    formData.append("role", role);
-    formData.append("feeling",feeling);
+    const formDataInGroup = new FormData();
+    formDataInGroup.append("content", content);
+    formDataInGroup.append("role", role);
+    formDataInGroup.append("group", groupId);
+    formDataInGroup.append("feeling",feeling);
     attachments.forEach((file) => {
-      formData.append("attachments", file);
+      formDataInGroup.append("attachments", file);
+    });
+    const formDataOnFeed = new FormData();
+    formDataOnFeed.append("content", content);
+    formDataOnFeed.append("role", role);
+    formDataOnFeed.append("feeling",feeling);
+    attachments.forEach((file) => {
+      formDataOnFeed.append("attachments", file);
     });
 
     try {
        const res = await apiService.postNewPost(
          "/posts/create/",
-         formData,
+         groupId ? formDataInGroup : formDataOnFeed,
          user?.access
        );
 
@@ -84,7 +92,6 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated }) => {
       });
       console.log(res);
       
-
       if (onPostCreated) onPostCreated();
     } catch (error: any) {
       toast({

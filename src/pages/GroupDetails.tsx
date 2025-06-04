@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useQuery,
   useMutation,
@@ -13,9 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
-import { Loader, Users, Settings } from "lucide-react";
+import { Loader, Users, Settings, Trash } from "lucide-react";
 import GroupOptionsDropdown from "@/components/groups/GroupOptionsDropdown";
 import InviteUsersModal from "@/components/groups/InviteUsersModal";
+import CreatePostCard from "@/components/feed/CreatePostCard";
+import Feed from "@/components/feed/Feed";
 
 interface GroupResponse {
   data: {
@@ -25,6 +27,7 @@ interface GroupResponse {
     description: string;
     cover_image: string;
     members_count: number;
+    is_private: boolean;
   };
 }
 
@@ -100,7 +103,36 @@ const GroupDetails = () => {
     },
   });
 
+  const removeMemberMutation = useMutation({
+    mutationFn: async (memberId: number) => {
+      return await apiService.delete(
+        `/groups/${id}/remove-member/${memberId}/`,
+        user?.access
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["group-members", id] });
+      toast({
+        title: "Success",
+        description: "Successfully removed member from group",
+        variant: "success",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to remove member from group",
+        variant: "error",
+      });
+    },
+  });
+
   const isMember = group?.data?.is_member;
+
+  const handleNewPost = () => {
+    // Invalidate and refetch posts query
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
+  };
 
   if (isLoading) {
     return (
@@ -109,7 +141,6 @@ const GroupDetails = () => {
       </div>
     );
   }
-  console.log(group);
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -183,16 +214,22 @@ const GroupDetails = () => {
           <TabsTrigger value="members">Members</TabsTrigger>
           {isAdmin && <TabsTrigger value="settings">Settings</TabsTrigger>}
         </TabsList>
-
+          
         <TabsContent value="discussion" className="mt-4">
           {/* Add your discussion/posts component here */}
-          <div className="text-center text-gray-500 py-8">
-            Discussion feature coming soon...
-          </div>
+          {group?.data?.is_private && !isMember ? (
+            <div className="flex items-center justify-center">
+              <h1>You are not a member of this group</h1>
+            </div>
+          ) : (
+          <div className="">
+              <Feed groupId={id} />
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="members" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {members?.data?.map((member) => (
               <div
                 key={member.user.id}
@@ -200,15 +237,32 @@ const GroupDetails = () => {
               >
                 <Avatar className="h-12 w-12">
                   <img
-                    src={member.user.profile_pic}
-                    alt={member.user.username}
+                    src={member.user.profile.profile_picture}
+                    alt={member.user.profile.full_name}
                   />
                 </Avatar>
-                <div className="ml-4">
-                  <h3 className="font-medium">{member.user.username}</h3>
-                  <p className="text-sm text-gray-500">
-                    {member.role === "admin" ? "Admin" : "Member"}
-                  </p>
+                <div className="ml-4 flex items-center justify-between w-full">
+                  <div>
+                    <Link to={`/profile/${member.user.id}`}>
+                      <h3 className="font-medium">
+                        {member.user.profile.full_name}
+                      </h3>
+                    </Link>
+                    <p className="text-sm text-gray-500">
+                      {member.role === "admin" ? "Admin" : "Member"}
+                    </p>
+                  </div>
+                  {isAdmin && member.user.id !== user?.id && (
+                    <Button
+                      onClick={() =>
+                        removeMemberMutation.mutate(member.user.id)
+                      }
+                      variant="destructive"
+                      size="icon"
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
