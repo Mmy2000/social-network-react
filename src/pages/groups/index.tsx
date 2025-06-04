@@ -82,7 +82,7 @@ const Groups = () => {
         </CardContent>
         <CardFooter className="flex justify-between">
           <div className="text-sm text-gray-500">
-            {group.member_count} members
+            {group.members_count} members
           </div>
           <Link to={`/groups/${group.id}`}>
             <Button variant="outline">View Group</Button>

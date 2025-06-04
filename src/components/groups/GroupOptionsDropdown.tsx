@@ -96,7 +96,7 @@ const GroupOptionsDropdown: React.FC<GroupOptionsDropdownProps> = ({
         open={modalType === "delete"}
         onClose={() => setModalType(null)}
         title="Delete Group"
-        description="Are you sure you want to delete this group? This action cannot be undone."
+        content="Are you sure you want to delete this group? This action cannot be undone."
         confirmText="Delete"
         onConfirm={handleDelete}
         loading={deleteGroupMutation.isPending}
