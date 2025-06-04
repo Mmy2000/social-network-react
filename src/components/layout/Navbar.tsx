@@ -59,9 +59,9 @@ const Navbar = () => {
     <header className="sticky top-0 bg-white border-b border-gray-200 z-30">
       <div className="container mx-auto px-4 max-w-screen-xl">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center flex-1">
+          <div className="flex items-center gap-4 flex-1">
             <Link to="/" className="text-facebook text-2xl font-bold mr-4">
-              SocialBook
+              Dreem
             </Link>
             <div className="hidden md:block max-w-md w-full">
               <SearchInput />
