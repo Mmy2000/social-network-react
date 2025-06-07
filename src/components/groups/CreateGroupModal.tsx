@@ -32,14 +32,16 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
   open,
   onClose,
 }) => {
+  const { toast } = useToast();
+  const { user } = useUser();
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     privacy: "public",
     cover_image: null as File | null,
   });
-  const { toast } = useToast();
-  const { user } = useUser();
+  
   const queryClient = useQueryClient();
 
   const createGroupMutation = useMutation({
