@@ -7,12 +7,12 @@ import ProfileAbout from "../components/profile/ProfileAbout";
 import ProfileFriends from "../components/profile/ProfileFriends";
 import ProfilePhotos from "../components/profile/ProfilePhotos";
 import UserDataCard from "../components/profile/UserDataCard";
-import ProfileSettings from "../components/profile/ProfileSettings";
 import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import { Loader2 } from "lucide-react";
 import { useFriends } from "@/hooks/useFriends";
 import { toast } from "@/components/ui/use-toast";
+import { Settings } from "@/components/settings/Settings";
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -231,7 +231,7 @@ const Profile = () => {
                 <ProfilePhotos images={images} />
               </TabsContent>
               <TabsContent value="settings" className="mt-0">
-                <ProfileSettings />
+                <Settings />
               </TabsContent>
             </div>
           </div>

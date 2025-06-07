@@ -1,7 +1,7 @@
-import { ChangePasswordForm } from "./ChangePasswordForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 export const Settings = () => {
   const { user } = useUser();

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import axios from "@/lib/axios";
+import axios from "axios";
 import {
   Card,
   CardContent,
@@ -12,8 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import apiService from "@/apiService/apiService";
+import { useUser } from "@/context/UserContext";
+import { Spinner } from "../ui/Spinner";
 
-export const ChangePasswordForm = () => {
+const ChangePasswordForm = () => {
   const [formData, setFormData] = useState({
     current_password: "",
     new_password: "",
@@ -21,6 +24,7 @@ export const ChangePasswordForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,18 +35,23 @@ export const ChangePasswordForm = () => {
       toast({
         title: "Error",
         description: "New password and confirm password do not match.",
-        variant: "destructive",
+        variant: "error",
       });
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post("/auth/change-password/", formData);
+      const response = await apiService.post(
+        "/accounts/change_password/", // Update to your actual API endpoint
+        formData,
+        user?.access
+      );      
 
       toast({
         title: "Success",
-        description: response.data.message || "Password changed successfully",
+        description: response?.message || "Password changed successfully",
+        variant: "success",
       });
 
       // Clear form
@@ -52,11 +61,12 @@ export const ChangePasswordForm = () => {
         confirm_password: "",
       });
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error",
         description:
-          error.response?.data?.message || "Failed to change password",
-        variant: "destructive",
+          error?.message || "Failed to change password",
+        variant: "error",
       });
     } finally {
       setLoading(false);
@@ -102,11 +112,18 @@ export const ChangePasswordForm = () => {
               required
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Updating Password..." : "Update Password"}
+          <Button type="submit" className={`w-full ${loading? "cursor-not-allowed" : ""}`} disabled={loading}>
+            {loading && (
+              <div className="flex items-center justify-center">
+                <Spinner />
+              </div>
+            )}
+            {loading ? "Changing..." : "Change Password"}
           </Button>
         </form>
       </CardContent>
     </Card>
   );
 };
+
+export default ChangePasswordForm;
