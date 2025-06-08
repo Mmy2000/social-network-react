@@ -13,6 +13,7 @@ import { useChat } from "@/hooks/useChat";
 import data from "@emoji-mart/data";
 import PickerComponent from "@emoji-mart/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
   profile_picture?: string;
@@ -51,7 +52,7 @@ const ChatDetails: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [otherUser, setOtherUser] = useState<User | null>(null);
-
+  const { toast } = useToast();
   const { markMessagesAsRead } = useChat();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -263,8 +264,15 @@ const ChatDetails: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showEmojiPicker]);
 
+
   return (
     <div className="lg:mx-60 mx-10 h-[calc(100vh-10rem)]">
+      <div className="flex justify-center items-center my-12">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">This service will be available soon</h1>
+          <p className="text-sm text-gray-500">it works on local machine only, because of the websocket connection is not working on the free hosting server i should buy a domain and a server to make it work</p>
+        </div>
+      </div>
       {/* Chat Header */}
       <div className="h-20 px-6 flex items-center justify-between border-b sticky top-0 bg-white z-10">
         <div className="flex items-center space-x-4">

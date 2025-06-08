@@ -16,6 +16,7 @@ import { useUser } from "@/context/UserContext";
 import CreateGroupModal from "@/components/groups/CreateGroupModal";
 import apiService from "@/apiService/apiService";
 import { useQuery } from "@tanstack/react-query";
+import { ScrollArea } from "../ui/scroll-area";
 
 const menuItems = [
   { icon: Users, label: "Friends", path: "/friends" },
@@ -38,8 +39,8 @@ const LeftSidebar = () => {
   });
 
   return (
-    <aside
-      className="hidden md:block w-[280px] p-4 space-y-4 overflow-y-auto"
+    <ScrollArea
+      className="hidden md:block w-[280px] p-4 space-y-4"
       style={{ maxHeight: "calc(100vh - 64px)" }}
     >
       {/* User Profile Link */}
@@ -144,9 +145,9 @@ const LeftSidebar = () => {
       </div>
       <CreateGroupModal
         open={isCreateGroupModalOpen}
-        onClose={() => setIsCreateGroupModalOpen(false)}
-      />
-    </aside>
+          onClose={() => setIsCreateGroupModalOpen(false)}
+        />
+    </ScrollArea>
   );
 };
 

@@ -67,7 +67,7 @@ const Navbar = () => {
   } = useChat();
   
   return (
-    <header className="sticky top-0 bg-white border-b border-gray-200 z-30">
+    <header className="dark:bg-gray-900 inset-x-0  w-full sticky z-[100] top-0 left-0 border-b border-gray-200 dark:border-gray-900 bg-white/75 backdrop-blur-lg transition-all duration-300 ease-in-out">
       <div className="container mx-auto px-4 max-w-screen-xl">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4 flex-1">
