@@ -1,58 +1,26 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-const PAGE_SIZE = 10;
-
-const fetchConversations = async (
-  token: string,
-  pageParam = 1
-): Promise<{
-  conversations: any[];
-  nextPage: number;
-  isLastPage: boolean;
-}> => {
-  const res = await apiService.get(
-    `/chat/conversations/?page=${pageParam}&per_page=${PAGE_SIZE}`,
-    token
-  );
-
-  return {
-    conversations: res.data,
-    nextPage: pageParam + 1,
-    isLastPage: res.pagination?.current_page >= res.pagination?.last_page,
-  };
-};
+import { useChat } from "@/hooks/useChat";
 
 const Chat = () => {
   const { user } = useUser();
-
   const {
-    data,
-    isLoading,
-    isError,
+    conversations,
+    isLoadingConversations,
+    unreadMessages,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    initialPageParam: 1,
-    queryKey: ["conversations", user?.access],
-    queryFn: ({ pageParam = 1 }) => fetchConversations(user?.access, pageParam),
-    getNextPageParam: (lastPage) =>
-      !lastPage.isLastPage ? lastPage.nextPage : undefined,
-    enabled: !!user?.access,
-    staleTime: 30000,
-    refetchInterval: 60000,
-  });
+  } = useChat();
 
-  if (isLoading) {
+  if (isLoadingConversations) {
     return (
       <div className="max-w-xl mx-auto p-6 space-y-4">
         <Skeleton className="h-8 bg-slate-300 w-1/2" />
@@ -63,26 +31,20 @@ const Chat = () => {
     );
   }
 
-  if (isError) {
+  if (!user?.access) {
     return (
       <div className="text-center text-red-500 mt-4">
-        Failed to load conversations.
+        Please login to view conversations.
       </div>
     );
   }
-  if (!user?.access) {
-    return <div className="text-center text-red-500 mt-4">Please login to view conversations.</div>;
-  }
-
-  const allConversations =
-    data?.pages.flatMap((page) => page.conversations) || [];
 
   return (
     <div className="max-w-xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Conversations</h2>
 
       <InfiniteScroll
-        dataLength={allConversations.length}
+        dataLength={conversations.length}
         next={fetchNextPage}
         hasMore={!!hasNextPage}
         loader={
@@ -96,11 +58,16 @@ const Chat = () => {
           </p>
         }
       >
-        <div className="space-y-4">
-          {allConversations.map((conv, index) => {
+        <div className="space-y-4 relative">
+          {conversations.map((conv, index) => {
             const otherUser = conv.users.find((u) => u.id !== user?.id);
             const imageUrl =
               otherUser?.profile?.profile_picture || "/default-avatar.png";
+
+            const match = unreadMessages?.find(
+              (u) => u.id === conv.id
+            );
+            const unreadCount = match?.unreadCount || 0;
 
             return (
               <motion.div
@@ -110,7 +77,7 @@ const Chat = () => {
                 transition={{ delay: index * 0.05 }}
               >
                 <Link to={`/chat/${conv?.id}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer relative">
                     <CardContent className="p-4 flex items-center space-x-4">
                       <Avatar>
                         <AvatarImage src={imageUrl} alt={otherUser?.username} />
@@ -128,6 +95,12 @@ const Chat = () => {
                           {new Date(conv.modified_at).toLocaleString()}
                         </p>
                       </div>
+
+                      {unreadCount > 0 && (
+                        <span className="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                          {unreadCount}
+                        </span>
+                      )}
                     </CardContent>
                   </Card>
                 </Link>

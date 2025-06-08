@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   Bell,
   Home,
+  Loader2,
   MessageCircle,
   User,
   Users,
@@ -21,6 +22,7 @@ import {
 import SearchInput from "../search/SearchInput";
 import NotificationPopover from "../notifications/NotificationPopover";
 import { useFriends } from "@/hooks/useFriends";
+import { useChat } from "@/hooks/useChat";
 
 const Navbar = () => {
   const location = useLocation();
@@ -57,7 +59,13 @@ const Navbar = () => {
   };
 
   const { requests, groupInvitations } = useFriends();
-
+  const {
+    conversations,
+    isLoadingConversations,
+    unreadMessages,
+    isLoadingUnreadMessages,
+  } = useChat();
+  
   return (
     <header className="sticky top-0 bg-white border-b border-gray-200 z-30">
       <div className="container mx-auto px-4 max-w-screen-xl">
@@ -75,16 +83,39 @@ const Navbar = () => {
             <Link to="/" className={getLinkClass("/")}>
               <Home className="w-6 h-6" />
             </Link>
-            <Link to="/friends" className={`${getLinkClass("/friends")} relative`}>
-              {(requests.length > 0 || groupInvitations.length > 0 )&& (
+            <Link
+              to="/friends"
+              className={`${getLinkClass("/friends")} relative`}
+            >
+              {(requests.length > 0 || groupInvitations.length > 0) && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {requests.length + groupInvitations.length}
                 </span>
               )}
               <Users className="w-6 h-6" />
             </Link>
-            <Link to="/chat" className={getLinkClass("/chat")}>
-              <MessageCircle className="w-6 h-6" />
+            <Link to="/chat" className={getLinkClass("/chat") + " relative"}>
+              {isLoadingUnreadMessages ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <>
+                  <MessageCircle className="w-6 h-6" />
+                  {unreadMessages &&
+                    unreadMessages.length > 0 &&
+                    unreadMessages.reduce(
+                      (total: number, conv: any) => total + conv.unreadCount,
+                      0
+                    ) > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {unreadMessages.reduce(
+                          (total: number, conv: any) =>
+                            total + conv.unreadCount,
+                          0
+                        )}
+                      </span>
+                    )}
+                </>
+              )}
             </Link>
           </nav>
 
