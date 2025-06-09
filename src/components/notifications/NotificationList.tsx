@@ -11,7 +11,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-
+import { useInfiniteQuery } from "@tanstack/react-query";
+import InfiniteScroll from "react-infinite-scroll-component";
 interface NotificationSender {
   id: number;
   first_name: string;
@@ -62,6 +63,7 @@ const NotificationList = () => {
     queryKey: ["notifications"],
     queryFn: async () => {
       const response = await apiService.get("/notifications/", user?.access);
+      console.log(response);
       return response.data;
     },
     enabled: !!user?.access,

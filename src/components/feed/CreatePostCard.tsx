@@ -31,6 +31,12 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user } = useUser();
+  const feelingEmojis = {
+    happy: "😊",
+    sad: "😢",
+    excited: "🤩",
+    tired: "😴",
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -174,10 +180,18 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
                   <SelectValue placeholder="Feeling" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="happy">Happy</SelectItem>
-                  <SelectItem value="sad">Sad</SelectItem>
-                  <SelectItem value="excited">Excited</SelectItem>
-                  <SelectItem value="tired">Tired</SelectItem>
+                  <SelectItem value="happy">
+                    {feelingEmojis.happy} Happy
+                  </SelectItem>
+                  <SelectItem value="sad">
+                    {feelingEmojis.sad} Sad
+                  </SelectItem>
+                  <SelectItem value="excited">
+                    {feelingEmojis.excited} Excited
+                  </SelectItem>
+                  <SelectItem value="tired">
+                    {feelingEmojis.tired} Tired
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </Button>
