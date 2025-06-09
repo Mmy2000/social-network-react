@@ -130,6 +130,7 @@ const RightSidebar = () => {
       {/* Friend Suggestions */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="text-lg font-semibold mb-3">People You May Know</h3>
+        {suggestions.length > 0 ? ( 
         <ScrollArea className="h-[calc(100%-12rem)]">
           <div className="space-y-4">
             {suggestions.map((friend) => (
@@ -198,14 +199,17 @@ const RightSidebar = () => {
               </div>
             ))}
           </div>
-        </ScrollArea>
+        </ScrollArea>):(
+          <p className="text-gray-500">No suggestions found</p>
+        )}
       </div>
 
       {/* Contacts */}
-      <div className="flex flex-col gap-4 sticky top-0 ">
+      <div className="flex flex-col gap-4 sticky top-20 ">
         <div className="bg-white rounded-lg shadow p-4 ">
           <ScrollArea className="h-[calc(100%-12rem)]">
             <h3 className="text-lg font-semibold mb-3">Contacts</h3>
+            {friends.length > 0 ? (
             <ul className="space-y-1">
               {friends.map((friend) => (
                 <li key={friend.id}>
@@ -233,8 +237,11 @@ const RightSidebar = () => {
                     )}
                   </button>
                 </li>
-              ))}
-            </ul>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No contacts found</p>
+            )}
           </ScrollArea>
         </div>
 

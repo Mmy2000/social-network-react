@@ -10,6 +10,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface NotificationSender {
   id: number;
@@ -177,7 +178,7 @@ const NotificationList = () => {
   }
 
   return (
-    <div>
+    <ScrollArea>
       {unreadCount > 0 && (
         <div className="px-4 py-2 border-b border-gray-100">
           <Button
@@ -191,7 +192,7 @@ const NotificationList = () => {
           </Button>
         </div>
       )}
-      <div className="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">
+      <div className="divide-y divide-gray-100 max-h-[400px] ">
         <AnimatePresence>
           {notifications.map((notification) => (
             <motion.div
@@ -244,7 +245,7 @@ const NotificationList = () => {
           ))}
         </AnimatePresence>
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 

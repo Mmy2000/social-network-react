@@ -11,16 +11,22 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Loader } from "lucide-react";
 import apiService from "@/apiService/apiService";
 import { useUser } from "@/context/UserContext";
 import CreateGroupModal from "@/components/groups/CreateGroupModal";
 import GroupOptionsDropdown from "@/components/groups/GroupOptionsDropdown";
 
+
 const Groups = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   const { user } = useUser();
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
   const { data: groups, isLoading } = useQuery({
     queryKey: ["groups", "all"],

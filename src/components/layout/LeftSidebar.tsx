@@ -43,7 +43,7 @@ const LeftSidebar = () => {
       className="hidden md:block w-[280px] p-4 space-y-4"
       style={{ maxHeight: "calc(100vh - 64px)" }}
     >
-      {/* User Profile Link */}
+      {user ?
       <Link
         to={`/profile/${user?.id}`}
         className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
@@ -54,7 +54,10 @@ const LeftSidebar = () => {
         <span className="font-medium">
           {user?.first_name} {user?.last_name}
         </span>
-      </Link>
+      </Link>:(
+        <p className="text-gray-500 mb-2">Please login to show your profile <Link to="/login" className="text-facebook">Login</Link></p>
+      )}
+      
 
       {/* Main Menu Items */}
       <nav>
