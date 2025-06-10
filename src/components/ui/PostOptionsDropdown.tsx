@@ -54,7 +54,6 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
   const handleSavePost = async () => {
     try {
       const response = await savePostMutation.mutateAsync(post.id);
-      console.log(response);
       toast({
         title: "Saved posts updated",
         description: response?.message,

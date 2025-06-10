@@ -28,7 +28,7 @@ export const useFriends = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user } = useUser();
-  const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
+  const [loadingStates, setLoadingStates] = useState<{ [key: number]: { accept: boolean; decline: boolean } }>({});
 
   // Helper function to get token
   const getToken = () => user?.access || localStorage.getItem("access") || "";
@@ -76,7 +76,7 @@ export const useFriends = () => {
   // Send friend request mutation
   const sendFriendRequestMutation = useMutation({
     mutationFn: async (userId: number) => {
-      setLoadingStates((prev) => ({ ...prev, [userId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [userId]: { accept: true, decline: false } }));
       try {
         const response = await apiService.post(
           `/accounts/friend-request/send/`,
@@ -85,7 +85,7 @@ export const useFriends = () => {
         );
         return response.data;
       } finally {
-        setLoadingStates((prev) => ({ ...prev, [userId]: false }));
+        setLoadingStates((prev) => ({ ...prev, [userId]: { accept: false, decline: false } }));
       }
     },
     onSuccess: () => {
@@ -108,8 +108,7 @@ export const useFriends = () => {
   // Update friend request mutation (accept/reject)
   const updateFriendRequestMutation = useMutation({
     mutationFn: async ({ requestId, status }: { requestId: number; status: "accepted" | "rejected" }) => {
-      console.log("Updating friend request:", { requestId, status });
-      setLoadingStates((prev) => ({ ...prev, [requestId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [requestId]: { accept: status === "accepted" ? true : false, decline: status === "rejected" ? true : false } }));
       try {
         const token = getToken();
         const response = await apiService.put(
@@ -119,7 +118,7 @@ export const useFriends = () => {
         );
         return response.data;
       } finally {
-        setLoadingStates((prev) => ({ ...prev, [requestId]: false }));
+        setLoadingStates((prev) => ({ ...prev, [requestId]: { accept: false, decline: false } }));
       }
     },
     onSuccess: (data, { status }) => {
@@ -143,11 +142,11 @@ export const useFriends = () => {
   // Remove friend mutation
   const removeFriendMutation = useMutation({
     mutationFn: async (friendId: number) => {
-      setLoadingStates((prev) => ({ ...prev, [friendId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [friendId]: { accept: false, decline: true } }));
       try {
         await apiService.delete(`/accounts/friends/remove/${friendId}/`, getToken());
       } finally {
-        setLoadingStates((prev) => ({ ...prev, [friendId]: false }));
+        setLoadingStates((prev) => ({ ...prev, [friendId]: { accept: false, decline: false } }));
       }
     },
     onSuccess: () => {
@@ -169,7 +168,7 @@ export const useFriends = () => {
   // Handle group invitation response
   const handleGroupInvitationMutation = useMutation({
     mutationFn: async ({ invitationId, action }: { invitationId: number; action: "accept" | "decline" }) => {
-      setLoadingStates((prev) => ({ ...prev, [invitationId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [invitationId]: { accept: action === "accept" ? true : false, decline: action === "decline" ? true : false } }));
       try {
         const response = await apiService.post(
           `/groups/invitations/${invitationId}/respond/`,
@@ -178,7 +177,7 @@ export const useFriends = () => {
         );
         return response.data;
       } finally {
-        setLoadingStates((prev) => ({ ...prev, [invitationId]: false }));
+        setLoadingStates((prev) => ({ ...prev, [invitationId]: { accept: false, decline: false } }));
       }
     },
     onSuccess: (data, { action }) => {
@@ -210,6 +209,10 @@ export const useFriends = () => {
     updateFriendRequest: updateFriendRequestMutation.mutate,
     removeFriend: removeFriendMutation.mutate,
     handleGroupInvitation: handleGroupInvitationMutation.mutate,
-    isLoading: (userId: number) => loadingStates[userId] || false,
+    isLoading: (userId: number, action?: "accept" | "decline") => {
+      const state = loadingStates[userId];
+      if (!state) return false;
+      return action ? state[action] : state.accept || state.decline;
+    },
   };
 }; 

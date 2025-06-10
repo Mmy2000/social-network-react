@@ -235,14 +235,14 @@ const Friends = () => {
                                     status: "accepted",
                                   })
                                 }
-                                disabled={isLoading(request.id)}
+                                disabled={isLoading(request.id, "accept")}
                               >
-                                {isLoading(request.id) ? (
+                                {isLoading(request.id, "accept") ? (
                                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 ) : (
                                   <UserCheck className="h-4 w-4 mr-2" />
                                 )}
-                                {isLoading(request.id)
+                                {isLoading(request.id, "accept")
                                   ? "Accepting..."
                                   : "Confirm Request"}
                               </Button>
@@ -256,14 +256,14 @@ const Friends = () => {
                                     status: "rejected",
                                   })
                                 }
-                                disabled={isLoading(request.id)}
+                                disabled={isLoading(request.id, "decline")}
                               >
-                                {isLoading(request.id) ? (
+                                {isLoading(request.id, "decline") ? (
                                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 ) : (
                                   <UserX className="h-4 w-4 mr-2" />
                                 )}
-                                {isLoading(request.id)
+                                {isLoading(request.id, "decline")
                                   ? "Declining..."
                                   : "Delete Request"}
                               </Button>
@@ -345,14 +345,14 @@ const Friends = () => {
                                     action: "accept",
                                   })
                                 }
-                                disabled={isLoading(invitation.id)}
+                                disabled={isLoading(invitation.id, "accept")}
                               >
-                                {isLoading(invitation.id) ? (
+                                {isLoading(invitation.id, "accept") ? (
                                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 ) : (
                                   <UserCheck className="h-4 w-4 mr-2" />
                                 )}
-                                {isLoading(invitation.id)
+                                {isLoading(invitation.id, "accept")
                                   ? "Accepting..."
                                   : "Accept Invitation"}
                               </Button>
@@ -366,14 +366,14 @@ const Friends = () => {
                                     action: "decline",
                                   })
                                 }
-                                disabled={isLoading(invitation.id)}
+                                disabled={isLoading(invitation.id, "decline")}
                               >
-                                {isLoading(invitation.id) ? (
+                                {isLoading(invitation.id, "decline") ? (
                                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 ) : (
                                   <UserX className="h-4 w-4 mr-2" />
                                 )}
-                                {isLoading(invitation.id)
+                                {isLoading(invitation.id, "decline")
                                   ? "Declining..."
                                   : "Decline Invitation"}
                               </Button>

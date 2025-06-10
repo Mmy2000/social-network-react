@@ -21,6 +21,7 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   loading?: boolean;
   isEdit?: boolean;
+
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -33,7 +34,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   loading = false,
   isEdit = false,
+
 }) => {
+  
+  
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent

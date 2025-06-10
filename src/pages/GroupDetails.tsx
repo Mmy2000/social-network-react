@@ -18,6 +18,7 @@ import GroupOptionsDropdown from "@/components/groups/GroupOptionsDropdown";
 import InviteUsersModal from "@/components/groups/InviteUsersModal";
 import CreatePostCard from "@/components/feed/CreatePostCard";
 import Feed from "@/components/feed/Feed";
+import ConfirmModal from "@/components/modal/ConfirmModal";
 
 interface GroupResponse {
   data: {
@@ -39,6 +40,8 @@ const GroupDetails = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isRemoveMemberModalOpen, setIsRemoveMemberModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 
   const { data: group, isLoading }: UseQueryResult<GroupResponse> = useQuery({
     queryKey: ["group", id],
@@ -117,6 +120,7 @@ const GroupDetails = () => {
         description: "Successfully removed member from group",
         variant: "success",
       });
+      setIsRemoveMemberModalOpen(false);
     },
     onError: (error: any) => {
       toast({
@@ -214,7 +218,7 @@ const GroupDetails = () => {
           <TabsTrigger value="members">Members</TabsTrigger>
           {isAdmin && <TabsTrigger value="settings">Settings</TabsTrigger>}
         </TabsList>
-          
+
         <TabsContent value="discussion" className="mt-4">
           {/* Add your discussion/posts component here */}
           {group?.data?.is_private && !isMember ? (
@@ -222,7 +226,7 @@ const GroupDetails = () => {
               <h1>You are not a member of this group</h1>
             </div>
           ) : (
-          <div className="">
+            <div className="">
               <Feed groupId={id} />
             </div>
           )}
@@ -254,9 +258,10 @@ const GroupDetails = () => {
                   </div>
                   {isAdmin && member.user.id !== user?.id && (
                     <Button
-                      onClick={() =>
-                        removeMemberMutation.mutate(member.user.id)
-                      }
+                      onClick={() => {
+                        setSelectedMemberId(member.user.id);
+                        setIsRemoveMemberModalOpen(true);
+                      }}
                       variant="destructive"
                       size="icon"
                     >
@@ -284,6 +289,16 @@ const GroupDetails = () => {
         open={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
         groupId={id}
+      />
+
+      <ConfirmModal
+        open={isRemoveMemberModalOpen}
+        onClose={() => setIsRemoveMemberModalOpen(false)}
+        onConfirm={() => removeMemberMutation.mutate(selectedMemberId)}
+        title="Remove Member"
+        content="Are you sure you want to remove this member from the group?"
+        loading={removeMemberMutation.isPending}
+        confirmText="Remove"
       />
     </div>
   );
