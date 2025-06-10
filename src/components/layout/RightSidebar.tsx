@@ -57,10 +57,10 @@ const RightSidebar = () => {
   }
 
   return (
-    <aside className="hidden lg:block w-80 p-4 space-y-6">
+    <aside className="hidden lg:block w-80 p-4 space-y-6 dark:text-gray-400 ">
       {/* Friend Requests */}
       {requests && requests.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-800 dark:text-gray-400">
           <h3 className="text-lg font-semibold mb-3">Friend Requests</h3>
           <ScrollArea className="h-32">
             <div className="space-y-4">
@@ -128,7 +128,7 @@ const RightSidebar = () => {
       )}
 
       {/* Friend Suggestions */}
-      <div className="bg-white rounded-lg shadow p-4">
+      <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-800 dark:text-gray-400">
         <h3 className="text-lg font-semibold mb-3">People You May Know</h3>
         {suggestions.length > 0 ? ( 
         <ScrollArea className="h-[calc(100%-12rem)]">
@@ -206,7 +206,7 @@ const RightSidebar = () => {
 
       {/* Contacts */}
       <div className="flex flex-col gap-4 sticky top-20 ">
-        <div className="bg-white rounded-lg shadow p-4 ">
+        <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-800 dark:text-gray-400">
           <ScrollArea className="h-[calc(100%-12rem)]">
             <h3 className="text-lg font-semibold mb-3">Contacts</h3>
             {friends.length > 0 ? (
@@ -216,7 +216,7 @@ const RightSidebar = () => {
                   <button
                     onClick={() => handleStartChat(friend.id)}
                     disabled={startingChatWith === friend.id}
-                    className="w-full flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover disabled:opacity-50"
+                    className="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover disabled:opacity-50"
                   >
                     <div className="relative">
                       <Avatar className="h-8 w-8 mr-3">
@@ -240,13 +240,13 @@ const RightSidebar = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500">No contacts found</p>
+              <p className="text-gray-500 dark:text-gray-400">No contacts found</p>
             )}
           </ScrollArea>
         </div>
 
         {/* Footer */}
-        <div className="text-xs text-gray-500 space-y-1 ">
+        <div className="text-xs text-gray-500 space-y-1 dark:text-gray-400">
           <div className="flex flex-wrap gap-1">
             <Link to="#" className="hover:underline">
               Privacy

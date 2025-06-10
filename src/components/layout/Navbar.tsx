@@ -9,6 +9,8 @@ import {
   Home,
   Loader2,
   MessageCircle,
+  MoonIcon,
+  SunIcon,
   User,
   Users,
 } from "lucide-react";
@@ -23,11 +25,13 @@ import SearchInput from "../search/SearchInput";
 import NotificationPopover from "../notifications/NotificationPopover";
 import { useFriends } from "@/hooks/useFriends";
 import { useChat } from "@/hooks/useChat";
+import { Switch } from "../ui/switch";
 
 const Navbar = () => {
   const location = useLocation();
   const { user, setUser } = useUser(); // Accessing user context
   let navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -45,29 +49,29 @@ const Navbar = () => {
   const getLinkClass = (path: string) => {
     return `px-4 py-2 mx-1 ${
       isActive(path)
-        ? "text-facebook border-b-2 border-facebook"
-        : "text-gray-600 hover:text-facebook animate-hover"
+        ? "text-facebook border-b-2 border-facebook "
+        : "text-gray-600 hover:text-facebook animate-hover dark:text-gray-400"
     }`;
   };
 
   const getMobileLinkClass = (path: string) => {
     return `px-4 py-2 ${
       isActive(path)
-        ? "text-facebook border-b-2 border-facebook"
-        : "text-gray-600"
+        ? "text-facebook border-b-2 border-facebook "
+        : "text-gray-600 dark:text-gray-400"
     } flex flex-col items-center`;
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle("dark", !isDarkMode);
+  };
+
   const { requests, groupInvitations } = useFriends();
-  const {
-    conversations,
-    isLoadingConversations,
-    unreadMessages,
-    isLoadingUnreadMessages,
-  } = useChat();
+  const { unreadMessages, isLoadingUnreadMessages } = useChat();
   
   return (
-    <header className="dark:bg-gray-900 inset-x-0  w-full sticky z-10 top-0 left-0 border-b border-gray-200 dark:border-gray-900 bg-white/75 backdrop-blur-lg transition-all duration-300 ease-in-out">
+    <header className="dark:bg-gradient-to-r dark:from-gray-950 dark:to-gray-900 inset-x-0  w-full sticky z-10 top-0 left-0 border-b border-gray-200 dark:border-gray-900 bg-white/75 backdrop-blur-lg transition-all duration-300 ease-in-out">
       <div className="container mx-auto px-4 max-w-screen-xl">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4 flex-1">
@@ -121,6 +125,26 @@ const Navbar = () => {
 
           <div className="flex items-center space-x-2">
             {user && <NotificationPopover />}
+            <Switch
+              checked={isDarkMode}
+              onClick={toggleDarkMode}
+              className={`${
+                isDarkMode
+                  ? "bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg shadow-blue-500/50"
+                  : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-12 transition-all duration-300 ease-in-out`}
+            >
+              <span
+                className={`${
+                  isDarkMode ? "translate-x-6" : "translate-x-1"
+                } inline-block w-5 h-5 transform bg-white rounded-full transition-transform duration-300`}
+              />
+              {isDarkMode ? (
+                <MoonIcon className="absolute left-1 w-4 h-4 text-blue-300" />
+              ) : (
+                <SunIcon className="absolute right-1 w-4 h-4 text-yellow-400" />
+              )}
+            </Switch>
             {user ? (
               <>
                 {!user.isActive && (

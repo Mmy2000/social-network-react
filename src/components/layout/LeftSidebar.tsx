@@ -40,13 +40,13 @@ const LeftSidebar = () => {
 
   return (
     <ScrollArea
-      className="hidden md:block w-[280px] p-4 space-y-4"
+      className="hidden md:block w-[280px] p-4 space-y-4 dark:text-gray-400"
       style={{ maxHeight: "calc(100vh - 64px)" }}
     >
       {user ?
       <Link
         to={`/profile/${user?.id}`}
-        className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
+        className="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover"
       >
         <Avatar className="h-9 w-9 mr-3">
           <img src={user?.profile_pic} alt={user?.first_name} />
@@ -55,7 +55,7 @@ const LeftSidebar = () => {
           {user?.first_name} {user?.last_name}
         </span>
       </Link>:(
-        <p className="text-gray-500 mb-2">Please login to show your profile <Link to="/login" className="text-facebook">Login</Link></p>
+        <p className="text-gray-500 mb-2 dark:text-gray-400">Please login to show your profile <Link to="/login" className="text-facebook">Login</Link></p>
       )}
       
 
@@ -66,9 +66,9 @@ const LeftSidebar = () => {
             <li key={index}>
               <Link
                 to={item.path}
-                className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
+                className="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover"
               >
-                <div className="bg-gray-200 rounded-full p-2 mr-3">
+                <div className="bg-gray-200 rounded-full p-2 mr-3 dark:bg-gray-800 dark:text-gray-400">
                   <item.icon className="h-5 w-5 text-facebook" />
                 </div>
                 <span>{item.label}</span>
@@ -78,7 +78,7 @@ const LeftSidebar = () => {
           <li>
             <Button
               variant="ghost"
-              className="w-full justify-start p-2 hover:bg-gray-100"
+              className="w-full justify-start p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300"
             >
               <svg
                 className="h-5 w-5 mr-3"
@@ -98,12 +98,12 @@ const LeftSidebar = () => {
         </ul>
       </nav>
 
-      <div className="border-t border-gray-300 pt-4">
+      <div className="border-t border-gray-300 pt-4 dark:text-gray-400">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-gray-500 font-medium">Your Groups</h3>
+          <h3 className="text-gray-500 font-medium dark:text-gray-400">Your Groups</h3>
           <Link
             to="/groups"
-            className="text-facebook hover:bg-blue-50 px-2 py-1 rounded text-sm"
+            className="text-facebook hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-gray-300 px-2 py-1 rounded text-sm dark:text-gray-400"
           >
             See All
           </Link>
@@ -114,7 +114,7 @@ const LeftSidebar = () => {
             <li key={group.id}>
               <Link
                 to={`/groups/${group.id}`}
-                className="flex items-center p-2 rounded-md hover:bg-gray-100 animate-hover"
+                className="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover"
               >
                 <Avatar className="h-9 w-9 mr-3">
                   <img src={group.cover_image} alt={group.name} />
@@ -125,7 +125,7 @@ const LeftSidebar = () => {
           ))}
           <li>
             <Button
-              className="w-full flex items-center justify-center mt-2 bg-gray-200 hover:bg-gray-300 text-gray-800"
+              className="w-full flex items-center justify-center mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
               onClick={() => setIsCreateGroupModalOpen(true)}
             >
               <svg

@@ -55,7 +55,7 @@ const SearchInput = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          className="pl-10 py-2 bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-facebook focus:bg-white transition-all duration-200 shadow-sm focus:shadow-md"
+          className="pl-10 py-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-facebook focus:bg-white transition-all duration-200 shadow-sm focus:shadow-md"
         />
       </div>
 
@@ -66,16 +66,16 @@ const SearchInput = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full mt-2 left-0 w-full bg-white border border-gray-200 rounded-lg shadow-md p-4 z-10"
+            className="absolute top-full mt-2 left-0 w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white bg-white border border-gray-200 rounded-lg shadow-md p-4 z-10"
           >
             {loading ? (
-              <p className="text-sm text-gray-500">Searching...</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Searching...</p>
             ) : results.length > 0 ? (
               results.map((user) => (
                 <Link
                   to={`/profile/${user?.id}`}
                   key={user.id}
-                  className="flex items-center gap-2 py-1 hover:bg-gray-100 px-2 rounded"
+                  className="flex items-center gap-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 rounded"
                 >
                   <img
                     src={user?.profile?.profile_picture}
@@ -83,15 +83,15 @@ const SearchInput = () => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-medium dark:text-white">
                       {user?.profile?.full_name}
                     </p>
-                    <p className="text-xs text-gray-500">@{user?.username}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">@{user?.username}</p>
                   </div>
                 </Link>
               ))
             ) : (
-              <p className="text-sm text-gray-500">No users found.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">No users found.</p>
             )}
           </motion.div>
         )}

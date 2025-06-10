@@ -32,7 +32,7 @@ const NotificationPopover = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="relative"
+          className="relative dark:text-gray-400 dark:hover:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
           aria-label="Open notifications"
         >
           <Bell className="h-5 w-5" />

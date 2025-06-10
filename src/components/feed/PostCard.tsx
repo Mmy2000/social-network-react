@@ -259,7 +259,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
 
   return (
     <>
-      <Card className="mb-4 shadow-sm overflow-hidden">
+      <Card className="mb-4 shadow-sm overflow-hidden dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">
         <CardHeader className="p-4 pb-2">
           <div className="flex justify-between">
             <div className="flex items-center">
@@ -274,24 +274,24 @@ const PostCard = ({ post, updatePost, groupId }) => {
               <div>
                 <Link
                   to={`/profile/${post?.created_by?.id}`}
-                  className="font-medium hover:underline"
+                  className="font-medium hover:underline dark:text-gray-400"
                 >
                   {post?.created_by?.profile?.full_name}
                 </Link>
 
                 {post?.feeling && (
                   <>
-                    <span className="text-muted-foreground text-xs font-normal">
+                    <span className="text-muted-foreground text-xs font-normal dark:text-gray-400">
                       {" "}
                       —{" "}
                     </span>
-                    <span className="bg-gray-100 px-2 py-1 rounded-md text-muted-foreground text-xs font-normal">
+                    <span className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-md text-muted-foreground text-xs font-normal dark:text-gray-400">
                       {feelingEmojis[post.feeling]} feeling {post.feeling}
                     </span>
                   </>
                 )}
 
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {post?.time_since_created}
                 </p>
               </div>
@@ -305,7 +305,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
         <CardContent className="p-4 pt-0">
           {/* Post content */}
           <Link to={`/post/${post?.id}`}>
-            <p className="text-sm mb-3">{post?.content}</p>
+            <p className="text-sm mb-3 dark:text-gray-400">{post?.content}</p>
           </Link>
 
           {/* Original post attachments */}
@@ -317,7 +317,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
           {post?.shared_from && <SharedPostCard postID={post.shared_from} />}
 
           {/* Rest of the post content */}
-          <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
+          <div className="flex justify-between items-center mt-4 text-sm text-gray-500 dark:text-gray-400">
             <div className="flex items-center">
               {post?.likes
                 ?.filter(
@@ -335,7 +335,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="mr-4 text-gray-700 cursor-pointer">
+                    <div className="mr-4 text-gray-700 cursor-pointer dark:text-gray-400">
                       <span>
                         {post?.like_count > 0
                           ? `${post?.like_count} Reactions`
@@ -343,8 +343,8 @@ const PostCard = ({ post, updatePost, groupId }) => {
                       </span>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="top">
-                    <div className="flex flex-col">
+                  <TooltipContent side="top" className="dark:bg-gray-800 dark:text-gray-400 dark:border-gray-800 dark:hover:text-gray-300">
+                    <div className="flex flex-col ">
                       {Array.isArray(post?.likes) &&
                         post.likes.map((like) => (
                           <Link
@@ -355,7 +355,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
                             <Avatar className="h-6 w-6">
                               <img src={like?.image} alt={like?.username} />
                             </Avatar>
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm text-gray-700 dark:text-gray-400">
                               {like?.username} {like?.reaction_display}
                             </span>
                           </Link>
@@ -369,7 +369,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
               {post?.comments_count > 0 ? (
                 <Button
                   variant="ghost"
-                  className="h-auto p-0 text-gray-500 hover:text-gray-700"
+                    className="h-auto p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-800 "
                   onClick={() => setShowComments(!showComments)}
                 >
                   {post?.comments_count} comments
@@ -381,11 +381,11 @@ const PostCard = ({ post, updatePost, groupId }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                    <span className="font-medium text-gray-500 hover:text-gray-700">
+                    <span className="font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                       {post?.share_count} shares
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent side="top">
+                  <TooltipContent side="top" className="dark:bg-gray-800 dark:text-gray-400 dark:border-gray-800 dark:hover:text-gray-300">
                     <div className="flex flex-col">
                       {post?.shared_users.map((share) => (
                         <Link
@@ -396,7 +396,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
                           <Avatar className="h-6 w-6">
                             <img src={share?.image} alt={share?.username} />
                           </Avatar>
-                          <span className="text-sm text-gray-700">
+                          <span className="text-sm text-gray-700 dark:text-gray-400">
                             {share?.username}
                           </span>
                         </Link>
@@ -410,7 +410,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
           </div>
         </CardContent>
 
-        <Separator />
+        <Separator className="dark:bg-gray-700" />
 
         <CardFooter className="p-1">
           <div className="flex w-full">
@@ -429,7 +429,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
 
             <Button
               variant="ghost"
-              className="flex-1 rounded-none"
+              className="flex-1 rounded-none dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
               onClick={() => setShowComments(!showComments)}
             >
               <MessageCircle className="h-5 w-5 mr-2" />
@@ -438,7 +438,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
 
             <Button
               variant="ghost"
-              className="flex-1 rounded-none"
+              className="flex-1 rounded-none dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
               onClick={() => setIsShareModalOpen(true)}
               disabled={sharePostMutation.isPending}
             >
@@ -460,12 +460,12 @@ const PostCard = ({ post, updatePost, groupId }) => {
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Write a comment..."
-                  className="min-h-0 h-10 py-2 resize-none bg-white "
+                  className="min-h-0 h-10 py-2 resize-none bg-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                 />
                 <Button
                   type="submit"
                   size="sm"
-                  className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent"
+                  className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                   disabled={!commentText.trim() || loadingComment}
                 >
                   {loadingComment ? (
@@ -477,7 +477,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
             </form>
 
             {/* Render comments */}
-            <div className="space-y-3 ">
+            <div className="space-y-3 dark:text-gray-400">
               {post?.comments.map((comment) => (
                 <CommentItem
                   key={comment?.id}

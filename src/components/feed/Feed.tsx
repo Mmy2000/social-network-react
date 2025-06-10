@@ -106,7 +106,7 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
 
   if (isError) {
     return (
-      <div className="text-center mt-5 text-red-500">Failed to load posts.</div>
+      <div className="text-center mt-5 text-red-500 dark:text-red-400">Failed to load posts.</div>
     );
   }
 
@@ -125,7 +125,7 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
           </div>
         }
         endMessage={
-          <p className="text-center text-sm text-gray-500 py-4">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
             No more posts to load.
           </p>
         }

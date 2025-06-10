@@ -61,8 +61,8 @@ const Reactions: React.FC<ReactionsProps> = ({
           className={`${
             type === "post"
               ? "flex-1 group relative rounded-none "
-              : "hover:underline"
-          }`}
+              : "hover:underline "
+          } dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300`}
         >
           {selectedReaction}
           <span
@@ -110,16 +110,16 @@ const Reactions: React.FC<ReactionsProps> = ({
       <HoverCardContent
         side="top"
         align="start"
-        className="w-fit p-2 mb-2 shadow-lg"
+        className="w-fit p-2 mb-2 shadow-lg dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700  dark:hover:text-gray-300"
       >
         <div className="flex flex-col gap-2">
           {/* Reaction Options */}
-          <div className="flex gap-1 p-1 bg-white rounded-full shadow-md">
+          <div className="flex gap-1 p-1 bg-white rounded-full shadow-md dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-300">
             {REACTIONS.map((reaction) => (
               <button
                 key={reaction.type}
                 onClick={() => handleReactionClick(reaction.type)}
-                className="relative group"
+                className="relative group  "
                 disabled={loadingReaction !== null}
               >
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -127,9 +127,9 @@ const Reactions: React.FC<ReactionsProps> = ({
                 </div>
                 <div
                   className={cn(
-                    "text-2xl p-2 rounded-full transition-all duration-200 hover:scale-150 hover:-translate-y-2",
+                    "text-2xl p-2 rounded-full transition-all duration-200 hover:scale-150 hover:-translate-y-2  ",
                     selectedReaction === reaction.emoji &&
-                      "scale-125 bg-gray-100"
+                      "scale-125 bg-gray-100 dark:bg-gray-900 dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-300"
                   )}
                 >
                   {loadingReaction === reaction.type ? (
@@ -144,13 +144,13 @@ const Reactions: React.FC<ReactionsProps> = ({
 
           {/* Likes List */}
           {likes.length > 0 && (
-            <div className="border-t pt-2 mt-1 max-h-[200px] overflow-y-auto">
+            <div className="border-t pt-2 mt-1 max-h-[200px] overflow-y-auto dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-300">
               <div className="flex flex-col gap-1">
                 {likes.map((like) => (
                   <Link
                     key={like.id}
                     to={`/profile/${like.id}`}
-                    className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded transition-colors"
+                    className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded transition-colors dark:hover:bg-gray-700 dark:hover:text-gray-300"
                   >
                     <Avatar className="h-6 w-6">
                       <img src={like.image} alt={like.username} />

@@ -37,7 +37,7 @@ const App = () => (
           <Sonner />
 
           <BrowserRouter>
-            <div className="min-h-screen flex flex-col">
+            <div className="min-h-screen flex flex-col dark:bg-gradient-to-b dark:from-gray-950 dark:to-gray-900">
               <Navbar />
               <div className="flex-1">
                 <Routes>

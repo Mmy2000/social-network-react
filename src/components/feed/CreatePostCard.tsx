@@ -111,7 +111,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
   };
 
   return (
-    <Card className="mb-4 shadow-sm">
+    <Card className="mb-4 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">
       <form onSubmit={handleSubmit}>
         <CardContent className="p-4">
           <div className="flex flex-col">
@@ -122,12 +122,12 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
               {/* Role selector */}
               <div className="">
                 <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
                     <SelectValue placeholder="Post visibility" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="public">Public</SelectItem>
-                    <SelectItem value="only_me">Only Me</SelectItem>
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
+                    <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300 " value="public">Public</SelectItem>
+                    <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300" value="only_me">Only Me</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -135,7 +135,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
             <div className="flex-1 mt-4">
               <Textarea
                 placeholder="What's on your mind?"
-                className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-0"
+                className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-0 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />
@@ -144,7 +144,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
 
           {/* Preview selected files */}
           {attachments.length > 0 && (
-            <div className="mt-3 space-y-2 text-sm text-gray-600">
+            <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
               {attachments.map((file, index) => (
                 <div key={index}>{file.name}</div>
               ))}
@@ -152,14 +152,14 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
           )}
         </CardContent>
 
-        <Separator />
+        <Separator className="dark:bg-gray-700" />
 
-        <CardFooter className="p-4 flex justify-between">
+        <CardFooter className="p-4 flex justify-between ">
           <div className="flex space-x-2">
             <Button
               type="button"
               variant="ghost"
-              className="flex items-center"
+              className="flex items-center dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
               onClick={handleFileButtonClick}
             >
               <Image className="h-5 w-5 mr-2 text-green-500" />
@@ -173,23 +173,23 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
               className="hidden"
               onChange={handleFileChange}
             />
-            <Button type="button" variant="ghost" className="flex items-center">
+            <Button type="button" variant="ghost" className="flex items-center dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
               <Smile className="h-5 w-5 mr-2 text-yellow-500" />
               <Select value={feeling} onValueChange={setFeeling}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-40 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
                   <SelectValue placeholder="Feeling" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="happy">
+                <SelectContent className="dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300">
+                  <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300" value="happy">
                     {feelingEmojis.happy} Happy
                   </SelectItem>
-                  <SelectItem value="sad">
+                  <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300" value="sad">
                     {feelingEmojis.sad} Sad
                   </SelectItem>
-                  <SelectItem value="excited">
+                  <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300" value="excited">
                     {feelingEmojis.excited} Excited
                   </SelectItem>
-                  <SelectItem value="tired">
+                  <SelectItem className="dark:hover:bg-gray-800 dark:hover:text-gray-300" value="tired">
                     {feelingEmojis.tired} Tired
                   </SelectItem>
                 </SelectContent>
@@ -199,7 +199,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
           <Button
             type="submit"
             disabled={!content.trim() || isSubmitting}
-            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium transition-colors duration-200 ${
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium transition-colors duration-200 dark
               isSubmitting || !content.trim()
                 ? "bg-facebook/60 cursor-not-allowed"
                 : "bg-facebook hover:bg-facebook-dark"
