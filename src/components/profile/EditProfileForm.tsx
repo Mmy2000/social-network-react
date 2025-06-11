@@ -179,7 +179,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
         );
       case 1:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 ">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Profile Picture</Label>
@@ -190,16 +190,16 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                       alt="Current Profile"
                       className="w-20 h-20 rounded-full object-cover"
                     />
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-300">
                       Current profile picture
                     </p>
                   </div>
                 )}
                 <div className="mt-2">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-800 dark:hover:border-gray-700 dark:hover:bg-gray-800">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <svg
-                        className="w-8 h-8 mb-4 text-gray-500"
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -211,11 +211,11 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                           d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                         />
                       </svg>
-                      <p className="mb-2 text-sm text-gray-500">
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
                         <span className="font-semibold">Click to upload</span>{" "}
                         or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
                         PNG, JPG or JPEG (MAX. 800x400px)
                       </p>
                     </div>
@@ -239,13 +239,13 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                       alt="Current Cover"
                       className="w-full h-32 object-cover rounded-lg"
                     />
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-300">
                       Current cover picture
                     </p>
                   </div>
                 )}
                 <div className="mt-2">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-800 dark:hover:border-gray-700 dark:hover:bg-gray-800">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <svg
                         className="w-8 h-8 mb-4 text-gray-500"
@@ -260,11 +260,11 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                           d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                         />
                       </svg>
-                      <p className="mb-2 text-sm text-gray-500">
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
                         <span className="font-semibold">Click to upload</span>{" "}
                         or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
                         PNG, JPG or JPEG (MAX. 1920x1080px)
                       </p>
                     </div>
@@ -294,13 +294,13 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                     setForm((prev) => ({ ...prev, gender: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                    <SelectItem value="male" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Male</SelectItem>
+                    <SelectItem value="female" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Female</SelectItem>
+                    <SelectItem value="other" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -313,14 +313,14 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                     setForm((prev) => ({ ...prev, marital_status: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="single">Single</SelectItem>
-                    <SelectItem value="married">Married</SelectItem>
-                    <SelectItem value="divorced">Divorced</SelectItem>
-                    <SelectItem value="widowed">Widowed</SelectItem>
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                    <SelectItem value="single" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Single</SelectItem>
+                    <SelectItem value="married" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Married</SelectItem>
+                    <SelectItem value="divorced" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Divorced</SelectItem>
+                    <SelectItem value="widowed" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">Widowed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -393,11 +393,11 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full dark:text-gray-300">
       {/* Step Indicator */}
       <div className="mb-8">
         <div className="flex items-center justify-between relative">
-          <div className="absolute top-1/2 h-0.5 w-full bg-gray-200 -z-10"></div>
+          <div className="absolute top-1/2 h-0.5 w-full bg-gray-200 dark:bg-gray-700 -z-10"></div>
           {steps.map((label, index) => (
             <button
               key={index}
@@ -411,7 +411,7 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
                     ? "bg-blue-600 text-white"
                     : step > index
                     ? "bg-green-100 text-green-600 border-2 border-green-500"
-                    : "bg-gray-100 text-gray-600 border-2 border-gray-300"
+                    : "bg-gray-100 text-gray-600 border-2 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
                 )}
               >
                 {step > index ? "✓" : index + 1}
@@ -433,17 +433,18 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
       <div className="mt-8">{renderStepContent()}</div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between mt-8 pt-6 border-t">
+      <div className="flex justify-between mt-8 pt-6 border-t dark:border-gray-700">
         <Button
           type="button"
           variant="outline"
           onClick={() => step > 0 && setStep(step - 1)}
           disabled={step === 0}
+          className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
         >
           Previous
         </Button>
         <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose} className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200">
             Cancel
           </Button>
           {step === steps.length - 1 ? (
@@ -451,12 +452,12 @@ const EditProfileForm = ({ profile, onClose, onProfileUpdated }) => {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="min-w-[100px]"
+              className="min-w-[100px] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
             >
               {loading ? <Spinner /> : "Save Changes"}
             </Button>
           ) : (
-            <Button type="button" onClick={() => setStep(step + 1)}>
+            <Button type="button" onClick={() => setStep(step + 1)} className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 dark:hover:text-gray-200">
               Next
             </Button>
           )}

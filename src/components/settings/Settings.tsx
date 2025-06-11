@@ -11,7 +11,7 @@ export const Settings = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 dark:text-gray-300">
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
@@ -21,10 +21,25 @@ export const Settings = () => {
         </div>
 
         <Tabs defaultValue="account" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsList className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-800">
+            <TabsTrigger
+              className="dark:data-[state=active]:text-gray-200 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:border-gray-700"
+              value="account"
+            >
+              Account
+            </TabsTrigger>
+            <TabsTrigger
+              className="dark:data-[state=active]:text-gray-200 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:border-gray-700"
+              value="security"
+            >
+              Security
+            </TabsTrigger>
+            <TabsTrigger
+              className="dark:data-[state=active]:text-gray-200 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:border-gray-700"
+              value="notifications"
+            >
+              Notifications
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="account" className="space-y-4">

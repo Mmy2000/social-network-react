@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const ProfileAbout = ({ info }) => {
   
   return (
-    <Card>
+    <Card className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
       <CardContent className="p-4">
         <div className="space-y-4">
           <div>

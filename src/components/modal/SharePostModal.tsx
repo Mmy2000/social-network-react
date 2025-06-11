@@ -81,7 +81,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Share Post</DialogTitle>
         </DialogHeader>
@@ -89,17 +89,17 @@ const SharePostModal: React.FC<SharePostModalProps> = ({
         <div className="space-y-4 py-4">
           <div className="flex items-center space-x-2">
             <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                 <SelectValue placeholder="Post visibility" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="only_me">Only Me</SelectItem>
+              <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                <SelectItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" value="public">Public</SelectItem>
+                <SelectItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" value="only_me">Only Me</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={feeling} onValueChange={setFeeling}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                 <SelectValue placeholder="Feeling">
                   {feeling ? (
                     <span className="flex items-center">
@@ -111,11 +111,11 @@ const SharePostModal: React.FC<SharePostModalProps> = ({
                   )}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="happy">😊 Happy</SelectItem>
-                <SelectItem value="sad">😢 Sad</SelectItem>
-                <SelectItem value="excited">🤩 Excited</SelectItem>
-                <SelectItem value="tired">😴 Tired</SelectItem>
+              <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                <SelectItem value="happy" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😊 Happy</SelectItem>
+                <SelectItem value="sad" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😢 Sad</SelectItem>
+                <SelectItem value="excited" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">🤩 Excited</SelectItem>
+                <SelectItem value="tired" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😴 Tired</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -127,19 +127,19 @@ const SharePostModal: React.FC<SharePostModalProps> = ({
             className="min-h-[100px]"
           />
 
-          <div className="border rounded-lg overflow-hidden">
+          <div className=" rounded-lg overflow-hidden">
             <SharedPostCard postID={originalPostId} />
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200" variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button
             onClick={handleShare}
             disabled={isSubmitting}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-900 dark:hover:text-gray-200"
           >
             {isSubmitting && <Loader className="h-4 w-4 animate-spin" />}
             {isSubmitting ? "Sharing..." : "Share Post"}

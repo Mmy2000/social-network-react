@@ -11,7 +11,7 @@ const ProfileFriends = ({ friends }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {friends?.map((friend) => (
-        <Card key={friend.id}>
+        <Card key={friend.id} className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
           <CardContent className="p-4">
             <Link
               to={`/profile/${friend.id}`}
@@ -21,7 +21,7 @@ const ProfileFriends = ({ friends }) => {
                 <img src={friend?.profile?.profile_picture} alt={friend?.profile?.full_name} />
               </Avatar>
               <h3 className="font-medium text-center">{friend?.profile?.full_name}</h3>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200">
                 View Profile
               </Button>
             </Link>

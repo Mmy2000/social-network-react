@@ -42,14 +42,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         className={cn(
-          "sm:max-w-[425px]",
+          "sm:max-w-[425px] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700",
           isEdit && "sm:max-w-[700px] h-[80vh] overflow-y-auto"
         )}
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           {content && (
-            <DialogDescription className="text-gray-500">
+            <DialogDescription className="text-gray-500 dark:text-gray-400">
               {content}
             </DialogDescription>
           )}
@@ -65,6 +65,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             variant="outline"
             onClick={onClose}
             disabled={loading}
+            className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           >
             Cancel
           </Button>
@@ -73,7 +74,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             variant={isEdit ? "default" : "destructive"}
             onClick={onConfirm}
             disabled={loading}
-            className="min-w-[100px]"
+            className="min-w-[100px] dark:bg-gray-700 dark:text-gray-300 dark:border-gray-800 dark:hover:bg-gray-900 dark:hover:text-gray-200"
           >
             {loading ? (
               <span className="flex items-center gap-2">

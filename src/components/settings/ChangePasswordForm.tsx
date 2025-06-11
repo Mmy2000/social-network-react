@@ -74,7 +74,7 @@ const ChangePasswordForm = () => {
   };
 
   return (
-    <Card>
+    <Card className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
       <CardHeader>
         <CardTitle>Change Password</CardTitle>
         <CardDescription>

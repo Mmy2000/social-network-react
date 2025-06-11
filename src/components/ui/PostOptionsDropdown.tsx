@@ -192,20 +192,20 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200">
             <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" className="w-56 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
           {user?.id === post?.created_by?.id ? (
             <>
-              <DropdownMenuItem onClick={() => setModalType("edit")}>
+              <DropdownMenuItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" onClick={() => setModalType("edit")}>
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit post
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setModalType("delete")}
-                className="text-red-600"
+                className="text-red-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete post
@@ -214,29 +214,29 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
             </>
           ) : null}
 
-          <DropdownMenuItem onClick={handleSavePost}>
+          <DropdownMenuItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" onClick={handleSavePost}>
             <Bookmark className="h-4 w-4 mr-2" />
             {post?.is_saved ? "Remove from saved" : "Save post"}
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleFavoritePost}>
+          <DropdownMenuItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" onClick={handleFavoritePost}>
             <Star className="h-4 w-4 mr-2" />
             {post?.is_favorited ? "Remove from favorites" : "Add to favorites"}
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleCopyLink}>
+          <DropdownMenuItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" onClick={handleCopyLink}>
             <LinkIcon className="h-4 w-4 mr-2" />
             Copy link
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => window.print()}>
+          <DropdownMenuItem className="dark:hover:bg-gray-700 dark:hover:text-gray-200" onClick={() => window.print()}>
             <Copy className="h-4 w-4 mr-2" />
             Print post
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="text-red-600 dark:hover:bg-gray-700 dark:hover:text-gray-200">
             <Flag className="h-4 w-4 mr-2" />
             Report post
           </DropdownMenuItem>
@@ -275,16 +275,16 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Visibility</Label>
                 <Select value={role} onValueChange={(val) => setRole(val)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <SelectValue placeholder="Select visibility" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="public">
-                      <div className="flex items-center">
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 ">
+                    <SelectItem value="public" className="dark:hover:bg-gray-700 dark:hover:text-gray-200 ">
+                      <div className="flex items-center ">
                         <span className="mr-2">🌎</span> Public
                       </div>
                     </SelectItem>
-                    <SelectItem value="only_me">
+                    <SelectItem value="only_me" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">
                       <div className="flex items-center">
                         <span className="mr-2">🔒</span> Only Me
                       </div>
@@ -299,14 +299,14 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
                   value={feeling}
                   onValueChange={(val) => setFeeling(val)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <SelectValue placeholder="How are you feeling?" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="happy">😊 Happy</SelectItem>
-                    <SelectItem value="sad">😢 Sad</SelectItem>
-                    <SelectItem value="excited">🤩 Excited</SelectItem>
-                    <SelectItem value="tired">😴 Tired</SelectItem>
+                  <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                    <SelectItem value="happy" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😊 Happy</SelectItem>
+                    <SelectItem value="sad" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😢 Sad</SelectItem>
+                    <SelectItem value="excited" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">🤩 Excited</SelectItem>
+                    <SelectItem value="tired" className="dark:hover:bg-gray-700 dark:hover:text-gray-200">😴 Tired</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -394,7 +394,7 @@ const PostOptionsDropdown = ({ post, updatePost }) => {
             {post?.shared_from && (
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Shared Post</Label>
-                <div className="border rounded-lg overflow-hidden">
+                <div className="rounded-lg overflow-hidden">
                   <SharedPostCard postID={post.shared_from} />
                 </div>
               </div>

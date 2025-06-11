@@ -9,7 +9,7 @@ const ProfilePhotos = ({ images }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {images?.map((photo) => (
-        <Card key={photo.id} className="overflow-hidden">
+        <Card key={photo.id} className="overflow-hidden dark:border-gray-700">
           <img
             src={photo.image}
             alt={photo.description}

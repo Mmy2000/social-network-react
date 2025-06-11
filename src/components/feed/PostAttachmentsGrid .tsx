@@ -14,7 +14,7 @@ const PostAttachmentsGrid = ({ attachments }) => {
   return (
     <>
       <div
-        className={`grid gap-2 rounded-md overflow-hidden bg-gray-100 ${
+        className={`grid gap-2 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-800 ${
           attachments.length === 1 ? "" : "grid-cols-2"
         } ${attachments.length > 2 ? "md:grid-cols-3" : ""}`}
       >

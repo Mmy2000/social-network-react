@@ -178,7 +178,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   return (
     <>
-      <div className="bg-white shadow-sm rounded-b-lg dark:bg-gray-900 dark:text-gray-300">
+      <div className="bg-white shadow-sm rounded-b-lg bg-gradient-to-t from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:text-gray-300">
         {/* Cover Photo */}
         <div
           className="h-48 sm:h-64 md:h-80 bg-gray-300 mx-8 relative rounded-b-lg bg-cover bg-center"
