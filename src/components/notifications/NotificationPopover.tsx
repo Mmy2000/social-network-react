@@ -43,7 +43,7 @@ const NotificationPopover = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
+      <PopoverContent className="w-80 p-0 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700" align="end">
         <NotificationList />
       </PopoverContent>
     </Popover>

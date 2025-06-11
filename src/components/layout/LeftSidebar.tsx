@@ -98,7 +98,7 @@ const LeftSidebar = () => {
         </ul>
       </nav>
 
-      <div className="border-t border-gray-300 pt-4 dark:text-gray-400">
+      <div className="border-t border-gray-300 dark:border-gray-700 mt-2 pt-4 dark:text-gray-400">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-gray-500 font-medium dark:text-gray-400">Your Groups</h3>
           <Link

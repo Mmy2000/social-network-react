@@ -176,23 +176,23 @@ const Navbar = () => {
                 </Link>
                 <Button
                   variant="ghost"
-                  className="ml-4"
+                  className="ml-4 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
                   onClick={LogOut} // clear user on logout
                 >
-                  <Link to="/" className="text-facebook">
+                  <Link to="/" className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
                     Logout
                   </Link>
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="default" className="ml-4">
+                <Button variant="default" className="ml-4 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-400">
                   <Link to="/signup" className="text-facebook-light">
                     Sign Up
                   </Link>
                 </Button>
-                <Button variant="ghost" className="ml-4">
-                  <Link to="/login" className="text-facebook">
+                <Button variant="ghost" className="ml-4 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700">
+                  <Link to="/login" className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
                     Login
                   </Link>
                 </Button>

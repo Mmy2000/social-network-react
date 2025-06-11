@@ -60,9 +60,9 @@ const Reactions: React.FC<ReactionsProps> = ({
           variant={type === "post" ? "ghost" : "link"}
           className={`${
             type === "post"
-              ? "flex-1 group relative rounded-none "
-              : "hover:underline "
-          } dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300`}
+              ? "flex-1 group relative rounded-none dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+              : "hover:underline dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-300"
+          }`}
         >
           {selectedReaction}
           <span

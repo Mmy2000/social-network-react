@@ -185,7 +185,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:text-gray-400">
       <Tabs defaultValue="posts" className="w-full">
         <ProfileHeader
           follwersCount={followersCount}
@@ -201,10 +201,10 @@ const Profile = () => {
           isLoading={isLoading}
         />
 
-        <div className="container px-4 mx-auto max-w-screen-xl py-6">
+        <div className="container px-4 mx-auto max-w-screen-xl py-6 ">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             {/* Fixed User Data Card */}
-            <div className="hidden md:block md:col-span-4">
+            <div className="hidden md:block md:col-span-4 ">
               <UserDataCard profile={userData} />
             </div>
 

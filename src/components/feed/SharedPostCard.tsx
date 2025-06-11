@@ -34,7 +34,7 @@ const SharedPostCard: React.FC<SharedPostCardProps> = ({ postID }) => {
   });
 
   return (
-    <div className="mt-2 border rounded-lg overflow-hidden bg-gray-50">
+    <div className="mt-2 border rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
       <div className="p-4">
         <div className="flex items-center mb-2">
           <Link to={`/profile/${post?.created_by?.id}`}>
@@ -54,21 +54,21 @@ const SharedPostCard: React.FC<SharedPostCardProps> = ({ postID }) => {
             </Link>
             {post?.feeling && (
               <>
-                <span className="text-muted-foreground text-xs font-normal">
+                <span className="text-muted-foreground text-xs font-normal dark:text-gray-400 dark:bg-gray-800">
                   {" "}
                   —{" "}
                 </span>
-                <span className="bg-gray-100 px-2 py-1 rounded-md text-muted-foreground text-xs font-normal">
+                <span className="bg-gray-100 px-2 py-1 rounded-md text-muted-foreground text-xs font-normal dark:bg-gray-900 dark:text-gray-400">
                   {feelingEmojis[post.feeling]} feeling {post.feeling}
                 </span>
               </>
             )}
-            <p className="text-xs text-gray-500">{post?.time_since_created}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{post?.time_since_created}</p>
           </div>
         </div>
 
         <Link to={`/post/${post?.id}`}>
-          <p className="text-sm text-gray-700 mb-2">{post?.content}</p>
+          <p className="text-sm text-gray-700 mb-2 dark:text-gray-400">{post?.content}</p>
         </Link>
 
         {post?.attachments && post.attachments.length > 0 && (

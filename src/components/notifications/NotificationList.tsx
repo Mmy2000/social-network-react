@@ -172,7 +172,7 @@ const NotificationList = () => {
 
   if (!notifications.length) {
     return (
-      <div className="flex flex-col items-center justify-center p-6 text-gray-500">
+      <div className="flex flex-col items-center justify-center p-6 text-gray-500 dark:text-gray-400">
         <BellOff className="h-12 w-12 mb-2" />
         <p>No notifications</p>
       </div>
@@ -182,11 +182,11 @@ const NotificationList = () => {
   return (
     <ScrollArea>
       {unreadCount > 0 && (
-        <div className="px-4 py-2 border-b border-gray-100">
+        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
           <Button
             variant="ghost"
             size="sm"
-            className="w-full flex items-center justify-center gap-2 text-blue-600"
+            className="w-full flex items-center justify-center gap-2 text-blue-600 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
             onClick={markAllAsRead}
           >
             <Check className="h-4 w-4" />
@@ -194,7 +194,7 @@ const NotificationList = () => {
           </Button>
         </div>
       )}
-      <div className="divide-y divide-gray-100 max-h-[400px] ">
+      <div className="divide-y divide-gray-100 dark:divide-gray-700 max-h-[400px]">
         <AnimatePresence>
           {notifications.map((notification) => (
             <motion.div
@@ -202,8 +202,8 @@ const NotificationList = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                !notification.is_read ? "bg-blue-50" : ""
+              className={`p-4 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-700 cursor-pointer transition-colors ${
+                !notification.is_read ? "bg-blue-50 dark:bg-gray-800" : ""
               }`}
               onClick={() => handleNotificationClick(notification)}
             >
@@ -221,14 +221,14 @@ const NotificationList = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-sm text-gray-900 font-medium">
+                      <p className="text-sm text-gray-900 font-medium dark:text-gray-300">
                         {notification.sender.first_name}{" "}
                         {notification.sender.last_name}
                       </p>
-                      <p className="text-sm text-gray-600 line-clamp-2">
+                      <p className="text-sm text-gray-600 line-clamp-2 dark:text-gray-400">
                         {notification.notification_message}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                         {formatDistanceToNow(
                           new Date(notification.created_at),
                           {

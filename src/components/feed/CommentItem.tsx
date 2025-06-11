@@ -218,7 +218,7 @@ const CommentItem = ({
     <>
       <div
         className={clsx(
-          "relative pl-4 border-l border-gray-300 ml-2 mt-2",
+          "relative pl-4 border-l border-gray-300 ml-2 mt-2 dark:border-gray-700",
           level === 0 && "border-none pl-0"
         )}
       >
@@ -231,23 +231,37 @@ const CommentItem = ({
           </Avatar>
           <div
             className={clsx(
-              "bg-gray-100 px-4 py-2 rounded-2xl max-w-[85%] w-full relative",
-              level > 0 && "bg-gray-200"
+              "bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-2xl max-w-[85%] w-full relative dark:text-gray-300",
+              level > 0 && "bg-gray-200 dark:bg-gray-900"
             )}
           >
-            <div className="absolute top-1 right-1">
+            <div className="absolute top-1 right-1 dark:text-gray-400 dark:hover:text-gray-300">
               {user?.id === comment?.created_by?.id && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button size="icon" variant="ghost" className="h-6 w-6 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-6 w-6 p-0 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+                    >
+                      <MoreHorizontal className="h-4 w-4 " />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent side="bottom" align="end">
-                    <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="end"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                  >
+                    <DropdownMenuItem
+                      onClick={() => setIsEditing(true)}
+                      className="dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                    >
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setShowDeleteModal(true)}>
+                    <DropdownMenuItem
+                      onClick={() => setShowDeleteModal(true)}
+                      className="dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                    >
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -263,18 +277,21 @@ const CommentItem = ({
             </Link>
 
             {isEditing ? (
-              <form onSubmit={handleEditSubmit} className="space-y-1 mt-1">
+              <form
+                onSubmit={handleEditSubmit}
+                className="space-y-1 mt-1 "
+              >
                 <Textarea
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="text-sm"
+                  className="text-sm dark:text-gray-400"
                   disabled={isUpdatingComment}
                 />
                 <div className="flex gap-2 pt-1">
                   <Button
                     size="sm"
                     type="submit"
-                    className="text-xs"
+                    className="text-xs "
                     disabled={isUpdatingComment}
                   >
                     {isUpdatingComment ? (
@@ -290,7 +307,7 @@ const CommentItem = ({
                       setIsEditing(false);
                       setEditText(comment.content);
                     }}
-                    className="text-xs"
+                    className="text-xs dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                     disabled={isUpdatingComment}
                   >
                     Cancel
@@ -323,7 +340,7 @@ const CommentItem = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="ml-2 text-xs bg-gray-300 text-gray-800 px-1.5 py-0.5 rounded-full cursor-pointer">
+                      <span className="ml-2 text-xs bg-gray-300 text-gray-800 px-1.5 py-0.5 rounded-full cursor-pointer dark:bg-gray-950 dark:text-gray-400">
                         {comment?.likes
                           ?.filter(
                             (like, index, self) =>
@@ -339,7 +356,7 @@ const CommentItem = ({
                     </TooltipTrigger>
                     <TooltipContent
                       side="top"
-                      className="bg-white p-2 shadow-lg"
+                      className="bg-white p-2 shadow-lg dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
                     >
                       <div className="flex flex-col gap-1">
                         {Array.isArray(comment?.likes) &&
@@ -347,7 +364,7 @@ const CommentItem = ({
                             <Link
                               key={like?.id}
                               to={`/profile/${like?.id}`}
-                              className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded transition-colors"
+                              className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded transition-colors dark:hover:bg-gray-700 dark:hover:text-gray-300"
                             >
                               <Avatar className="h-6 w-6">
                                 <img src={like?.image} alt={like?.username} />

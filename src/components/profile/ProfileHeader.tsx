@@ -69,7 +69,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const renderFriendshipButton = () => {
     if (isCurrentUser) {
       return (
-        <Button variant="outline" onClick={() => setOpenEdit(true)}>
+        <Button variant="outline" onClick={() => setOpenEdit(true)} className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700">
           <Edit className="h-4 w-4 mr-2" />
           Edit Profile
         </Button>
@@ -82,7 +82,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <>
           <Button
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
             onClick={onRemoveFriend}
             disabled={isLoading(profile?.id)}
           >
@@ -104,7 +104,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className="flex gap-2">
           <Button
             variant="default"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
             onClick={() => {
               console.log(
                 "Accepting friend request. Status:",
@@ -123,7 +123,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </Button>
           <Button
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
             onClick={() => {
               console.log(
                 "Rejecting friend request. Status:",
@@ -149,7 +149,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       return (
         <Button
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
           disabled={true}
         >
           <UserPlus className="h-4 w-4" />
@@ -162,7 +162,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     return (
       <Button
         variant="default"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
         onClick={onSendFriendRequest}
         disabled={isLoading(profile?.id)}
       >
@@ -178,7 +178,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   return (
     <>
-      <div className="bg-white shadow-sm rounded-b-lg">
+      <div className="bg-white shadow-sm rounded-b-lg dark:bg-gray-900 dark:text-gray-300">
         {/* Cover Photo */}
         <div
           className="h-48 sm:h-64 md:h-80 bg-gray-300 mx-8 relative rounded-b-lg bg-cover bg-center"
@@ -189,7 +189,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               variant="secondary"
               onClick={() => setOpenEdit(true)}
               size="default"
-              className="absolute bottom-4 right-4 bg-white/80 hover:bg-white"
+              className="absolute bottom-4 right-4 bg-white/80 hover:bg-white dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
             >
               <Camera className="h-4 w-4 mr-2" />
               Edit Cover Photo
@@ -198,11 +198,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </div>
 
         {/* Profile Info */}
-        <div className="container mt-4 px-4 mx-auto max-w-screen-xl">
+        <div className="container mt-4 px-4 mx-auto max-w-screen-xl dark:text-gray-300">
           <div className="flex flex-col sm:flex-row items-center sm:items-end relative -mt-12 sm:-mt-16 md:-mt-20 mb-4">
             {/* Profile Picture */}
             <div className="relative">
-              <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-white shadow ">
+              <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-white shadow dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                 <img
                   src={profile?.profile?.profile_picture}
                   alt={profile?.profile?.name}
@@ -213,7 +213,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   size="icon"
                   variant="secondary"
                   onClick={() => setOpenEdit(true)}
-                  className="absolute bottom-0 right-0 rounded-full bg-gray-200 hover:bg-gray-300"
+                  className="absolute bottom-0 right-0 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
                 >
                   <Camera className="h-4 w-4" />
                 </Button>
@@ -226,14 +226,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 {profile?.profile?.full_name}
               </h1>
               <div className="flex">
-                <p className="text-gray-500">
-                  <span className="text-blue-600 font-medium">
+                <p className="text-gray-500 dark:text-gray-400">
+                  <span className="text-facebook font-medium">
                     {friendsCount}
                   </span>{" "}
                   friends
                 </p>
-                <p className="text-gray-500 ml-4">
-                  <span className="text-blue-600 font-medium">
+                <p className="text-gray-500 ml-4 dark:text-gray-400">
+                  <span className="text-facebook font-medium">
                     {follwersCount}
                   </span>{" "}
                   followers
@@ -246,6 +246,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               {renderFriendshipButton()}
               {!isCurrentUser && (
                 <Button
+                  className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700"
                   variant="outline"
                   onClick={handleStartChat}
                   disabled={isStartingChat}
@@ -262,36 +263,36 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </div>
 
           {/* Navigation */}
-          <div className="border-t border-gray-200 mt-4">
-            <TabsList className="w-full justify-start h-12 px-0 bg-transparent border-b rounded-none">
+          <div className="border-t border-gray-200 mt-4 dark:border-gray-700 ">
+            <TabsList className="w-full justify-start h-12 px-0 bg-transparent border-b rounded-none dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
               <TabsTrigger
                 value="posts"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12 dark:text-gray-300 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-200"
               >
                 Posts
               </TabsTrigger>
               <TabsTrigger
                 value="about"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12 dark:text-gray-300 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-200"
               >
                 About
               </TabsTrigger>
               <TabsTrigger
                 value="friends"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12 dark:text-gray-300 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-200"
               >
                 Friends
               </TabsTrigger>
               <TabsTrigger
                 value="photos"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12 dark:text-gray-300 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-200  "
               >
                 Photos
               </TabsTrigger>
               {isCurrentUser && (
                 <TabsTrigger
                   value="settings"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-facebook rounded-none data-[state=active]:shadow-none h-12 dark:text-gray-300 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-200"
                 >
                   Settings
                 </TabsTrigger>
@@ -302,9 +303,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </div>
 
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
-          <DialogHeader className="px-6 py-4 border-b">
-            <DialogTitle className="text-2xl font-bold">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+          <DialogHeader className="px-6 py-4 border-b dark:border-gray-700">
+            <DialogTitle className="text-2xl font-bold dark:text-gray-300">
               Edit Profile
             </DialogTitle>
           </DialogHeader>

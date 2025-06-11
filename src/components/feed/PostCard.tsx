@@ -449,7 +449,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
         </CardFooter>
 
         {showComments && (
-          <div className="px-4 py-3 bg-gray-50">
+          <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800">
             {/* Comment Form */}
             <form onSubmit={handleComment} className="flex mb-3">
               <Avatar className="h-8 w-8 mr-2">
@@ -465,7 +465,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
                 <Button
                   type="submit"
                   size="sm"
-                  className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                  className="absolute right-2 bottom-1 text-facebook h-8 p-0 bg-transparent hover:bg-transparent dark:text-gray-300"
                   disabled={!commentText.trim() || loadingComment}
                 >
                   {loadingComment ? (
@@ -477,7 +477,7 @@ const PostCard = ({ post, updatePost, groupId }) => {
             </form>
 
             {/* Render comments */}
-            <div className="space-y-3 dark:text-gray-400">
+            <div className="space-y-3 dark:text-gray-400 dark:bg-gray-800">
               {post?.comments.map((comment) => (
                 <CommentItem
                   key={comment?.id}
