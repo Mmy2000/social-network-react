@@ -128,7 +128,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Invite Members</DialogTitle>
           <DialogDescription>
@@ -143,7 +143,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
               {selectedUsers.map((selectedUser) => (
                 <div
                   key={selectedUser.id}
-                  className="flex items-center bg-gray-100 rounded-full pl-2 pr-1 py-1"
+                  className="flex items-center bg-gray-100 rounded-full pl-2 pr-1 py-1 dark:bg-gray-800 dark:text-gray-300"
                 >
                   <Avatar className="h-6 w-6 mr-2">
                     <img
@@ -155,7 +155,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 ml-1 hover:bg-gray-200"
+                    className="h-6 w-6 ml-1 hover:bg-gray-200 dark:hover:bg-gray-700"
                     onClick={() => handleRemoveUser(selectedUser.id)}
                   >
                     <X className="h-4 w-4" />
@@ -167,7 +167,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
 
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
             <Input
               placeholder="Search users..."
               value={searchTerm}
@@ -187,7 +187,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
                 {searchResults.map((searchUser) => (
                   <div
                     key={searchUser.id}
-                    className="flex items-center justify-between p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                    className="flex items-center justify-between p-2 hover:bg-gray-100 rounded-lg cursor-pointer dark:hover:bg-gray-700"
                     onClick={() => handleSelectUser(searchUser)}
                   >
                     <div className="flex items-center">
@@ -201,7 +201,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
                         <div className="font-medium">
                           {searchUser.profile.full_name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {searchUser.username}
                         </div>
                       </div>
@@ -211,12 +211,12 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({
               </div>
             </ScrollArea>
           ) : searchTerm && !isSearching ? (
-            <div className="text-center py-4 text-gray-500">No users found</div>
+            <div className="text-center py-4 text-gray-500 dark:text-gray-400">No users found</div>
           ) : null}
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} className="dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700">
               Cancel
             </Button>
             <Button

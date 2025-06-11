@@ -215,21 +215,21 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-gray-300">
       <motion.div
-        className="w-full max-w-md space-y-8 bg-white rounded-2xl shadow-xl p-8"
+        className="w-full max-w-md space-y-8 bg-white rounded-2xl shadow-xl p-8 dark:bg-gray-800 dark:border-gray-700"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <div>
-          <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
+          <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-8 dark:text-gray-300">
             Reset Password
           </h1>
 
           {/* Stepper */}
           <div className="relative mb-12">
-            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200" />
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-gray-700" />
             <div
               className="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-blue-500 transition-all duration-500"
               style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
@@ -252,14 +252,14 @@ const ResetPassword = () => {
                       className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${
                         step >= s.id
                           ? "border-blue-500 bg-blue-500 text-white"
-                          : "border-gray-300 bg-white text-gray-300"
+                          : "border-gray-300 bg-white text-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                       }`}
                     >
                       <StepIcon className="w-5 h-5" />
                     </div>
                     <span
                       className={`mt-2 text-sm font-medium ${
-                        step >= s.id ? "text-blue-500" : "text-gray-500"
+                        step >= s.id ? "text-blue-500" : "text-gray-500 dark:text-gray-400"
                       }`}
                     >
                       {s.title}
@@ -280,14 +280,14 @@ const ResetPassword = () => {
                 exit={{ opacity: 0 }}
               >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                     Email Address
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                     placeholder="Enter your email"
                     required
                   />
@@ -295,7 +295,7 @@ const ResetPassword = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base"
+                  className="w-full h-12 text-base dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-900 dark:border-gray-700"
                   disabled={loading}
                 >
                   {loading ? (
@@ -319,7 +319,7 @@ const ResetPassword = () => {
               >
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-3 dark:text-gray-300">
                       Enter Verification Code
                     </label>
                     <div className="flex justify-center gap-2">
@@ -344,8 +344,8 @@ const ResetPassword = () => {
                             "transition-all duration-200",
                             "border border-gray-200",
                             activeOtpIndex === index
-                              ? "border-blue-500 bg-blue-50"
-                              : "border-gray-200"
+                              ? "border-blue-500 bg-blue-50 dark:bg-blue-900"
+                              : "border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                           )}
                           aria-label={`Digit ${index + 1}`}
                         />
@@ -358,7 +358,7 @@ const ResetPassword = () => {
                         variant="ghost"
                         onClick={handleResendOtp}
                         disabled={!canResend || loading}
-                        className="text-sm"
+                        className="text-sm dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
                       >
                         {resendTimeout > 0 ? (
                           <span>Resend code in {resendTimeout}s</span>
@@ -370,14 +370,14 @@ const ResetPassword = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                       New Password
                     </label>
                     <input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:focus:ring-blue-500 dark:focus:border-transparent"
                       placeholder="Enter new password"
                       required
                     />
@@ -386,7 +386,7 @@ const ResetPassword = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base"
+                  className="w-full h-12 text-base dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-900 dark:border-gray-700"
                   disabled={
                     loading || otp.some((digit) => !digit) || !newPassword
                   }

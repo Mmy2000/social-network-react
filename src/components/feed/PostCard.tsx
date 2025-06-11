@@ -35,7 +35,13 @@ import SharedPostCard from "./SharedPostCard";
 import SharePostModal from "../modal/SharePostModal";
 import { useQueryClient } from "@tanstack/react-query";
 
-const PostCard = ({ post, updatePost, groupId }) => {
+interface IPost {
+  post:any;
+  updatePost:any;
+  groupId?:string;
+}
+
+const PostCard = ({ post, updatePost, groupId }:IPost) => {
   const location = useLocation();
   const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);

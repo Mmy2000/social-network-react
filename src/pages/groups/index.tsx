@@ -61,7 +61,7 @@ const Groups = () => {
       ) || group.created_by.id === user?.id;
 
     return (
-      <Card className="w-full">
+      <Card className="w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
         <CardHeader className="relative h-32 p-0">
           <img
             src={group.cover_image || "/default-group-cover.jpg"}
@@ -87,11 +87,11 @@ const Groups = () => {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
             {group.members_count} members
           </div>
           <Link to={`/groups/${group.id}`}>
-            <Button variant="outline">View Group</Button>
+            <Button variant="outline" className="dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700">View Group</Button>
           </Link>
         </CardFooter>
       </Card>
@@ -115,19 +115,19 @@ const Groups = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 px-4">
+    <div className="container mx-auto py-6 px-4 dark:text-gray-300">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Groups</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>Create Group</Button>
+        <Button onClick={() => setIsCreateModalOpen(true)} className="dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700">Create Group</Button>
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="all">All Groups</TabsTrigger>
-          <TabsTrigger value="my_groups">My Groups</TabsTrigger>
-          <TabsTrigger value="created">Created</TabsTrigger>
-          <TabsTrigger value="joined">Joined</TabsTrigger>
-          <TabsTrigger value="discover">Discover</TabsTrigger>
+        <TabsList className="mb-4 dark:bg-gray-800 dark:text-gray-300">
+          <TabsTrigger value="all" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">All Groups</TabsTrigger>
+          <TabsTrigger value="my_groups" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">My Groups</TabsTrigger>
+          <TabsTrigger value="created" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Created</TabsTrigger>
+          <TabsTrigger value="joined" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Joined</TabsTrigger>
+          <TabsTrigger value="discover" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Discover</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">

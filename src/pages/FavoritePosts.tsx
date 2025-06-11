@@ -19,6 +19,7 @@ interface Post {
 const FavoritePosts = () => {
   const { user } = useUser();
   const queryClient = useQueryClient();
+
   const { data: posts, isLoading } = useQuery<Post[]>({
     queryKey: ["favorite-posts"],
     queryFn: async () => {
@@ -53,10 +54,10 @@ const FavoritePosts = () => {
 
   if (!posts?.length) {
     return (
-      <div className="max-w-2xl mx-auto mt-8 p-4">
+      <div className="max-w-2xl mx-auto mt-8 p-4 dark:text-gray-300">
         <div className="text-center">
           <h1 className="text-2xl font-semibold mb-2">Favorite Posts</h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             You haven't added any posts to favorites yet.
           </p>
         </div>
@@ -65,7 +66,7 @@ const FavoritePosts = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-4">
+    <div className="max-w-2xl mx-auto mt-8 p-4 dark:text-gray-300">
       <h1 className="text-2xl font-semibold mb-6">Favorite Posts</h1>
       <div className="space-y-4">
         {posts.map((post) => (

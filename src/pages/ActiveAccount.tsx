@@ -195,18 +195,18 @@ const ActiveAccount = () => {
   if (!email) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:bg-gray-900 dark:text-gray-300">
       <motion.div
-        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl"
+        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl dark:bg-gray-800 dark:border-gray-700"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold text-center text-gray-800">
+          <h1 className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-300">
             Activate Your Account
           </h1>
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 dark:text-gray-400">
             Please enter the verification code sent to:
             <br />
             <span className="font-medium text-blue-600">{email}</span>
@@ -233,7 +233,7 @@ const ActiveAccount = () => {
                   "transition-all duration-200",
                   activeOtpIndex === index
                     ? "border-blue-500 bg-blue-50"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-gray-700"
                 )}
                 aria-label={`Digit ${index + 1}`}
               />
@@ -243,7 +243,7 @@ const ActiveAccount = () => {
           <div className="space-y-4">
             <Button
               type="submit"
-              className="w-full h-12 text-base"
+              className="w-full h-12 text-base dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
               disabled={loading || otp.some((digit) => !digit)}
             >
               {loading ? (
@@ -262,7 +262,7 @@ const ActiveAccount = () => {
                 variant="ghost"
                 onClick={handleResendOtp}
                 disabled={!canResend || loading}
-                className="text-sm"
+                className="text-sm dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
               >
                 {resendTimeout > 0 ? (
                   <span>Resend code in {resendTimeout}s</span>
@@ -274,12 +274,12 @@ const ActiveAccount = () => {
           </div>
         </form>
 
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
           <p>
             Didn't receive the code?{" "}
             <Button
               variant="link"
-              className="text-blue-600 hover:text-blue-700 p-0 h-auto"
+              className="text-blue-600 hover:text-blue-700 p-0 h-auto dark:text-blue-400"
               onClick={() => navigate("/signup")}
             >
               Try signing up again

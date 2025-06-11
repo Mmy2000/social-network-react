@@ -40,8 +40,8 @@ const Chat = () => {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Conversations</h2>
+    <div className="max-w-xl mx-auto p-6 dark:text-gray-300">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-300">Conversations</h2>
 
       <InfiniteScroll
         dataLength={conversations.length}
@@ -53,7 +53,7 @@ const Chat = () => {
           </div>
         }
         endMessage={
-          <p className="text-center text-sm text-gray-500 py-4">
+          <p className="text-center text-sm text-gray-500 py-4 dark:text-gray-400">
             No more conversations to load.
           </p>
         }
@@ -77,7 +77,7 @@ const Chat = () => {
                 transition={{ delay: index * 0.05 }}
               >
                 <Link to={`/chat/${conv?.id}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer relative">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer relative dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <CardContent className="p-4 flex items-center space-x-4">
                       <Avatar>
                         <AvatarImage src={imageUrl} alt={otherUser?.username} />
@@ -87,10 +87,10 @@ const Chat = () => {
                       </Avatar>
 
                       <div>
-                        <p className="text-lg font-medium text-gray-900">
+                        <p className="text-lg font-medium text-gray-900 dark:text-gray-300">
                           {otherUser?.profile?.full_name || otherUser?.username}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
                           Last updated:{" "}
                           {new Date(conv.modified_at).toLocaleString()}
                         </p>

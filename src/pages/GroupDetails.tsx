@@ -147,7 +147,7 @@ const GroupDetails = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 px-4">
+    <div className="container mx-auto py-6 px-4 dark:text-gray-300">
       {/* Group Header */}
       <div className="relative">
         <div className="h-64 w-full rounded-lg overflow-hidden">
@@ -168,8 +168,8 @@ const GroupDetails = () => {
       <div className="mt-6 flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold">{group?.data?.name}</h1>
-          <p className="text-gray-600 mt-2">{group?.data?.description}</p>
-          <div className="flex items-center mt-4 text-sm text-gray-500">
+          <p className="text-gray-600 mt-2 dark:text-gray-400">{group?.data?.description}</p>
+          <div className="flex items-center mt-4 text-sm text-gray-500 dark:text-gray-400">
             <Users className="h-4 w-4 mr-2" />
             {group?.data?.members_count} members
           </div>
@@ -189,6 +189,7 @@ const GroupDetails = () => {
             <>
               {isAdmin && (
                 <Button
+                  className="dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700"
                   variant="outline"
                   onClick={() => setIsInviteModalOpen(true)}
                 >
@@ -213,16 +214,16 @@ const GroupDetails = () => {
 
       {/* Group Content */}
       <Tabs defaultValue="discussion" className="mt-8">
-        <TabsList>
-          <TabsTrigger value="discussion">Discussion</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
-          {isAdmin && <TabsTrigger value="settings">Settings</TabsTrigger>}
+        <TabsList className="dark:bg-gray-900 dark:text-gray-300">
+          <TabsTrigger className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700" value="discussion">Discussion</TabsTrigger>
+          <TabsTrigger className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700" value="members">Members</TabsTrigger>
+          {isAdmin && <TabsTrigger className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700" value="settings">Settings</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="discussion" className="mt-4">
           {/* Add your discussion/posts component here */}
           {group?.data?.is_private && !isMember ? (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center dark:text-gray-300">
               <h1>You are not a member of this group</h1>
             </div>
           ) : (
@@ -237,7 +238,7 @@ const GroupDetails = () => {
             {members?.data?.map((member) => (
               <div
                 key={member.user.id}
-                className="flex items-center p-4 bg-white rounded-lg shadow"
+                className="flex items-center p-4 bg-white rounded-lg shadow dark:bg-gray-800 dark:text-gray-300"
               >
                 <Avatar className="h-12 w-12">
                   <img
@@ -252,7 +253,7 @@ const GroupDetails = () => {
                         {member.user.profile.full_name}
                       </h3>
                     </Link>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {member.role === "admin" ? "Admin" : "Member"}
                     </p>
                   </div>
@@ -277,7 +278,7 @@ const GroupDetails = () => {
         {isAdmin && (
           <TabsContent value="settings" className="mt-4">
             {/* Add your settings component here */}
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-gray-500 py-8 dark:text-gray-400">
               Settings feature coming soon...
             </div>
           </TabsContent>

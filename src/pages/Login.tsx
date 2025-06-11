@@ -100,15 +100,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900 dark:text-gray-300">
       <motion.div
-        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl"
+        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl dark:bg-gray-800 dark:border-gray-700"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h2
-          className="text-3xl font-extrabold text-center text-gray-800"
+          className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-300"
           variants={itemVariants}
         >
           Welcome Back
@@ -125,7 +125,7 @@ const Login = () => {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="emailorusername"
-              className="block mb-2 text-sm font-medium text-gray-700"
+              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Email or Username
             </label>
@@ -146,12 +146,12 @@ const Login = () => {
                 }
               }}
               className={`w-full px-3 py-2 border ${
-                errors.emailorusername ? "border-red-500" : "border-gray-300"
-              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                errors.emailorusername ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
               placeholder="Enter your email or username"
             />
             {errors.emailorusername && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="text-sm text-red-500 mt-1 dark:text-red-400">
                 {errors.emailorusername}
               </p>
             )}
@@ -160,7 +160,7 @@ const Login = () => {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-700"
+              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Password
             </label>
@@ -181,16 +181,16 @@ const Login = () => {
                 }
               }}
               className={`w-full px-3 py-2 border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                errors.password ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
               placeholder="Enter your password"
             />
             {errors.password && (
-              <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+              <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.password}</p>
             )}
             <Link
               to="/reset-password"
-              className="block text-sm text-blue-600 hover:underline mt-1 text-right"
+              className="block text-sm text-blue-600 hover:underline mt-1 text-right dark:text-blue-400"
             >
               Forgot Password?
             </Link>
@@ -199,7 +199,7 @@ const Login = () => {
           <motion.button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-600 dark:text-gray-300"
             variants={itemVariants}
           >
             {loading && (
@@ -215,13 +215,13 @@ const Login = () => {
         </motion.form>
 
         <motion.p
-          className="text-sm text-center text-gray-600"
+          className="text-sm text-center text-gray-600 dark:text-gray-400"
           variants={itemVariants}
         >
           Don't have an account?{" "}
           <Link
             to="/signup"
-            className="text-blue-600 hover:underline font-semibold"
+            className="text-blue-600 hover:underline font-semibold dark:text-blue-400"
           >
             Sign Up
           </Link>

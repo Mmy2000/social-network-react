@@ -55,8 +55,8 @@ const Friends = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 max-w-screen-xl py-6">
-      <div className="bg-white rounded-lg shadow p-4">
+    <div className="container mx-auto px-4 max-w-screen-xl py-6 dark:text-gray-300">
+      <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-900 dark:border-gray-700">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold">Friends</h1>
@@ -84,9 +84,9 @@ const Friends = () => {
         </div>
 
         <Tabs defaultValue="all">
-          <TabsList className="mb-6 bg-gray-100">
-            <TabsTrigger value="all">All Friends</TabsTrigger>
-            <TabsTrigger value="requests" className="relative">
+          <TabsList className="mb-6 bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+            <TabsTrigger value="all" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">All Friends</TabsTrigger>
+            <TabsTrigger value="requests" className="relative dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">
               Friend Requests
               {requests?.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -94,7 +94,7 @@ const Friends = () => {
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="group-invites" className="relative">
+            <TabsTrigger value="group-invites" className="relative dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">
               Group Invites
               {groupInvitations?.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -102,16 +102,16 @@ const Friends = () => {
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+            <TabsTrigger value="suggestions" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Suggestions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
               {friends?.length === 0 ? (
                 <p>No friends found</p>
               ) : (
                 friends?.map((friend) => (
-                  <Card key={friend.id} className="overflow-hidden">
+                  <Card key={friend.id} className="overflow-hidden dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <CardContent className="p-0">
                       <div className="flex items-center p-4">
                         <Avatar className="h-16 w-16 mr-4">
@@ -128,13 +128,13 @@ const Friends = () => {
                             {friend?.profile?.full_name}
                           </Link>
                           <div className="flex flex-col gap-2 mt-2">
-                            <Button size="sm" variant="ghost" className="h-8">
+                            <Button size="sm" variant="outline" className="h-8 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700">
                               <UserCheck className="h-4 w-4 mr-2" />
                               Friends
                             </Button>
                             <Button
                               size="sm"
-                              variant="ghost"
+                              variant="destructive"
                               className="h-8"
                               onClick={() => removeFriend(friend?.id)}
                               disabled={isLoading(friend?.id)}
@@ -172,7 +172,7 @@ const Friends = () => {
                   {requests.map((request) => (
                     <Card
                       key={request.id}
-                      className="overflow-hidden hover:shadow-md transition-shadow"
+                      className="overflow-hidden hover:shadow-md transition-shadow dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
@@ -194,13 +194,13 @@ const Friends = () => {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <p className="cursor-pointer text-sm text-gray-500 mb-3">
+                                  <p className="cursor-pointer text-sm text-gray-500 mb-3 dark:text-gray-400">
                                     {request?.mutual_friends_count} mutual
                                     friends
                                   </p>
                                 </TooltipTrigger>
-                                <TooltipContent>
-                                  <div className="flex flex-col gap-2 p-2">
+                                <TooltipContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                  <div className="flex flex-col gap-2 p-2 ">
                                     {Array.isArray(request?.mutual_friends) &&
                                       request?.mutual_friends.map((friend) => (
                                         <Link
@@ -249,7 +249,7 @@ const Friends = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="w-full"
+                                className="w-full dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700"
                                 onClick={() =>
                                   updateFriendRequest({
                                     requestId: request.id,
@@ -276,12 +276,12 @@ const Friends = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8">
-                <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-gray-700">
+              <div className="text-center py-8 ">
+                <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-3 dark:text-gray-300" />
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                   No Friend Requests
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   You don't have any pending friend requests at the moment.
                 </p>
               </div>
@@ -292,17 +292,17 @@ const Friends = () => {
             {groupInvitations && groupInvitations.length > 0 ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Group Invitations</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold dark:text-gray-300">Group Invitations</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     <Clock className="h-4 w-4 inline-block mr-1" />
                     Invitations expire after 30 days
                   </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
                   {groupInvitations.map((invitation) => (
                     <Card
                       key={invitation.id}
-                      className="overflow-hidden hover:shadow-md transition-shadow"
+                      className="overflow-hidden hover:shadow-md transition-shadow dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
@@ -322,11 +322,11 @@ const Friends = () => {
                             >
                               {invitation.group.name}
                             </Link>
-                            <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                            <div className="flex items-center gap-2 text-sm text-gray-500 mb-3 dark:text-gray-400">
                               <Users className="h-4 w-4" />
                               {invitation.group.members_count} members
                             </div>
-                            <p className="text-sm text-gray-500 mb-3">
+                            <p className="text-sm text-gray-500 mb-3 dark:text-gray-400">
                               Invited by{" "}
                               <Link
                                 to={`/profile/${invitation.invited_by.id}`}
@@ -359,7 +359,7 @@ const Friends = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="w-full"
+                                className="w-full dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-700"
                                 onClick={() =>
                                   handleGroupInvitation({
                                     invitationId: invitation.id,
@@ -387,11 +387,11 @@ const Friends = () => {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-gray-700">
+                <Users className="h-12 w-12 text-gray-400 mx-auto mb-3 dark:text-gray-300" />
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                   No Group Invitations
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   You don't have any pending group invitations at the moment.
                 </p>
               </div>
@@ -399,12 +399,12 @@ const Friends = () => {
           </TabsContent>
 
           <TabsContent value="suggestions">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
               {suggestions?.length === 0 ? (
                 <p>No suggestions found</p>
               ) : (
                 suggestions?.map((suggestion) => (
-                  <Card key={suggestion?.id} className="overflow-hidden">
+                  <Card key={suggestion?.id} className="overflow-hidden dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                     <CardContent className="p-0">
                       <div className="flex items-center p-4">
                         <Avatar className="h-16 w-16 mr-4">
@@ -423,12 +423,12 @@ const Friends = () => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <p className="cursor-pointer text-sm text-gray-500">
+                                <p className="cursor-pointer text-sm text-gray-500 dark:text-gray-400">
                                   {suggestion?.mutual_friends_count} mutual
                                   friends
                                 </p>
                               </TooltipTrigger>
-                              <TooltipContent side="top">
+                              <TooltipContent side="top" className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                                 <div className="flex flex-col">
                                   {Array.isArray(suggestion?.mutual_friends) &&
                                     suggestion?.mutual_friends.map((friend) => (
@@ -443,7 +443,7 @@ const Friends = () => {
                                             alt={friend?.full_name}
                                           />
                                         </Avatar>
-                                        <span className="text-sm text-gray-700">
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">
                                           {friend?.full_name}
                                         </span>
                                       </Link>

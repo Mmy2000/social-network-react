@@ -53,17 +53,17 @@ const SavedPosts = () => {
 
   if (!posts?.length) {
     return (
-      <div className="max-w-2xl mx-auto mt-8 p-4">
+      <div className="max-w-2xl mx-auto mt-8 p-4 dark:text-gray-300">
         <div className="text-center">
           <h1 className="text-2xl font-semibold mb-2">Saved Posts</h1>
-          <p className="text-gray-500">You haven't saved any posts yet.</p>
+          <p className="text-gray-500 dark:text-gray-400">You haven't saved any posts yet.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-4">
+    <div className="max-w-2xl mx-auto mt-8 p-4 dark:text-gray-300">
       <h1 className="text-2xl font-semibold mb-6">Saved Posts</h1>
       <div className="space-y-4">
         {posts.map((post) => (

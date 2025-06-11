@@ -167,15 +167,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900 dark:text-gray-300">
       <motion.div
-        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl mx-4"
+        className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl mx-4 dark:bg-gray-800 dark:border-gray-700"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h2
-          className="text-3xl font-extrabold text-center text-gray-800"
+          className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-300"
           variants={itemVariants}
         >
           Create your account
@@ -193,7 +193,7 @@ const Signup = () => {
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="firstName"
-                className="block mb-2 text-sm font-medium text-gray-700"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 First Name
               </label>
@@ -204,19 +204,19 @@ const Signup = () => {
                 onChange={(e) => handleChange("firstName", e.target.value)}
                 onBlur={(e) => validateField("firstName", e.target.value)}
                 className={`w-full px-3 py-2 border ${
-                  errors.firstName ? "border-red-500" : "border-gray-300"
-                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                  errors.firstName ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
                 placeholder="First Name"
               />
               {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
+                <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.firstName}</p>
               )}
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="lastName"
-                className="block mb-2 text-sm font-medium text-gray-700"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 Last Name
               </label>
@@ -227,12 +227,12 @@ const Signup = () => {
                 onChange={(e) => handleChange("lastName", e.target.value)}
                 onBlur={(e) => validateField("lastName", e.target.value)}
                 className={`w-full px-3 py-2 border ${
-                  errors.lastName ? "border-red-500" : "border-gray-300"
-                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                  errors.lastName ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
                 placeholder="Last Name"
               />
               {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
+                <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.lastName}</p>
               )}
             </motion.div>
           </div>
@@ -240,7 +240,7 @@ const Signup = () => {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-700"
+              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Email
             </label>
@@ -251,12 +251,12 @@ const Signup = () => {
               onChange={(e) => handleChange("email", e.target.value)}
               onBlur={(e) => validateField("email", e.target.value)}
               className={`w-full px-3 py-2 border ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+              } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
               placeholder="Email"
             />
             {errors.email && (
-              <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+              <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.email}</p>
             )}
           </motion.div>
 
@@ -264,7 +264,7 @@ const Signup = () => {
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="password1"
-                className="block mb-2 text-sm font-medium text-gray-700"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 Password
               </label>
@@ -275,19 +275,19 @@ const Signup = () => {
                 onChange={(e) => handleChange("password1", e.target.value)}
                 onBlur={(e) => validateField("password1", e.target.value)}
                 className={`w-full px-3 py-2 border ${
-                  errors.password1 ? "border-red-500" : "border-gray-300"
-                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                  errors.password1 ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
                 placeholder="Password"
               />
               {errors.password1 && (
-                <p className="text-sm text-red-500 mt-1">{errors.password1}</p>
+                <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.password1}</p>
               )}
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="password2"
-                className="block mb-2 text-sm font-medium text-gray-700"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 Repeat Password
               </label>
@@ -298,12 +298,12 @@ const Signup = () => {
                 onChange={(e) => handleChange("password2", e.target.value)}
                 onBlur={(e) => validateField("password2", e.target.value)}
                 className={`w-full px-3 py-2 border ${
-                  errors.password2 ? "border-red-500" : "border-gray-300"
-                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
+                  errors.password2 ? "border-red-500" : "border-gray-300 dark:border-gray-700"
+                } rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-800 dark:text-gray-300`}
                 placeholder="Repeat Password"
               />
               {errors.password2 && (
-                <p className="text-sm text-red-500 mt-1">{errors.password2}</p>
+                <p className="text-sm text-red-500 mt-1 dark:text-red-400">{errors.password2}</p>
               )}
             </motion.div>
           </div>
@@ -311,7 +311,7 @@ const Signup = () => {
           <motion.button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-600 dark:text-gray-300"
             variants={itemVariants}
           >
             {loading && (
@@ -327,13 +327,13 @@ const Signup = () => {
         </motion.form>
 
         <motion.p
-          className="text-sm text-center text-gray-600"
+          className="text-sm text-center text-gray-600 dark:text-gray-400"
           variants={itemVariants}
         >
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-blue-600 hover:underline font-semibold"
+            className="text-blue-600 hover:underline font-semibold dark:text-blue-400"
           >
             Login
           </Link>

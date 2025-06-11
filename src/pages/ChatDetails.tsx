@@ -266,7 +266,7 @@ const ChatDetails: React.FC = () => {
 
 
   return (
-    <div className="lg:mx-60 mx-10 h-[calc(100vh-10rem)]">
+    <div className="lg:mx-60 mx-10 h-[calc(100vh-10rem)] dark:text-gray-300">
       <div className="flex justify-center items-center my-12">
         <div className="text-center">
           <h1 className="text-2xl font-bold">This service will be available soon</h1>
@@ -274,7 +274,7 @@ const ChatDetails: React.FC = () => {
         </div>
       </div>
       {/* Chat Header */}
-      <div className="h-20 px-6 flex items-center justify-between border-b sticky top-0 bg-white z-10">
+      <div className="h-20 px-6 flex items-center justify-between border-b sticky top-0 bg-white z-10 dark:bg-gray-900 dark:border-gray-700">
         <div className="flex items-center space-x-4">
           <Avatar className="h-12 w-12">
             <img
@@ -297,13 +297,13 @@ const ChatDetails: React.FC = () => {
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" className="rounded-full">
-            <Phone className="h-5 w-5 text-gray-600" />
+            <Phone className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </Button>
           <Button variant="ghost" size="icon" className="rounded-full">
-            <Video className="h-5 w-5 text-gray-600" />
+            <Video className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </Button>
           <Button variant="ghost" size="icon" className="rounded-full">
-            <Info className="h-5 w-5 text-gray-600" />
+            <Info className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </Button>
         </div>
       </div>
@@ -312,10 +312,10 @@ const ChatDetails: React.FC = () => {
         <div className="flex flex-col ">
           <div
             ref={messagesDiv}
-            className="flex-1 overflow-y-auto px-6 py-4 space-y-4"
+            className="flex-1 overflow-y-auto px-6 py-4 space-y-4 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700"
           >
             {previousMessages.length === 0 && (
-              <div className="text-center text-gray-500 text-sm mb-2">
+              <div className="text-center text-gray-500 text-sm mb-2 dark:text-gray-400">
                 No previous messages
               </div>
             )}
@@ -341,7 +341,7 @@ const ChatDetails: React.FC = () => {
                   className={`max-w-[65%] ${
                     message.name === user?.first_name
                       ? "bg-facebook text-white"
-                      : "bg-gray-100 text-gray-900"
+                      : "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300"
                   } rounded-2xl px-4 py-2`}
                 >
                   <p className="text-sm">{message.body}</p>
@@ -383,7 +383,7 @@ const ChatDetails: React.FC = () => {
                   className={`max-w-[65%] ${
                     message.name === user?.first_name
                       ? "bg-facebook text-white"
-                      : "bg-gray-100 text-gray-900"
+                      : "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300"
                   } rounded-2xl px-4 py-2`}
                 >
                   <p className="text-sm">{message.body}</p>
@@ -404,7 +404,7 @@ const ChatDetails: React.FC = () => {
             ))}
 
             {isTyping && typingUser && (
-              <div className="flex items-center space-x-2 text-gray-500">
+              <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
                 <Avatar className="h-8 w-8">
                   <img
                     src={otherUser?.profile?.profile_picture}
@@ -412,7 +412,7 @@ const ChatDetails: React.FC = () => {
                     className="object-cover"
                   />
                 </Avatar>
-                <div className="bg-gray-100 rounded-full px-4 py-2">
+                <div className="bg-gray-100 rounded-full px-4 py-2 dark:bg-gray-800 dark:text-gray-300">
                   <div className="flex space-x-1">
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:.1s]" />
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:.2s]" />
@@ -425,10 +425,10 @@ const ChatDetails: React.FC = () => {
         </div>
       </ScrollArea>
       {/* Chat Input */}
-      <div className="p-4 border-t bg-white sticky bottom-0">
+      <div className="p-4 border-t bg-white sticky bottom-0 dark:bg-gray-900 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="rounded-full">
-            <ImageIcon className="h-5 w-5 text-gray-600" />
+            <ImageIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </Button>
           <Button
             id="emoji-btn"
@@ -450,13 +450,13 @@ const ChatDetails: React.FC = () => {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Type a message..."
-              className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-facebook focus:bg-white transition-colors"
+              className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-facebook focus:bg-white transition-colors dark:bg-gray-800 dark:text-gray-300"
             />
           </div>
           <Button
             onClick={sendMessage}
             disabled={!newMessage.trim()}
-            className={`rounded-full bg-facebook hover:bg-facebook-dark transition-colors ${
+            className={`rounded-full bg-facebook hover:bg-facebook-dark transition-colors dark:bg-gray-800 dark:text-gray-300 ${
               !newMessage.trim() ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
