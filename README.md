@@ -4,7 +4,7 @@ A modern frontend for a full-stack social networking platform inspired by Facebo
 
 ## 🌐 Live Demo
 
-👉 [Visit the live site](https://social-network-frontend-mmy2000.vercel.app)
+👉 [Visit the live site](https://social-network-react-black.vercel.app/)
 
 ### 🔐 Test Login
 
