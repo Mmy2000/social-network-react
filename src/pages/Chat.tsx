@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -38,6 +37,8 @@ const Chat = () => {
       </div>
     );
   }
+console.log(unreadMessages);
+
 
   return (
     <div className="max-w-xl mx-auto p-6 dark:text-gray-300">
@@ -93,6 +94,12 @@ const Chat = () => {
                         <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
                           Last updated:{" "}
                           {new Date(conv.modified_at).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
+                          {match?.messages?.length > 0
+                            ? match.messages[match.messages.length - 1]?.body ||
+                              "New message"
+                            : "No new message"}
                         </p>
                       </div>
 

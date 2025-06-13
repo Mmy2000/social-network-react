@@ -1,3 +1,4 @@
+import { Bell } from 'lucide-react';
 import { useUser } from "@/context/UserContext";
 import apiService from "@/apiService/apiService";
 import { useNavigate } from "react-router-dom";
@@ -68,6 +69,7 @@ export const useChat = () => {
         if (message !== lastMessageRef.current) {
           // Update last message
           lastMessageRef.current = message;
+          console.log(message);
 
           // Show notification
           toast({
