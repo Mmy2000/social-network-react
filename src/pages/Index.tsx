@@ -6,10 +6,10 @@ import RightSidebar from '../components/layout/RightSidebar';
 
 const Index = () => {
   return (
-    <div className="container mx-auto px-4 max-w-screen-xl">
+    <div className="container mx-auto px-0 max-w-screen-xl">
       <div className="flex">
         <LeftSidebar />
-        <main className="flex-1 py-4 px-2">
+        <main className="flex-1 py-4 px-1">
           <Feed />
         </main>
         <RightSidebar />

@@ -111,7 +111,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
   };
 
   return (
-    <Card className="mb-4 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">
+    <Card className="mb-4 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 mx-auto">
       <form onSubmit={handleSubmit}>
         <CardContent className="p-4">
           <div className="flex flex-col">
