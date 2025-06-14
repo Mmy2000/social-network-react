@@ -25,6 +25,8 @@ import Groups from "@/pages/groups";
 import GroupDetails from "@/pages/GroupDetails";
 import Photo from "./pages/Photo";
 import { Settings } from "./components/settings/Settings";
+import Events from "./pages/Events";
+import EventDetails from "./pages/EventDetails";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +73,8 @@ const App = () => (
                   <Route path="/groups/:id" element={<GroupDetails />} />
                   <Route path="/photos" element={<Photo />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/events/:id" element={<EventDetails />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
