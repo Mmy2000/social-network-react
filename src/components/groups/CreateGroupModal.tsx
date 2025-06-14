@@ -114,10 +114,10 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Create New Group</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="dark:text-gray-400">
             Create a new group to connect with people who share your interests.
           </DialogDescription>
         </DialogHeader>
@@ -163,12 +163,12 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                 setFormData((prev) => ({ ...prev, privacy: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                 <SelectValue placeholder="Select privacy setting" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="private">Private</SelectItem>
+              <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 ">
+                <SelectItem value="public" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Public</SelectItem>
+                <SelectItem value="private" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Private</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -180,17 +180,18 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
               type="file"
               onChange={handleFileChange}
               accept="image/*"
+              
             />
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={createGroupMutation.isPending}
-              className="min-w-[100px]"
+              className="min-w-[100px] bg-facebook text-white hover:bg-facebook-dark"
             >
               {createGroupMutation.isPending ? (
                 <Loader className="h-4 w-4 animate-spin" />

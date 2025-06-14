@@ -69,25 +69,25 @@ const GroupOptionsDropdown: React.FC<GroupOptionsDropdownProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 z-10"
+            className="absolute top-2 right-2 z-10 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           >
             <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuItem onClick={() => setModalType("edit")}>
+        <DropdownMenuContent align="end" className="w-56 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+          <DropdownMenuItem onClick={() => setModalType("edit")} className="dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-gray-300">
             <Pencil className="h-4 w-4 mr-2" />
             Edit group
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setModalType("delete")}
-            className="text-red-600"
+            className="text-red-600 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-red-500"
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Delete group
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="text-red-600 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-red-500">
             <Flag className="h-4 w-4 mr-2" />
             Report group
           </DropdownMenuItem>

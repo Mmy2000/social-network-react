@@ -107,10 +107,10 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Edit Group</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="dark:text-gray-400">
             Make changes to your group's information.
           </DialogDescription>
         </DialogHeader>
@@ -156,12 +156,12 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
                 setFormData((prev) => ({ ...prev, privacy: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                 <SelectValue placeholder="Select privacy setting" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="false">Public</SelectItem>
-                <SelectItem value="true">Private</SelectItem>
+              <SelectContent className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                <SelectItem value="false" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Public</SelectItem>
+                <SelectItem value="true" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700">Private</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -173,6 +173,7 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
               type="file"
               onChange={handleFileChange}
               accept="image/*"
+              className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
             />
             {group.cover_image && (
               <div className="mt-2">
@@ -181,7 +182,7 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
                   alt="Current cover"
                   className="w-full h-32 object-cover rounded-md"
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
                   Current cover image
                 </p>
               </div>
@@ -189,13 +190,13 @@ const UpdateGroupModal: React.FC<UpdateGroupModalProps> = ({
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={updateGroupMutation.isPending}
-              className="min-w-[100px]"
+              className="min-w-[100px] bg-facebook text-white hover:bg-facebook-dark"
             >
               {updateGroupMutation.isPending ? (
                 <Loader className="h-4 w-4 animate-spin" />
