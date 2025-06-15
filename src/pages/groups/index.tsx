@@ -52,7 +52,6 @@ const Groups = () => {
     queryKey: ["groups", "discover"],
     queryFn: () => apiService.get("/groups/?filter=discover", user?.access),
   });
-  console.log(groups);
 
   const GroupCard = ({ group }) => {
     const isAdmin =
