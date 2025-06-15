@@ -12,12 +12,15 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const fetchPosts = async (
   token?: string,
   groupId?: string,
+  eventId?: string,
   pageParam = 1,
   pageSize = 10
 ) => {
   try {
     const query = groupId
       ? `?group_id=${groupId}&page=${pageParam}&per_page=${pageSize}`
+      : eventId
+      ? `?event_id=${eventId}&page=${pageParam}&per_page=${pageSize}`
       : `?page=${pageParam}&per_page=${pageSize}`;
 
     const response = token
@@ -40,7 +43,7 @@ const fetchPosts = async (
   }
 };
 
-const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
+const Feed: React.FC<{ groupId?: string, eventId?: string }> = ({ groupId, eventId }) => {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { id } = useParams();
@@ -54,9 +57,9 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
     isFetchingNextPage,
   } = useInfiniteQuery({
     initialPageParam: 1,
-    queryKey: ["posts", groupId, user?.access],
+    queryKey: ["posts", groupId, eventId, user?.access],
     queryFn: ({ pageParam = 1 }) =>
-      fetchPosts(user?.access, groupId, pageParam),
+      fetchPosts(user?.access, groupId, eventId, pageParam),
     getNextPageParam: (lastPage) =>
       !lastPage.isLastPage ? lastPage.nextPage : undefined,
     enabled: !!user,
@@ -66,7 +69,7 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
 
   const updatePostById = (postId: string, updatedData: any) => {
     queryClient.setQueryData(
-      ["posts", groupId, user?.access],
+      ["posts", groupId, eventId, user?.access],
       (oldData: any) => {
         if (!oldData) return;
 
@@ -92,7 +95,7 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
 
   const handleNewPost = () => {
     queryClient.invalidateQueries({
-      queryKey: ["posts", groupId, user?.access],
+      queryKey: ["posts", groupId, eventId, user?.access],
     });
   };
 
@@ -110,11 +113,11 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
     );
   }
 
-  const allPosts = data?.pages?.flatMap((page: any) => page.posts) || [];
+  const allPosts = data?.pages?.flatMap((page: any) => page.posts) || [];  
 
   return (
     <div className="max-w-xl mx-auto py-4">
-      <CreatePostCard groupId={id} onPostCreated={handleNewPost} />
+      <CreatePostCard groupId={groupId} eventId={eventId} onPostCreated={handleNewPost} />
       <InfiniteScroll
         dataLength={allPosts.length}
         next={fetchNextPage}
@@ -135,6 +138,7 @@ const Feed: React.FC<{ groupId?: string }> = ({ groupId }) => {
             <PostCard
               key={post.id}
               groupId={groupId}
+              eventId={eventId}
               post={post}
               updatePost={updatePostById}
             />

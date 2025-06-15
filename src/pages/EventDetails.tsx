@@ -10,6 +10,8 @@ import apiService from "@/apiService/apiService";
 import { Avatar } from "@/components/ui/avatar";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { useEvents } from "@/hooks/useEvents";
+import { Link } from "react-router-dom";
+import Feed from "@/components/feed/Feed";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -91,8 +93,7 @@ const EventDetails = () => {
         <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
-  }
-
+  }  
 
   return (
     <div className="container mx-auto py-6 px-4 dark:text-gray-300">
@@ -186,10 +187,7 @@ const EventDetails = () => {
           {/* Event description / posts / discussion */}
           <div className="dark:text-gray-400">
             {/* Replace with comment/feed if available */}
-            <p>
-              {event?.data?.long_description ||
-                "More details will be available soon."}
-            </p>
+            <Feed eventId={id} />
           </div>
         </TabsContent>
 
@@ -208,21 +206,14 @@ const EventDetails = () => {
                 </Avatar>
                 <div className="ml-4 flex items-center justify-between w-full">
                   <div>
-                    <h3 className="font-medium">
-                      {attendee?.profile?.full_name}
-                    </h3>
+                    <Link to={`/profile/${attendee?.id}`}>
+                      <h3 className="font-medium">
+                        {attendee?.profile?.full_name}
+                      </h3>
+                    </Link>
                   </div>
-                  {isCreator && attendee?.id !== user?.id && (
-                    <Button
-                      onClick={() => {
-                        setSelectedUserId(attendee?.id);
-                        setShowRemoveModal(true);
-                      }}
-                      variant="destructive"
-                      size="icon"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
+                  {isCreator && attendee?.id === user?.id && (
+                    <h3 className="text-gray-500">Owner</h3>
                   )}
                 </div>
               </div>
@@ -244,10 +235,15 @@ const EventDetails = () => {
                 </Avatar>
                 <div className="ml-4 flex items-center justify-between w-full">
                   <div>
-                    <h3 className="font-medium">
-                      {attendee?.profile?.full_name}
-                    </h3>
+                    <Link to={`/profile/${attendee?.id}`}>
+                      <h3 className="font-medium">
+                        {attendee?.profile?.full_name}
+                      </h3>
+                    </Link>
                   </div>
+                  {isCreator && attendee?.id === user?.id && (
+                    <h3 className="text-gray-500">Owner</h3>
+                  )}
                 </div>
               </div>
             ))}

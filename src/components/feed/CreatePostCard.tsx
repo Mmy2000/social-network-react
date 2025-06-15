@@ -21,9 +21,10 @@ import { Spinner } from "../ui/Spinner";
 interface CreatePostCardProps {
   onPostCreated?: () => void;
   groupId?: string;
+  eventId?: string;
 }
 
-const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId }) => {
+const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId, eventId }) => {
   const [content, setContent] = useState("");
   const [role, setRole] = useState("public");
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -71,18 +72,26 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({ onPostCreated, groupId 
     attachments.forEach((file) => {
       formDataInGroup.append("attachments", file);
     });
+    const formDataOnEvent = new FormData();
+    formDataOnEvent.append("content", content);
+    formDataOnEvent.append("role", role);
+    formDataOnEvent.append("event", eventId);
+    formDataOnEvent.append("feeling",feeling);
+    attachments.forEach((file) => {
+      formDataOnEvent.append("attachments", file);
+    });
     const formDataOnFeed = new FormData();
     formDataOnFeed.append("content", content);
     formDataOnFeed.append("role", role);
     formDataOnFeed.append("feeling",feeling);
     attachments.forEach((file) => {
       formDataOnFeed.append("attachments", file);
-    });
+    });    
 
     try {
        const res = await apiService.postNewPost(
          "/posts/create/",
-         groupId ? formDataInGroup : formDataOnFeed,
+         groupId ? formDataInGroup : eventId ? formDataOnEvent : formDataOnFeed,
          user?.access
        );
 

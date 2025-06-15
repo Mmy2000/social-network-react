@@ -39,9 +39,11 @@ interface IPost {
   post:any;
   updatePost:any;
   groupId?:string;
+  eventId?:string;
 }
 
-const PostCard = ({ post, updatePost, groupId }:IPost) => {
+const PostCard = ({ post, updatePost, groupId, eventId }:IPost) => {
+
   const location = useLocation();
   const isPostDetailPage = location.pathname.includes(`/post/${post?.id}`);
   const [liked, setLiked] = useState(false);
@@ -73,11 +75,16 @@ const PostCard = ({ post, updatePost, groupId }:IPost) => {
     } else {
       setLiked(false);
     }
-
     // Always invalidate ["posts"] if groupId is falsy (e.g., feed page)
-    const queryKey = groupId ? ["posts", groupId] : ["posts"];
+    const queryKey = groupId
+      ? ["posts", groupId]
+      : eventId
+      ? ["posts", eventId]
+      : ["posts"];
+
+    // Invalidate the query so React Query refetches data
     queryClient.invalidateQueries({ queryKey });
-  }, [user, post?.likes, groupId]);
+  }, [user, post?.likes, groupId, eventId]);
 
 
   useEffect(() => {
