@@ -27,6 +27,7 @@ import Photo from "./pages/Photo";
 import { Settings } from "./components/settings/Settings";
 import Events from "./pages/Events";
 import EventDetails from "./pages/EventDetails";
+import Memories from "./pages/Memories";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => (
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/events/:id" element={<EventDetails />} />
+                  <Route path="/memories" element={<Memories />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
