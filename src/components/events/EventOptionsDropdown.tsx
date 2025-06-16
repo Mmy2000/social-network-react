@@ -79,19 +79,19 @@ const EventOptionsDropdown: React.FC<EventOptionsDropdownProps> = ({
             className="dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-gray-300"
           >
             <Pencil className="h-4 w-4 mr-2" />
-            Edit group
+            Edit Event
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setModalType("delete")}
             className="text-red-600 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-red-500"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete group
+            Delete Event
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-red-600 dark:hover:bg-gray-700 dark:data-[state=active]:bg-gray-700 dark:text-red-500">
             <Flag className="h-4 w-4 mr-2" />
-            Report group
+            Report Event
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -100,8 +100,8 @@ const EventOptionsDropdown: React.FC<EventOptionsDropdownProps> = ({
       <ConfirmModal
         open={modalType === "delete"}
         onClose={() => setModalType(null)}
-        title="Delete Group"
-        content="Are you sure you want to delete this group? This action cannot be undone."
+        title="Delete Event"
+        content="Are you sure you want to delete this event? This action cannot be undone."
         confirmText="Delete"
         onConfirm={handleDelete}
       />
