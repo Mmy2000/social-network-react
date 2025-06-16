@@ -34,6 +34,12 @@ interface Notification {
       id: number;
     };
   };
+  event?: {
+    id: number;
+  };
+  group?: {
+    id: number;
+  };
   is_read: boolean;
   created_at: string;
   sender: NotificationSender;
@@ -45,7 +51,15 @@ interface Notification {
     | "friend_request"
     | "friend_request_accepted"
     | "friend_request_rejected"
-    | "friend_request_cancelled";
+    | "friend_request_cancelled"
+    | "event_joined"
+    | "event_not_joined"
+    | "event_interested"
+    | "event_not_interested"
+    | "group_invitation"
+    | "group_invitation_accepted"
+    | "group_invitation_declined"
+    | "group_member_removed";
 }
 
 interface NotificationResponse {
@@ -63,7 +77,6 @@ const NotificationList = () => {
     queryKey: ["notifications"],
     queryFn: async () => {
       const response = await apiService.get("/notifications/", user?.access);
-      console.log(response);
       return response.data;
     },
     enabled: !!user?.access,
@@ -157,6 +170,21 @@ const NotificationList = () => {
       case "friend_request_rejected":
       case "friend_request_cancelled":
         return "/friends";
+      case "group_invitation":
+        return `/groups/${notification.group}`;
+      case "group_invitation_accepted":
+        return `/groups/${notification.group}`;
+      case "group_invitation_declined":
+        return `/groups/${notification.group}`;
+      case "group_member_removed":
+      case "event_joined":
+        return `/events/${notification.event}`;
+      case "event_not_joined":
+        return `/events/${notification.event}`;
+      case "event_interested":
+        return `/events/${notification.event}`;
+      case "event_not_interested":
+        return `/events/${notification.event}`;
       default:
         return "#";
     }

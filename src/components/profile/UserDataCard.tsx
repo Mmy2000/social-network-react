@@ -8,7 +8,7 @@ import { UserRound, MapPin, Briefcase, GraduationCap } from 'lucide-react';
 const UserDataCard = ({ profile }) => {
     
   return (
-    <Card className="sticky top-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+    <Card className="sticky top-20 bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
       <CardContent className="p-6 space-y-5">
         <div className="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-700">
           <div className="p-2 bg-gray-50 rounded-lg dark:bg-gray-700">
