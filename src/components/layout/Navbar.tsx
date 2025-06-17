@@ -75,8 +75,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4 max-w-screen-xl">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4 flex-1">
-            <Link to="/" className="text-facebook text-2xl font-bold mr-4">
-              Dreem
+            <Link to="/" className=" mr-4">
+              <img src="/dreem_logo.png" alt="Dreem" className="w-24 h-20" />
             </Link>
             <div className="hidden md:block max-w-md w-full">
               <SearchInput />
@@ -179,20 +179,32 @@ const Navbar = () => {
                   className="ml-4 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
                   onClick={LogOut} // clear user on logout
                 >
-                  <Link to="/" className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
+                  <Link
+                    to="/"
+                    className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700"
+                  >
                     Logout
                   </Link>
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="default" className="ml-4 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-400">
+                <Button
+                  variant="default"
+                  className="ml-4 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-400"
+                >
                   <Link to="/signup" className="text-facebook-light">
                     Sign Up
                   </Link>
                 </Button>
-                <Button variant="ghost" className="ml-4 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700">
-                  <Link to="/login" className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700">
+                <Button
+                  variant="ghost"
+                  className="ml-4 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  <Link
+                    to="/login"
+                    className="text-facebook dark:text-gray-300 dark:hover:text-gray-200 dark:hover:bg-gray-700"
+                  >
                     Login
                   </Link>
                 </Button>
