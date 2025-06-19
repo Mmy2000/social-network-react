@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,17 @@ const Navbar = () => {
   const location = useLocation();
   const { user, setUser } = useUser(); // Accessing user context
   let navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("isDarkMode") === "true";
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -64,12 +74,12 @@ const Navbar = () => {
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle("dark", !isDarkMode);
+    localStorage.setItem("isDarkMode", (!isDarkMode).toString());
   };
 
   const { requests, groupInvitations } = useFriends();
   const { unreadMessages, isLoadingUnreadMessages } = useChat();
-  
+
   return (
     <header className="dark:bg-gradient-to-r dark:from-gray-950 dark:to-gray-900 inset-x-0  w-full sticky z-10 top-0 left-0 border-b border-gray-200 dark:border-gray-900 bg-white/75 backdrop-blur-lg transition-all duration-300 ease-in-out">
       <div className="container mx-auto px-4 max-w-screen-xl">
