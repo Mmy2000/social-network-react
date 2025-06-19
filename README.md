@@ -8,8 +8,8 @@ A modern frontend for a full-stack social networking platform inspired by Facebo
 
 ### 🔐 Test Login
 
-- **Email**: `testuser@email.com`  
-- **Password**: `test1234`
+- **Email**: `my552915@gmail.com`  
+- **Password**: `123456`
 
 ---
 
