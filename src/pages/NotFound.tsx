@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const NotFound = () => {
   // Animation variants for better structure
@@ -78,13 +79,12 @@ const NotFound = () => {
 
       {/* Button */}
       <motion.a
-        href="/"
         className="mt-8 px-8 py-3 bg-facebook text-white font-semibold rounded-md shadow-lg hover:bg-facebook-dark transition-all duration-300"
         variants={fadeInUp}
         whileHover={buttonHover.hover}
         whileTap={buttonHover.tap}
       >
-        Go Back Home
+        <Link to="/">Go Back Home</Link>
       </motion.a>
     </motion.div>
   );
