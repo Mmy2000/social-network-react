@@ -62,6 +62,8 @@ export const usePost = () => {
       
       // Invalidate user feed
       queryClient.invalidateQueries({ queryKey: ["user-feed"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["favorite-posts"] });
 
       toast({
         title: "Success",

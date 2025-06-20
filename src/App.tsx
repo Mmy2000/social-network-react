@@ -12,9 +12,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import { UserProvider } from "./context/UserContext";
-import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetails";
-import { FriendProvider } from "./context/FriendContext";
 import Chat from "./pages/Chat";
 import ChatDetails from "./pages/ChatDetails";
 import ActiveAccount from "./pages/ActiveAccount";
@@ -33,7 +31,6 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <UserProvider>
-    <FriendProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -85,7 +82,6 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
-    </FriendProvider>
   </UserProvider>
 );
 

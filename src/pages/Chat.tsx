@@ -37,12 +37,13 @@ const Chat = () => {
       </div>
     );
   }
-console.log(unreadMessages);
-
+  console.log(unreadMessages);
 
   return (
     <div className="max-w-xl mx-auto p-6 dark:text-gray-300">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-300">Conversations</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-300">
+        Conversations
+      </h2>
 
       <InfiniteScroll
         dataLength={conversations.length}
@@ -65,9 +66,7 @@ console.log(unreadMessages);
             const imageUrl =
               otherUser?.profile?.profile_picture || "/default-avatar.png";
 
-            const match = unreadMessages?.find(
-              (u) => u.id === conv.id
-            );
+            const match = unreadMessages?.find((u) => u.id === conv.id);
             const unreadCount = match?.unreadCount || 0;
 
             return (
@@ -95,12 +94,24 @@ console.log(unreadMessages);
                           Last updated:{" "}
                           {new Date(conv.modified_at).toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
-                          {match?.messages?.length > 0
-                            ? match.messages[match.messages.length - 1]?.body ||
-                              "New message"
-                            : "No new message"}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm text-gray-500 mt-1 font-bold dark:text-gray-400">
+                            {match?.messages?.length > 0
+                              ? match.messages[match.messages.length - 1]
+                                  ?.created_by?.id ===
+                                user?.id
+                                ? "You"
+                                : match.messages[match.messages.length - 1]
+                                    ?.created_by?.profile?.full_name
+                              : ""}
+                          </p>
+
+                          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
+                            {match?.messages?.length > 0
+                              ? match.messages[match.messages.length - 1]?.body
+                              : ""}
+                          </p>
+                        </div>
                       </div>
 
                       {unreadCount > 0 && (
