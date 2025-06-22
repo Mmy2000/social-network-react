@@ -128,78 +128,79 @@ const RightSidebar = () => {
       )}
 
       {/* Friend Suggestions */}
-      <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-800 dark:text-gray-400">
+      <div className="bg-white rounded-lg shadow p-4 dark:bg-gray-800 dark:text-gray-400 h-1/2 flex flex-col ">
         <h3 className="text-lg font-semibold mb-3">People You May Know</h3>
-        {suggestions.length > 0 ? ( 
-        <ScrollArea className="h-[calc(100%-12rem)]">
-          <div className="space-y-4">
-            {suggestions.map((friend) => (
-              <div key={friend.id} className="flex">
-                <Avatar className="h-10 w-10 mr-3">
-                  <img
-                    src={friend.profile?.profile_picture}
-                    alt={friend?.profile?.full_name}
-                  />
-                </Avatar>
-                <div className="flex-1">
-                  <Link
-                    to={`/profile/${friend.id}`}
-                    className="font-medium text-sm hover:underline"
-                  >
-                    {friend?.profile?.full_name}
-                  </Link>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <p className="cursor-pointer text-sm text-gray-500">
-                          {friend?.mutual_friends_count} mutual friends
-                        </p>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <div className="flex flex-col">
-                          {Array.isArray(friend?.mutual_friends) &&
-                            friend?.mutual_friends.map((user) => (
-                              <Link
-                                key={user?.id}
-                                to={`/profile/${user?.id}`}
-                                className="flex items-center space-x-2 mb-1 hover:underline"
-                              >
-                                <Avatar className="h-6 w-6">
-                                  <img
-                                    src={user?.profile_picture}
-                                    alt={user?.full_name}
-                                  />
-                                </Avatar>
-                                <span className="text-sm text-gray-700">
-                                  {user?.full_name}
-                                </span>
-                              </Link>
-                            ))}
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      onClick={() => sendFriendRequest(friend?.id)}
-                      size="sm"
-                      variant="default"
-                      className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
-                      disabled={isLoading(friend?.id)}
+        {suggestions.length > 0 ? (
+          <ScrollArea className=" flex-1 overflow-auto">
+            <div className="space-y-4">
+              {suggestions.map((friend) => (
+                <div key={friend.id} className="flex">
+                  <Avatar className="h-10 w-10 mr-3">
+                    <img
+                      src={friend.profile?.profile_picture}
+                      alt={friend?.profile?.full_name}
+                    />
+                  </Avatar>
+                  <div className="flex-1">
+                    <Link
+                      to={`/profile/${friend.id}`}
+                      className="font-medium text-sm hover:underline"
                     >
-                      {isLoading(friend?.id) ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <UserPlus className="h-4 w-4 mr-1" />
-                      )}
-                      {isLoading(friend?.id) ? "Sending..." : "Add Friend"}
-                    </Button>
+                      {friend?.profile?.full_name}
+                    </Link>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <p className="cursor-pointer text-sm text-gray-500">
+                            {friend?.mutual_friends_count} mutual friends
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="flex flex-col">
+                            {Array.isArray(friend?.mutual_friends) &&
+                              friend?.mutual_friends.map((user) => (
+                                <Link
+                                  key={user?.id}
+                                  to={`/profile/${user?.id}`}
+                                  className="flex items-center space-x-2 mb-1 hover:underline"
+                                >
+                                  <Avatar className="h-6 w-6">
+                                    <img
+                                      src={user?.profile_picture}
+                                      alt={user?.full_name}
+                                    />
+                                  </Avatar>
+                                  <span className="text-sm text-gray-700">
+                                    {user?.full_name}
+                                  </span>
+                                </Link>
+                              ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <div className="flex gap-2 mt-2">
+                      <Button
+                        onClick={() => sendFriendRequest(friend?.id)}
+                        size="sm"
+                        variant="default"
+                        className="text-xs h-7 bg-facebook hover:bg-facebook-dark"
+                        disabled={isLoading(friend?.id)}
+                      >
+                        {isLoading(friend?.id) ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <UserPlus className="h-4 w-4 mr-1" />
+                        )}
+                        {isLoading(friend?.id) ? "Sending..." : "Add Friend"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>):(
+              ))}
+            </div>
+          </ScrollArea>
+        ) : (
           <p className="text-gray-500">No suggestions found</p>
         )}
       </div>
@@ -210,37 +211,39 @@ const RightSidebar = () => {
           <ScrollArea className="h-[calc(100%-12rem)]">
             <h3 className="text-lg font-semibold mb-3">Contacts</h3>
             {friends.length > 0 ? (
-            <ul className="space-y-1">
-              {friends.map((friend) => (
-                <li key={friend.id}>
-                  <button
-                    onClick={() => handleStartChat(friend.id)}
-                    disabled={startingChatWith === friend.id}
-                    className="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover disabled:opacity-50"
-                  >
-                    <div className="relative">
-                      <Avatar className="h-8 w-8 mr-3">
-                        <img
-                          src={friend?.profile?.profile_picture}
-                          alt={friend?.profile?.full_name}
-                        />
-                      </Avatar>
-                      {friend?.is_online && (
-                        <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
+              <ul className="space-y-1">
+                {friends.map((friend) => (
+                  <li key={friend.id}>
+                    <button
+                      onClick={() => handleStartChat(friend.id)}
+                      disabled={startingChatWith === friend.id}
+                      className="w-full flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 animate-hover disabled:opacity-50"
+                    >
+                      <div className="relative">
+                        <Avatar className="h-8 w-8 mr-3">
+                          <img
+                            src={friend?.profile?.profile_picture}
+                            alt={friend?.profile?.full_name}
+                          />
+                        </Avatar>
+                        {friend?.is_online && (
+                          <span className="absolute bottom-0 right-2 bg-green-500 h-2 w-2 rounded-full border border-white"></span>
+                        )}
+                      </div>
+                      <span className="flex-1 text-left">
+                        {friend?.profile?.full_name}
+                      </span>
+                      {startingChatWith === friend.id && (
+                        <Loader2 className="h-4 w-4 animate-spin ml-2" />
                       )}
-                    </div>
-                    <span className="flex-1 text-left">
-                      {friend?.profile?.full_name}
-                    </span>
-                    {startingChatWith === friend.id && (
-                      <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    )}
-                  </button>
-                </li>
+                    </button>
+                  </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">No contacts found</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No contacts found
+              </p>
             )}
           </ScrollArea>
         </div>

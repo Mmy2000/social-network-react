@@ -195,7 +195,7 @@ const ActiveAccount = () => {
   if (!email) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:bg-gray-900 dark:text-gray-300">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-gray-300 ">
       <motion.div
         className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl dark:bg-gray-800 dark:border-gray-700"
         variants={containerVariants}
